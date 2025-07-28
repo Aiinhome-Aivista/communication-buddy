@@ -1,4 +1,4 @@
-import { Bell, BookOpenCheck, ChartColumnStacked, ChevronRight, LogOut } from "lucide-react";
+import { Bell, BookOpenCheck, ChartColumnStacked, ChevronRight, LogOut, List  } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../provider/AuthProvider";
@@ -21,6 +21,12 @@ const menuList = [
     icon: <BookOpenCheck size={20} />,
     title: "Practice & Test",
     path: "/dashboard/test",
+    allowedRoles: ["candidate"]
+  },
+  {
+    icon: <List  size={20} />,
+    title: "Topics",
+    path: "/dashboard/topics",
     allowedRoles: ["candidate"]
   },
 ];

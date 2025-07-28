@@ -4,7 +4,7 @@ import { useAuth } from "../../../provider/AuthProvider";
 import { useNavigate } from "react-router";
 
 export default function Login() {
-  const { getUserData } = useAuth();
+  const { login } = useAuth();
   
   const navigate = useNavigate();
 

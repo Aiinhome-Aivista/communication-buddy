@@ -10,6 +10,7 @@ const Default = lazy(() => import("../pages/dashboard/Default"));
 const Reports = lazy(() => import("../pages/dashboard/reports/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
 const RequestNotification = lazy(() => import("../pages/dashboard/RequestNotification"));
+const TopicList = lazy(() => import("../pages/users/TopicList"));
 
 // Loader component for fallback UI
 const Loader = () => (
@@ -73,6 +74,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <RequestNotification />
+              </Suspense>
+            ),
+          },
+          {
+            path: "/dashboard/topics",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <TopicList />
               </Suspense>
             ),
           },
