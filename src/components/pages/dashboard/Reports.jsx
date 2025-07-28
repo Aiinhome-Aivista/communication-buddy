@@ -52,7 +52,8 @@ const reportsData = [
   },
 ];
 
-const headers = ["ID", "Report Name", "Date", "Status", "Actions"];
+const headers = ["ID", "Report Name", "Date", "Status"];
+const keys = ["id", "name", "date", "status"];
 
 export default function Reports() {
   // State for pagination
@@ -90,7 +91,12 @@ export default function Reports() {
         </button>
       </div>
 
-      <ReportTable tableData={currentItems} headers={headers} />
+      <ReportTable 
+        tableData={currentItems} 
+        headers={headers} 
+        isShowAction={true} 
+        keys={keys}
+      />
 
       <Pagination
         currentPage={currentPage}

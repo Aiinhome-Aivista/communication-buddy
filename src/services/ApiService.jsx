@@ -44,7 +44,7 @@ export const fatchedPostRequest = async (url, body) => {
       body: JSON.stringify(body),
     });
 
-    console.log(response);
+    // console.log(response);
 
     if (!response.ok) {
       return await response.json();

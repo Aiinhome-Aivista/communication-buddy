@@ -5,13 +5,11 @@ const authContext = React.createContext({
   isAuthenticated: () => false,
   login: () => Promise.resolve(),
   logout: () => {},
-  getUserData: null,
   isLoading: false,
   isError: false,
 });
 
 export const AuthProvider = ({ children }) => {
-  const [getUserData, setUserData] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
@@ -24,10 +22,10 @@ export const AuthProvider = ({ children }) => {
       const response = await fatchedPostRequest(postURL.login, userInfo);
       if (response.success || response.status === 200) {
         console.log("login userInfo: ", response.success);
-        setUserData(response);
         sessionStorage.setItem("userName", response.name);
         sessionStorage.setItem("userRole", response.role);
         sessionStorage.setItem("success", response.success);
+        sessionStorage.setItem("user_id", response.user_id);
         setIsLoading(false);
         return { success: true };
       } else {
@@ -57,7 +55,6 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         login,
         logout,
-        getUserData,
         isLoading,
         isError,
       }}

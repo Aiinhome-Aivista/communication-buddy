@@ -13,11 +13,12 @@ function TopicList() {
   useEffect(() => {
     if (getTopicData && getTopicData.length > 0) {
       const onlyNullStatus = getTopicData.filter(topic => topic.status === null);
-      console.log("Filtered topics with status null:", onlyNullStatus);
+      // console.log("Filtered topics with status null:", onlyNullStatus);
       setFilteredTopics(onlyNullStatus);
     }
   }, [getTopicData]);
-  const headers = ["ID", "HR Name", "Topic Name", "Actions"];
+  const headers = ["ID", "HR Name", "Topic Name"];
+  const keys = ["id", "hr_name", "topic_name"];
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -53,7 +54,13 @@ function TopicList() {
         </button>
       </div>
 
-      <ReportTable tableData={currentItems} headers={headers} />
+      <ReportTable
+        tableData={currentItems}
+        headers={headers}
+        isRaiseRequest={true}
+        raiseRequest={() => alert("Requesting topic...")}
+        keys={keys}
+      />
 
       <Pagination
         currentPage={currentPage}
@@ -63,7 +70,7 @@ function TopicList() {
         onItemsPerPageChange={handleItemsPerPageChange}
       />
     </div>
-  )
+  );
 }
 
 export default TopicList

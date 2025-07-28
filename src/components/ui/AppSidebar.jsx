@@ -106,7 +106,7 @@ export default function AppSidebar() {
 
         <div className="sidebar-footer flex items-center justify-center mt-4">
           <button
-            className="border-1 border-rose-400 bg-rose-500/20 text-md flex-1 h-10 rounded-md shadow-sm hover:bg-rose-700/50 flex items-center justify-center gap-4 text-rose-100"
+            className="border-1 border-rose-400 bg-rose-500/20 text-md flex-1 h-10 rounded-md shadow-sm hover:bg-rose-700/50 flex items-center justify-center gap-4 text-rose-100 cursor-pointer transition-colors duration-300"
             onClick={handleLogout}
           >
             {!collapsed && "Logout"} <LogOut size={18} />

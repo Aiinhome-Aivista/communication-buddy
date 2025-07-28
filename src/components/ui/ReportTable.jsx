@@ -1,7 +1,15 @@
 import React from "react";
 import ReportRow from "./ReportRow";
 
-export default function ReportTable({ tableData, headers }) {
+export default function ReportTable({
+  tableData,
+  headers,
+  isShowAction = false,
+  keys=[],
+  isRaiseRequest = false,
+  raiseRequest = () => {}
+}) {
+  // console.log(tableData)
   return (
     <div className="overflow-hidden rounded-lg border border-teal-500/30 mb-0 scrollbar">
       <div className="max-h-[calc(100vh-350px)] overflow-auto">
@@ -16,11 +24,26 @@ export default function ReportTable({ tableData, headers }) {
                   {heading}
                 </th>
               ))}
+
+              {isShowAction || isRaiseRequest && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-teal-300 uppercase tracking-wider">
+                  Actions
+                </th>
+              )}
             </tr>
           </thead>
+
           <tbody className="divide-y divide-teal-700/50">
-            {tableData.map((report, index) => (
-              <ReportRow key={report.id} report={report} index={index} />
+            {tableData.map((row, index) => (
+              <ReportRow
+                key={index}
+                row={row}
+                index={index}
+                isShowAction={isShowAction}
+                keys={keys}
+                isRaiseRequest={isRaiseRequest}
+                raiseRequest={raiseRequest}
+              />
             ))}
           </tbody>
         </table>

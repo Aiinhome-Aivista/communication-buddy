@@ -16,7 +16,7 @@ const TopicList = lazy(() => import("../pages/users/TopicList"));
 
 // Loader component for fallback UI
 const Loader = () => (
-  <div className="text-center text-teal-300 py-6">Loading...</div>
+  <div className="text-center text-teal-300 py-6"></div>
 );
 
 export const router = createBrowserRouter([

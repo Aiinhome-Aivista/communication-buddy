@@ -29,9 +29,7 @@ export default function Header() {
   // Handle Accept/Decline
   const handleAction = (id, action) => {
     setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, status: action } : n
-      )
+      prev.map((prev) => (prev.id === id ? { ...prev, status: action } : prev))
     );
   };
 
@@ -51,9 +49,11 @@ export default function Header() {
           {/* Right Section: User Info + Notification */}
           <div className="flex items-center gap-4 text-white">
             {/* User Info */}
-            <div className="flex items-center gap-1">
-              <FiUser className="w-5 h-5" />
-              <span className="text-sm font-medium">{userName}</span>
+            <div className="flex items-center justify-between bg-teal-400/20 rounded-full w-24 px-1 py-1 cursor-pointer shadow-sm">
+              <div className="bg-teal-600 p-1 rounded-full">
+                <FiUser className="w-5 h-5 text-teal-100" />
+              </div>
+              <span className="text-sm font-medium pr-1 text-teal-100">{userName}</span>
             </div>
 
             {/* Notification Bell */}
@@ -99,13 +99,14 @@ export default function Header() {
                           </>
                         ) : (
                           <div
-                            className={`text-sm ${n.status === "accepted"
+                            className={`text-sm ${
+                              n.status === "accepted"
                                 ? "text-green-700"
                                 : "text-red-700"
-                              }`}
+                            }`}
                           >
-                            You <strong>{n.status}</strong> {n.name}’s request for{" "}
-                            <strong>{n.type}</strong>.
+                            You <strong>{n.status}</strong> {n.name}’s request
+                            for <strong>{n.type}</strong>.
                           </div>
                         )}
                       </li>
@@ -119,7 +120,6 @@ export default function Header() {
             </div>
           </div>
         </div>
-
       </Container>
     </header>
   );
