@@ -83,7 +83,9 @@ export const router = createBrowserRouter([
             path: "/dashboard/topics",
             element: (
               <Suspense fallback={<Loader />}>
-                <TopicList />
+                <ProtectedRoute>
+                  <TopicList />
+                </ProtectedRoute>
               </Suspense>
             ),
           },

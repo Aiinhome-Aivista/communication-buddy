@@ -3,6 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const getURL = {}
 export const postURL = {
   login: `${BASE_URL}/auth/login`,
+  getAllTopics: `${BASE_URL}/get_topics`,
   register: `${BASE_URL}/auth/register`,
   getUser: `${BASE_URL}/user`,
   updateUser: `${BASE_URL}/user/update`,
@@ -12,7 +13,7 @@ export const postURL = {
 
 
 export const fatchedGetRequest = async (url) => {
-//   const jwtToken = sessionStorage.getItem('Token')
+  //   const jwtToken = sessionStorage.getItem('Token')
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -32,7 +33,7 @@ export const fatchedGetRequest = async (url) => {
 }
 
 export const fatchedPostRequest = async (url, body) => {
-//   const jwtToken = sessionStorage.getItem('Token')
+  //   const jwtToken = sessionStorage.getItem('Token')
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -42,7 +43,7 @@ export const fatchedPostRequest = async (url, body) => {
       },
       body: JSON.stringify(body),
     });
-    
+
     console.log(response);
 
     if (!response.ok) {

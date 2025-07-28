@@ -70,7 +70,7 @@ export default function Login() {
             {/* <!-- Form --> */}
             <div className="w-full">
               <div className="mb-4">
-                <label for="email" className="block text-sm font-medium mb-1">
+                <label htmlFor="email" className="block text-sm font-medium mb-1">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -85,7 +85,7 @@ export default function Login() {
               </div>
               <div className="mb-4">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium mb-1"
                 >
                   Password <span className="text-red-500">*</span>
