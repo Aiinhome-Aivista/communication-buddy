@@ -1,22 +1,22 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { fatchedPostRequest, postURL } from "../../../services/ApiService";
+import { useTopic } from "../../../provider/TopicProvider";
+import useSpeechRecognition from "../../../hooks/useSpeechRecognition";
+import { formatTime } from "../../../utils/Timer";
 
-const sampleQuestions = [
-  { id: 1, question: "Easy question here", type: "easy" },
-  { id: 2, question: "Medium question here", type: "medium" },
-  { id: 3, question: "Hard question here", type: "hard" },
-];
 
 export default function PracticeAndTest() {
+  const { getTopicData } = useTopic();
+  const { id } = useParams();
+
   const [chatStarted, setChatStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [questionStatus, setQuestionStatus] = useState(
-    sampleQuestions.map(() => "unanswered")
-  );
-  const [answers, setAnswers] = useState(sampleQuestions.map(() => ""));
-  const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef(null);
-  const silenceTimeoutRef = useRef(null);
+  const [getQes, setQes] = useState([]);
+  const [getErrorMsg, setErrorMsg] = useState(null);
+  const [questionStatus, setQuestionStatus] = useState([]);
+  const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
     if (!chatStarted) return;
@@ -26,78 +26,24 @@ export default function PracticeAndTest() {
     return () => clearInterval(timer);
   }, [chatStarted]);
 
-  const formatTime = (seconds) => {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
-  };
+  const onSpeechResult = (transcript) => {
+    setAnswers((prev) => {
+      const newAnswers = [...prev];
+      newAnswers[currentQuestionIndex] = transcript;
+      return newAnswers;
+    });
 
-  const startRecording = () => {
-    if (!("webkitSpeechRecognition" in window)) {
-      alert("Speech Recognition not supported in this browser");
-      return;
-    }
+    setQuestionStatus((prev) => {
+      const newStatus = [...prev];
+      newStatus[currentQuestionIndex] = "answered";
+      return newStatus;
+    });
 
-    if (recognitionRef.current) {
-      recognitionRef.current.abort();
-    }
-
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.continuous = true; // allow continuous listening
-    recognition.interimResults = false;
-    recognition.lang = "en-US";
-
-    setIsRecording(true);
-    recognitionRef.current = recognition;
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[event.results.length - 1][0].transcript.trim();
-
-      // Stop any pending silence timer because user spoke
-      clearTimeout(silenceTimeoutRef.current);
-
-      setAnswers((prev) => {
-        const newAnswers = [...prev];
-        newAnswers[currentQuestionIndex] = transcript;
-        return newAnswers;
-      });
-
-      setQuestionStatus((prev) => {
-        const newStatus = [...prev];
-        newStatus[currentQuestionIndex] = "answered";
-        return newStatus;
-      });
-
-      recognition.stop(); // stop immediately after answer captured
-      setIsRecording(false);
-
-      setTimeout(() => {
-        if (currentQuestionIndex < sampleQuestions.length - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-        }
-      }, 1500);
-    };
-
-    recognition.onspeechend = () => {
-      // If user stops talking, wait 10s for more speech
-      clearTimeout(silenceTimeoutRef.current);
-      silenceTimeoutRef.current = setTimeout(() => {
-        recognition.stop(); // stop after 10s silence
-        setIsRecording(false);
-        handleSkip();
-      }, 10000);
-    };
-
-    recognition.onerror = () => {
-      clearTimeout(silenceTimeoutRef.current);
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      clearTimeout(silenceTimeoutRef.current);
-    };
-
-    recognition.start();
+    setTimeout(() => {
+      if (currentQuestionIndex < getQes.length - 1) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+      }
+    }, 1500);
   };
 
   const handleSkip = () => {
@@ -108,8 +54,52 @@ export default function PracticeAndTest() {
       }
       return newStatus;
     });
-    if (currentQuestionIndex < sampleQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (currentQuestionIndex < getQes.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    }
+  };
+
+  const { startRecording, isRecording } = useSpeechRecognition({
+    onResult: onSpeechResult,
+    onSilence: handleSkip,
+  });
+
+  const handleOnStartSession = async () => {
+    try {
+      if (!id){
+        setErrorMsg("Topic ID is required to start the session.");
+        return;
+      }
+
+      const topic = getTopicData.find((topic) => topic.topic_name === id);
+      if (!topic) {
+        setErrorMsg("Topic not found");
+        return;
+      }
+
+      const questionBody = {
+        user_id: sessionStorage.getItem("user_id"),
+        hr_id: topic.hr_id,
+        topic: id,
+      };
+
+      const response = await fatchedPostRequest(postURL.getQuestions,questionBody);
+      if (response.status !== 200 || !response.success) {
+        console.log(response);
+        setErrorMsg(response.message);
+        setChatStarted(false);
+        return;
+      }
+
+      if (response.questions && Array.isArray(response.questions)) {
+        setQes(response.questions);
+        setAnswers(Array(response.questions.length).fill(""));
+        setQuestionStatus(Array(response.questions.length).fill("unanswered"));
+        setChatStarted(true);
+      }
+    } catch (err) {
+      console.error("Failed to start session:", err);
+      setChatStarted(false);
     }
   };
 
@@ -120,10 +110,14 @@ export default function PracticeAndTest() {
 
   return (
     <div className="flex flex-col items-center justify-center h-[76vh] bg-[#0f1d2e] text-white">
+      {getErrorMsg && (
+        <div className="text-red-500 mb-4">{getErrorMsg}</div>
+      )}
+
       {!chatStarted ? (
         <button
           className="px-8 py-4 text-lg font-semibold rounded-lg border-2 border-teal-500 bg-teal-800 hover:bg-teal-700 transition"
-          onClick={() => setChatStarted(true)}
+          onClick={handleOnStartSession}
         >
           Start Session
         </button>
@@ -132,10 +126,10 @@ export default function PracticeAndTest() {
           {/* Left Panel */}
           <div className="flex-1 bg-[#1a2b3c] h-[76vh] rounded-lg p-6 flex flex-col">
             <h2 className="text-xl font-semibold mb-4">
-              Question {currentQuestionIndex + 1} of {sampleQuestions.length}
+              Question {currentQuestionIndex + 1} of {getQes.length}
             </h2>
             <p className="text-gray-300 text-lg mb-6">
-              {sampleQuestions[currentQuestionIndex].question}
+              {getQes[currentQuestionIndex]?.question}
             </p>
 
             <div className="bg-[#0f1d2e] p-4 rounded-md border border-teal-500 h-32 mb-4 flex items-center justify-center text-lg text-gray-300">
@@ -145,7 +139,7 @@ export default function PracticeAndTest() {
             </div>
 
             <div className="flex justify-center mt-4">
-              {currentQuestionIndex === sampleQuestions.length - 1 ? (
+              {currentQuestionIndex === getQes.length - 1 ? (
                 <button
                   onClick={handleSubmit}
                   className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md text-lg font-semibold"
@@ -177,7 +171,7 @@ export default function PracticeAndTest() {
 
             <h3 className="text-lg font-semibold mb-2">Questions</h3>
             <div className="grid grid-cols-5 gap-3">
-              {sampleQuestions.map((_, index) => (
+              {getQes.map((data, index) => (
                 <button
                   key={index}
                   onClick={() => {

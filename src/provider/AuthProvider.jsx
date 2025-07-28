@@ -8,13 +8,14 @@ const authContext = React.createContext({
   isLoading: false,
   isError: false,
 });
+export const isAuthenticated = () => !!sessionStorage.getItem("success");
 
 export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = React.useState(() => !!sessionStorage.getItem("success"));
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
   // Check if user is authenticated
-  const isAuthenticated = () => !!sessionStorage.getItem("success");
 
   const login = async (userInfo) => {
     setIsLoading(true);

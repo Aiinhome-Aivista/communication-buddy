@@ -5,14 +5,13 @@ import { useNavigate } from "react-router";
 
 export default function Login() {
   const { login } = useAuth();
-  
+
   const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = React.useState({
     email: "",
     password: "",
   });
-
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -27,10 +26,14 @@ export default function Login() {
     if (!userInfo.email || !userInfo.password) {
       return;
     }
-    // call login function from AuthProvider
-    const result = await login(userInfo);
-    if (result.success) {
-      navigate("/dashboard");
+    try {
+      // call login function from AuthProvider
+      const result = await login(userInfo);
+      if (result?.success) {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -70,7 +73,10 @@ export default function Login() {
             {/* <!-- Form --> */}
             <div className="w-full">
               <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium mb-1"
+                >
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input

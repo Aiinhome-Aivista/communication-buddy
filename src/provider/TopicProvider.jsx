@@ -12,22 +12,15 @@ const topicContext = React.createContext({
 
 export const TopicProvider = ({ children }) => {
   const { isLoading: authLoading, isError: authError } = useAuth();
-  if (authLoading || authError) {
-    console.error("AuthProvider is not ready yet");
-    return (
-      <>
-        <div>Loading ...</div>
-      </>
-    );
-  }
+  
   const [getTopicData, setTopicData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
   // Get user data from session storage
-  const getUserID = sessionStorage.getItem("user_id");
   // Check if user is authenticated
-  const isAuthenticated = () => !!sessionStorage.getItem("success");
+  // const isAuthenticated = () => !!sessionStorage.getItem("success");
+  const getUserID = sessionStorage.getItem("user_id");
 
   const handleTopic = async (data) => {
     // console.log("data", data);
@@ -55,8 +48,17 @@ export const TopicProvider = ({ children }) => {
       return { success: false };
     }
   };
+
   // Automatically call API if user_id exists
   useEffect(() => {
+    if (authLoading && authError) {
+      console.error("AuthProvider is not ready yet");
+      return (
+        <>
+          <div>Loading ...</div>
+        </>
+      );
+    }
     (async () => {
       if (getUserID) {
         const response = await handleTopic({ user_id: getUserID });
@@ -70,7 +72,6 @@ export const TopicProvider = ({ children }) => {
   return (
     <topicContext.Provider
       value={{
-        isAuthenticated,
         handleTopic,
         getTopicData,
         isLoading,

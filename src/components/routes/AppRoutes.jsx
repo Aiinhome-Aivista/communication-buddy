@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/test",
+            path: "/dashboard/test/:id?",
             element: (
               <Suspense fallback={<Loader />}>
                 <PracticeAndTest />

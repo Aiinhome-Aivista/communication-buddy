@@ -1,15 +1,13 @@
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-export const getURL = {}
+
+export const getURL = {};
+
 export const postURL = {
   login: `${BASE_URL}/auth/login`,
   getAllTopics: `${BASE_URL}/get_topics`,
-  register: `${BASE_URL}/auth/register`,
-  getUser: `${BASE_URL}/user`,
-  updateUser: `${BASE_URL}/user/update`,
-  deleteUser: `${BASE_URL}/user/delete`,
-  getAllUsers: `${BASE_URL}/users`,
-}
+  getQuestions: `${BASE_URL}/get-questions`,
+};
 
 
 export const fatchedGetRequest = async (url) => {

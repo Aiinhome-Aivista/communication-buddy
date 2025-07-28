@@ -49,7 +49,7 @@ export default function Header() {
           {/* Right Section: User Info + Notification */}
           <div className="flex items-center gap-4 text-white">
             {/* User Info */}
-            <div className="flex items-center justify-between bg-teal-400/20 rounded-full w-24 px-1 py-1 cursor-pointer shadow-sm">
+            <div className="flex items-center justify-between gap-2 bg-teal-400/20 rounded-full min-w-24 px-1 py-1 cursor-pointer shadow-sm">
               <div className="bg-teal-600 p-1 rounded-full">
                 <FiUser className="w-5 h-5 text-teal-100" />
               </div>
