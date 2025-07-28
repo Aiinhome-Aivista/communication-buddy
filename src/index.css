@@ -5,3 +5,13 @@ body {
   font-family: 'Poppins', sans-serif;
 /* font-family: "Ubuntu", sans-serif; */
 }
+
+.scrollbar ::-webkit-scrollbar {
+  display: none;
+  /* background-color: rgb(32, 119, 103); */
+
+}
+/* ::-webkit-scrollbar-thumb {
+  background-color: #04092b;
+  border-radius:  .25rem;
+} */

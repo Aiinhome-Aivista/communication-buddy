@@ -7,9 +7,11 @@ const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const Default = lazy(() => import("../pages/dashboard/Default"));
-const Reports = lazy(() => import("../pages/dashboard/reports/Reports"));
+const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
-const RequestNotification = lazy(() => import("../pages/dashboard/RequestNotification"));
+const RequestNotification = lazy(() =>
+  import("../pages/dashboard/RequestNotification")
+);
 const TopicList = lazy(() => import("../pages/users/TopicList"));
 
 // Loader component for fallback UI
