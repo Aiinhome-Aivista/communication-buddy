@@ -5,7 +5,6 @@ import { useTopic } from "../../../provider/TopicProvider";
 import useSpeechRecognition from "../../../hooks/useSpeechRecognition";
 import { formatTime } from "../../../utils/Timer";
 
-
 export default function PracticeAndTest() {
   const { getTopicData } = useTopic();
   const { id } = useParams();
@@ -18,6 +17,47 @@ export default function PracticeAndTest() {
   const [questionStatus, setQuestionStatus] = useState([]);
   const [answers, setAnswers] = useState([]);
 
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [languagePromptSpoken, setLanguagePromptSpoken] = useState(false);
+
+  const speakText = (text, lang = "en-IN") => {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+
+    // Find a female voice for the selected language
+    const femaleVoice = voices.find(
+      (voice) =>
+        voice.lang === lang &&
+        (voice.name.toLowerCase().includes("female") ||
+          voice.name.toLowerCase().includes("zira") || // common female voice name
+          voice.name.toLowerCase().includes("susan") ||
+          voice.name.toLowerCase().includes("neural")) // helpful for Hindi
+    );
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.voice = femaleVoice || voices.find((v) => v.lang === lang);
+    utterance.rate = 0.8;   // slower speed
+    utterance.pitch = 1.2;  // slightly higher pitch
+    utterance.volume = 1.0;
+
+    synth.cancel(); // stop any current speech
+    synth.speak(utterance);
+  };
+
+  useEffect(() => {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.getVoices(); // triggers loading
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!chatStarted && !languagePromptSpoken) {
+      speakText("Please choose a language. English or Hindi", "en-IN");
+      setLanguagePromptSpoken(true);
+    }
+  }, [chatStarted, languagePromptSpoken]);
+
   useEffect(() => {
     if (!chatStarted) return;
     const timer = setInterval(() => {
@@ -25,6 +65,12 @@ export default function PracticeAndTest() {
     }, 1000);
     return () => clearInterval(timer);
   }, [chatStarted]);
+
+  useEffect(() => {
+    if (chatStarted && getQes[currentQuestionIndex]) {
+      speakText(getQes[currentQuestionIndex].question, selectedLanguage);
+    }
+  }, [currentQuestionIndex, chatStarted]);
 
   const onSpeechResult = (transcript) => {
     setAnswers((prev) => {
@@ -66,7 +112,7 @@ export default function PracticeAndTest() {
 
   const handleOnStartSession = async () => {
     try {
-      if (!id){
+      if (!id) {
         setErrorMsg("Topic ID is required to start the session.");
         return;
       }
@@ -83,7 +129,7 @@ export default function PracticeAndTest() {
         topic: id,
       };
 
-      const response = await fatchedPostRequest(postURL.getQuestions,questionBody);
+      const response = await fatchedPostRequest(postURL.getQuestions, questionBody);
       if (response.status !== 200 || !response.success) {
         console.log(response);
         setErrorMsg(response.message);
@@ -110,11 +156,28 @@ export default function PracticeAndTest() {
 
   return (
     <div className="flex flex-col items-center justify-center h-[76vh] bg-[#0f1d2e] text-white">
-      {getErrorMsg && (
-        <div className="text-red-500 mb-4">{getErrorMsg}</div>
-      )}
+      {getErrorMsg && <div className="text-red-500 mb-4">{getErrorMsg}</div>}
 
-      {!chatStarted ? (
+      {/* 👇 Language Selection UI */}
+      {!chatStarted && !selectedLanguage ? (
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-lg">Please choose a language:</p>
+          <div className="flex gap-4">
+            <button
+              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700"
+              onClick={() => setSelectedLanguage("en-IN")}
+            >
+              English
+            </button>
+            <button
+              className="px-6 py-3 rounded-md bg-green-600 hover:bg-green-700"
+              onClick={() => setSelectedLanguage("hi-IN")}
+            >
+              Hindi
+            </button>
+          </div>
+        </div>
+      ) : !chatStarted ? (
         <button
           className="px-8 py-4 text-lg font-semibold rounded-lg border-2 border-teal-500 bg-teal-800 hover:bg-teal-700 transition"
           onClick={handleOnStartSession}
@@ -139,24 +202,26 @@ export default function PracticeAndTest() {
             </div>
 
             <div className="flex justify-center mt-4">
-              {currentQuestionIndex === getQes.length - 1 ? (
-                <button
-                  onClick={handleSubmit}
-                  className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md text-lg font-semibold"
-                >
-                  Submit Test
-                </button>
-              ) : (
-                <button
-                  className={`px-6 py-3 rounded-md text-lg font-semibold ${
-                    isRecording ? "bg-red-600" : "bg-teal-600 hover:bg-teal-700"
-                  }`}
-                  onClick={startRecording}
-                  disabled={questionStatus[currentQuestionIndex] === "answered"}
-                >
-                  {isRecording ? "Listening..." : "Speak Answer"}
-                </button>
-              )}
+              <div className="flex gap-4">
+                {questionStatus[currentQuestionIndex] !== "answered" && (
+                  <button
+                    className={`px-6 py-3 rounded-md text-lg font-semibold ${isRecording ? "bg-red-600" : "bg-teal-600 hover:bg-teal-700"
+                      }`}
+                    onClick={startRecording}
+                  >
+                    {isRecording ? "Listening..." : "Speak"}
+                  </button>
+                )}
+
+                {currentQuestionIndex === getQes.length - 1 && (
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md text-lg font-semibold"
+                  >
+                    Submit Test
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -179,17 +244,15 @@ export default function PracticeAndTest() {
                       setCurrentQuestionIndex(index);
                     }
                   }}
-                  className={`w-10 h-10 rounded-full text-sm font-bold ${
-                    index === currentQuestionIndex
-                      ? "border-4 border-teal-400"
-                      : ""
-                  } ${
-                    questionStatus[index] === "answered"
+                  className={`w-10 h-10 rounded-full text-sm font-bold ${index === currentQuestionIndex
+                    ? "border-4 border-teal-400"
+                    : ""
+                    } ${questionStatus[index] === "answered"
                       ? "bg-green-500 cursor-not-allowed opacity-70"
                       : questionStatus[index] === "skipped"
-                      ? "bg-yellow-500"
-                      : "bg-gray-600"
-                  }`}
+                        ? "bg-yellow-500"
+                        : "bg-gray-600"
+                    }`}
                   disabled={questionStatus[index] === "answered"}
                 >
                   {index + 1}
