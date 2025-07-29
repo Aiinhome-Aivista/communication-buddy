@@ -9,7 +9,6 @@ export default function ReportTable({
   isRaiseRequest = false,
   raiseRequest = () => {}
 }) {
-  // console.log(tableData)
   return (
     <div className="overflow-hidden rounded-lg border border-teal-500/30 mb-0 scrollbar">
       <div className="max-h-[calc(100vh-350px)] overflow-auto">
@@ -25,7 +24,7 @@ export default function ReportTable({
                 </th>
               ))}
 
-              {isShowAction || isRaiseRequest && (
+              {(isShowAction || isRaiseRequest) && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-teal-300 uppercase tracking-wider">
                   Actions
                 </th>

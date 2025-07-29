@@ -5,7 +5,7 @@ export const getURL = {};
 
 export const postURL = {
   login: `${BASE_URL}/auth/login`,
-  getAllTopics: `${BASE_URL}/get_topics`,
+  getAllTopics: `${BASE_URL}/get-topics`,
   getQuestions: `${BASE_URL}/get-questions`,
 };
 

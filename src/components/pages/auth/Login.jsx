@@ -56,10 +56,10 @@ export default function Login() {
                   className="w-full h-full object-cover rounded-full"
                 />
               </div>
-              <h3 className="text-center text-2xl font-semibold">
+              <h3 className="text-center text-2xl font-semibold text-nowrap whitespace-nowrap">
                 Welcome to{" "}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Eva
+                  Skill Mate
                 </span>{" "}
                 Assistant
               </h3>
@@ -109,7 +109,7 @@ export default function Login() {
               <button
                 onClick={() => handleOnLogin()}
                 type="button"
-                className="w-full flex justify-center items-center gap-2 bg-[#8b04f5] text-white py-2 rounded font-medium hover:bg-[#7a03d8] transition"
+                className="w-full flex justify-center items-center gap-2 bg-[#8b04f5] text-white py-2 rounded font-medium hover:bg-[#7a03d8] transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 id="login-button"
               >
                 Login

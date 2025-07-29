@@ -6,8 +6,8 @@ import { FiBell, FiUser } from "react-icons/fi";
 export default function Header() {
   const fullName = sessionStorage.getItem("userName") || "";
   const userName = fullName.split(" ")[0]; // Only first word (first name)
-
   const [showNotifications, setShowNotifications] = useState(false);
+
   const [notifications, setNotifications] = useState([
     { id: 1, name: "John Doe", type: "arithmetic test", status: "pending" },
     { id: 2, name: "Alice", type: "MCQ test", status: "pending" },

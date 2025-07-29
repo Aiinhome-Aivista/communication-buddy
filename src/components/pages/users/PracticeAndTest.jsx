@@ -2,71 +2,81 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { fatchedPostRequest, postURL } from "../../../services/ApiService";
 import { useTopic } from "../../../provider/TopicProvider";
-import useSpeechRecognition from "../../../hooks/useSpeechRecognition";
+
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { formatTime } from "../../../utils/Timer";
 
-
 export default function PracticeAndTest() {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
+  if (!browserSupportsSpeechRecognition) {
+    console.warn("Browser does not support speech recognition.");
+    return null;
+  }
+
   const { getTopicData } = useTopic();
   const { id } = useParams();
 
   const [chatStarted, setChatStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60);
+  const [sessionTimeLeft, setSessionTimeLeft] = useState(30 * 60);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(120);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [getQes, setQes] = useState([]);
   const [getErrorMsg, setErrorMsg] = useState(null);
   const [questionStatus, setQuestionStatus] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [questionTimer, setQuestionTimer] = useState(null);
 
   useEffect(() => {
     if (!chatStarted) return;
     const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setSessionTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
   }, [chatStarted]);
 
-  const onSpeechResult = (transcript) => {
-    setAnswers((prev) => {
-      const newAnswers = [...prev];
-      newAnswers[currentQuestionIndex] = transcript;
-      return newAnswers;
-    });
+  useEffect(() => {
+    if (!chatStarted || !getQes.length) return;
 
-    setQuestionStatus((prev) => {
-      const newStatus = [...prev];
-      newStatus[currentQuestionIndex] = "answered";
-      return newStatus;
-    });
+    stopRecording();
+    resetTranscript();
+    SpeechRecognition.startListening({ continuous: true, language: "en-IN" });
 
-    setTimeout(() => {
-      if (currentQuestionIndex < getQes.length - 1) {
-        setCurrentQuestionIndex((prev) => prev + 1);
-      }
-    }, 1500);
+    setQuestionTimeLeft(120);
+    if (questionTimer) clearInterval(questionTimer);
+    const timer = setInterval(() => {
+      setQuestionTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleNextQuestion(); // Auto-next
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    setQuestionTimer(timer);
+
+    return () => clearInterval(timer);
+  }, [currentQuestionIndex]);
+
+  const startRecording = () => {
+    resetTranscript();
+    SpeechRecognition.startListening({ continuous: true, language: "en-IN" });
   };
 
-  const handleSkip = () => {
-    setQuestionStatus((prev) => {
-      const newStatus = [...prev];
-      if (newStatus[currentQuestionIndex] === "unanswered") {
-        newStatus[currentQuestionIndex] = "skipped";
-      }
-      return newStatus;
-    });
-    if (currentQuestionIndex < getQes.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    }
+  const stopRecording = () => {
+    SpeechRecognition.stopListening();
   };
-
-  const { startRecording, isRecording } = useSpeechRecognition({
-    onResult: onSpeechResult,
-    onSilence: handleSkip,
-  });
 
   const handleOnStartSession = async () => {
     try {
-      if (!id){
+      if (!id) {
         setErrorMsg("Topic ID is required to start the session.");
         return;
       }
@@ -83,7 +93,10 @@ export default function PracticeAndTest() {
         topic: id,
       };
 
-      const response = await fatchedPostRequest(postURL.getQuestions,questionBody);
+      const response = await fatchedPostRequest(
+        postURL.getQuestions,
+        questionBody
+      );
       if (response.status !== 200 || !response.success) {
         console.log(response);
         setErrorMsg(response.message);
@@ -103,16 +116,50 @@ export default function PracticeAndTest() {
     }
   };
 
+  const handleNextQuestion = () => {
+    if (listening) {
+      stopRecording();
+    }
+
+    const currentQ = getQes[currentQuestionIndex];
+    const newAnswer = {
+      qid: currentQ._id,
+      topic: id,
+      answer: transcript.trim(),
+    };
+
+    setAnswers((prev) => {
+      const updated = [...prev];
+      updated[currentQuestionIndex] = newAnswer;
+      return updated;
+    });
+
+    setQuestionStatus((prev) => {
+      const updated = [...prev];
+      updated[currentQuestionIndex] = "answered";
+      return updated;
+    });
+
+    if (questionTimer) clearInterval(questionTimer);
+
+    if (currentQuestionIndex < getQes.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
   const handleSubmit = () => {
+    stopRecording();
+    if (questionTimer) clearInterval(questionTimer);
+
+    console.log("Final Answers:", answers);
     alert("Test Submitted!");
-    console.log("Answers:", answers);
+    // Optionally send to backend
+    // fatchedPostRequest(postURL.submitAnswers, { answers })
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-[76vh] bg-[#0f1d2e] text-white">
-      {getErrorMsg && (
-        <div className="text-red-500 mb-4">{getErrorMsg}</div>
-      )}
+      {getErrorMsg && <div className="text-red-500 mb-4">{getErrorMsg}</div>}
 
       {!chatStarted ? (
         <button
@@ -133,39 +180,52 @@ export default function PracticeAndTest() {
             </p>
 
             <div className="bg-[#0f1d2e] p-4 rounded-md border border-teal-500 h-32 mb-4 flex items-center justify-center text-lg text-gray-300">
-              {answers[currentQuestionIndex]
-                ? answers[currentQuestionIndex]
+              {listening || transcript
+                ? transcript
                 : "Your answer will appear here after recording..."}
             </div>
 
-            <div className="flex justify-center mt-4">
-              {currentQuestionIndex === getQes.length - 1 ? (
-                <button
-                  onClick={handleSubmit}
-                  className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md text-lg font-semibold"
-                >
-                  Submit Test
-                </button>
-              ) : (
+            <div className="flex justify-between items-center mt-4 w-full">
+              <div className="text-teal-300 font-bold text-lg">
+                Time Left: {formatTime(questionTimeLeft)}
+              </div>
+
+              <div className="flex gap-3">
                 <button
                   className={`px-6 py-3 rounded-md text-lg font-semibold ${
-                    isRecording ? "bg-red-600" : "bg-teal-600 hover:bg-teal-700"
+                    listening ? "bg-red-600" : "bg-teal-600 hover:bg-teal-700"
                   }`}
                   onClick={startRecording}
                   disabled={questionStatus[currentQuestionIndex] === "answered"}
                 >
-                  {isRecording ? "Listening..." : "Speak Answer"}
+                  {listening ? "Listening..." : "Speak Answer"}
                 </button>
-              )}
+
+                {currentQuestionIndex === getQes.length - 1 ? (
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md text-lg font-semibold"
+                  >
+                    Submit Test
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleNextQuestion}
+                    className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md text-lg font-semibold"
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Right Panel */}
           <div className="w-64 bg-[#1a2b3c] rounded-lg p-6 flex flex-col">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Time Left</h3>
+              <h3 className="text-lg font-semibold mb-2">Session Time</h3>
               <div className="text-2xl font-bold text-teal-400">
-                {formatTime(timeLeft)}
+                {formatTime(sessionTimeLeft)}
               </div>
             </div>
 
@@ -174,11 +234,7 @@ export default function PracticeAndTest() {
               {getQes.map((data, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    if (questionStatus[index] !== "answered") {
-                      setCurrentQuestionIndex(index);
-                    }
-                  }}
+                  disabled={index <= currentQuestionIndex}
                   className={`w-10 h-10 rounded-full text-sm font-bold ${
                     index === currentQuestionIndex
                       ? "border-4 border-teal-400"
@@ -186,11 +242,8 @@ export default function PracticeAndTest() {
                   } ${
                     questionStatus[index] === "answered"
                       ? "bg-green-500 cursor-not-allowed opacity-70"
-                      : questionStatus[index] === "skipped"
-                      ? "bg-yellow-500"
                       : "bg-gray-600"
                   }`}
-                  disabled={questionStatus[index] === "answered"}
                 >
                   {index + 1}
                 </button>
@@ -201,10 +254,6 @@ export default function PracticeAndTest() {
               <p>
                 <span className="inline-block w-3 h-3 bg-green-500 mr-2"></span>
                 Answered
-              </p>
-              <p>
-                <span className="inline-block w-3 h-3 bg-yellow-500 mr-2"></span>
-                Skipped
               </p>
               <p>
                 <span className="inline-block w-3 h-3 bg-gray-600 mr-2"></span>
