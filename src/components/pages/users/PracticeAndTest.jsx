@@ -209,7 +209,7 @@ export default function PracticeAndTest() {
                       }`}
                     onClick={startRecording}
                   >
-                    {isRecording ? "Listening..." : "Speak ans"}
+                    {isRecording ? "Listening..." : "Speak"}
                   </button>
                 )}
 
@@ -226,7 +226,7 @@ export default function PracticeAndTest() {
           </div>
 
           {/* Right Panel */}
-          <div className="w-64 bg-[#1a2b3c] rounded-lg p-6 flex flex-col">
+          <div className="w-64 bg-[#1a2b3c] rounded-lg p-2 flex flex-col right-panel">
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">Time Left</h3>
               <div className="text-2xl font-bold text-teal-400">
@@ -235,8 +235,8 @@ export default function PracticeAndTest() {
             </div>
 
             <h3 className="text-lg font-semibold mb-2">Questions</h3>
-            <div className="grid grid-cols-5 gap-3">
-              {getQes.map((data, index) => (
+            <div className="grid grid-cols-5 gap-3 overflow-hidden overflow-y-scroll h-72 px-3 py-3">
+              {getQes.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => {
