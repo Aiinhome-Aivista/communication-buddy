@@ -49,15 +49,15 @@ function TopicList() {
         hr_id: rowData.hr_id,
         topic: rowData.topic_name
       };
-
-      const response = await fatchedPostRequest(postURL.requestBody, requestBody);
-      if (response.status === 200 || response.success === true) {
-        console.log(response);
-        alert("Request raised successfully!");
-      } else {  
-        console.error("Failed to raise request:", response.message);
-        alert("Failed to raise request: " + response.message);
-      }
+      console.log('requestBody:', requestBody);
+      // const response = await fatchedPostRequest(postURL.requestTopic, requestBody);
+      // if (response.status === 200 || response.success === true) {
+      //   console.log(response);
+      //   alert("Request raised successfully!");
+      // } else {  
+      //   console.error("Failed to raise request:", response.message);
+      //   alert("Failed to raise request: " + response.message);
+      // }
 
     } catch (error) {
       console.error('Failed to handle Raise Request:', error);

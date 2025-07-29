@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
+import ManageCandidate from "../pages/admin/ManageCandidate";
+import ManageHR from "../pages/admin/ManageHR";
 
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
@@ -87,6 +89,18 @@ export const router = createBrowserRouter([
                   <TopicList />
                 </ProtectedRoute>
               </Suspense>
+            ),
+          },
+          {
+            path: "/dashboard/hr",
+            element: (
+              <ManageHR />
+            ),
+          },
+          {
+            path: "/dashboard/candidate",
+            element: (
+              <ManageCandidate />
             ),
           },
         ],

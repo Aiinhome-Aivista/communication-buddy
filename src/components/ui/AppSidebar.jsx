@@ -7,6 +7,8 @@ import {
   List,
   ChevronDown,
   ChevronUp,
+  Users,
+  UserPlus,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
@@ -29,7 +31,7 @@ const menuList = [
   },
   {
     icon: <BookOpenCheck size={20} />,
-    title: "Practice & Test", 
+    title: "Practice & Test",
     path: null,
     allowedRoles: ["candidate"],
   },
@@ -38,6 +40,18 @@ const menuList = [
     title: "Topics",
     path: "/dashboard/topics",
     allowedRoles: ["candidate"],
+  },
+  {
+    icon: <UserPlus size={20} />,
+    title: "HR",
+    path: "/dashboard/hr",
+    allowedRoles: ["admin"],
+  },
+  {
+    icon: <Users size={20} />,
+    title: "Candidate",
+    path: "/dashboard/candidate",
+    allowedRoles: ["admin"],
   },
 ];
 
@@ -57,7 +71,7 @@ export default function AppSidebar() {
   useEffect(() => {
     if (userRole === "candidate") {
       const assignedTopics = getTopicData.filter(topic => topic.status === "assigned");
-      
+
       // Fetch topics for candidate
       setPracticeSubmenu(assignedTopics);
     }
@@ -74,15 +88,13 @@ export default function AppSidebar() {
 
   return (
     <div
-      className={`sidebar ${
-        collapsed ? "w-20" : "w-64"
-      } bg-slate-800 text-white h-[calc(100vh-8rem)] border-r-4 border-teal-500 p-3 relative flex flex-col transition-all duration-300 ease-in-out`}
+      className={`sidebar ${collapsed ? "w-20" : "w-64"
+        } bg-slate-800 text-white h-[calc(100vh-8rem)] border-r-4 border-teal-500 p-3 relative flex flex-col transition-all duration-300 ease-in-out`}
     >
       {/* Header */}
       <div
-        className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${
-          collapsed ? "justify-center w-full" : "justify-between"
-        }`}
+        className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"
+          }`}
       >
         {!collapsed && (
           <h2 className="text-teal-200 block">
@@ -95,9 +107,8 @@ export default function AppSidebar() {
         )}
 
         <ChevronRight
-          className={`text-teal-400 cursor-pointer transition-transform duration-300 ${
-            collapsed ? "rotate-180" : ""
-          }`}
+          className={`text-teal-400 cursor-pointer transition-transform duration-300 ${collapsed ? "rotate-180" : ""
+            }`}
           onClick={() => setCollapsed((prev) => !prev)}
         />
       </div>
@@ -112,9 +123,8 @@ export default function AppSidebar() {
                 <div key={index}>
                   <button
                     onClick={() => setSubMenuOpen(!subMenuOpen)}
-                    className={`flex items-center w-full px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md ${
-                      collapsed ? "justify-center gap-0" : "gap-4"
-                    }`}
+                    className={`flex items-center w-full px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md ${collapsed ? "justify-center gap-0" : "gap-4"
+                      }`}
                   >
                     <span>{item.icon}</span>
                     {!collapsed && (
@@ -140,7 +150,7 @@ export default function AppSidebar() {
                           to={`/dashboard/test/${subItem.topic_name}`} // adjust route as needed
                           className="block px-3 py-2 text-sm text-teal-300 hover:text-white hover:bg-teal-600/10 rounded truncate"
                         >
-                          {`${subIndex+1}. ${subItem.topic_name}`}
+                          {`${subIndex + 1}. ${subItem.topic_name}`}
                         </NavLink>
                       ))}
                     </div>
@@ -157,9 +167,8 @@ export default function AppSidebar() {
                 className="flex items-center gap-2 text-teal-200 hover:text-teal-100"
               >
                 <li
-                  className={`flex items-center px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md w-full ${
-                    collapsed ? "justify-center gap-0" : "gap-4"
-                  }`}
+                  className={`flex items-center px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md w-full ${collapsed ? "justify-center gap-0" : "gap-4"
+                    }`}
                 >
                   <span className="text-teal-200">{item.icon}</span>
                   {!collapsed && <span>{item.title}</span>}

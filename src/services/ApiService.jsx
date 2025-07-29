@@ -7,6 +7,7 @@ export const postURL = {
   login: `${BASE_URL}/auth/login`,
   getAllTopics: `${BASE_URL}/get-topics`,
   getQuestions: `${BASE_URL}/get-questions`,
+  requestTopic: `${BASE_URL}/insert-user-topic`,
 };
 
 
