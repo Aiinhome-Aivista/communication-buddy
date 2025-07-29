@@ -4,7 +4,6 @@ import Pagination from '../../ui/Pagination';
 import ReportTable from '../../ui/ReportTable';
 import { FaFileExport } from 'react-icons/fa';
 import { Paginate } from '../../../utils/Paginate';
-import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function TopicList() {
   const { getTopicData } = useTopic();
@@ -64,6 +63,7 @@ function TopicList() {
     }
 
   };
+
   return (
     <div className="text-teal-100 p-2">
       <div className="flex justify-between items-center mb-6">

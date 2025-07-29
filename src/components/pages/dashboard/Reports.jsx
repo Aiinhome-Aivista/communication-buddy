@@ -94,7 +94,8 @@ export default function Reports() {
       <ReportTable 
         tableData={currentItems} 
         headers={headers} 
-        isShowAction={true} 
+        isShowAction={true}
+        isRaiseRequest={false} 
         keys={keys}
       />
 

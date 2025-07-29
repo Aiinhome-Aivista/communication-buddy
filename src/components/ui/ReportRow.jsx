@@ -70,7 +70,7 @@ export default function ReportRow({
             <button
               className="text-teal-100 bg-teal-600/30 px-2 py-1 outline-2 outline-teal-500 rounded-sm outline-offset-2 hover:text-teal-400 cursor-pointer transition-colors"
               title="request"
-              onClick={() => raiseRequest(row)}
+              onClick={() => raiseRequest()}
             >
               Request
             </button>

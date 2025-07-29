@@ -9,7 +9,6 @@ export default function ReportTable({
   isRaiseRequest = false,
   raiseRequest = () => {}
 }) {
-  // console.log(tableData)
   return (
     <div className="overflow-hidden rounded-lg border border-teal-500/30 mb-0 scrollbar">
       <div className="max-h-[calc(100vh-350px)] overflow-auto">
