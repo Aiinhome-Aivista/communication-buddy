@@ -4,6 +4,7 @@ import Pagination from '../../ui/Pagination';
 import ReportTable from '../../ui/ReportTable';
 import { FaFileExport } from 'react-icons/fa';
 import { Paginate } from '../../../utils/Paginate';
+import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function TopicList() {
   const { getTopicData } = useTopic();
@@ -40,7 +41,29 @@ function TopicList() {
   const handleExport = () => {
     alert("Exporting to Excel...");
   };
+  const handleRaiseRequest = async (rowData) => {
+    console.log("Requested Row Data:", rowData);
+    try {
+      const requestBody = {
+        user_id: rowData.user_id,
+        hr_id: rowData.hr_id,
+        topic: rowData.topic_name
+      };
 
+      const response = await fatchedPostRequest(postURL.requestBody, requestBody);
+      if (response.status === 200 || response.success === true) {
+        console.log(response);
+        alert("Request raised successfully!");
+      } else {  
+        console.error("Failed to raise request:", response.message);
+        alert("Failed to raise request: " + response.message);
+      }
+
+    } catch (error) {
+      console.error('Failed to handle Raise Request:', error);
+    }
+
+  };
   return (
     <div className="text-teal-100 p-2">
       <div className="flex justify-between items-center mb-6">
@@ -58,7 +81,7 @@ function TopicList() {
         tableData={currentItems}
         headers={headers}
         isRaiseRequest={true}
-        raiseRequest={() => alert("Requesting topic...")}
+        raiseRequest={handleRaiseRequest}
         keys={keys}
       />
 
