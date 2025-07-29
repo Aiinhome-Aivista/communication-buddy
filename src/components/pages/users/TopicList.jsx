@@ -4,11 +4,15 @@ import Pagination from '../../ui/Pagination';
 import ReportTable from '../../ui/ReportTable';
 import { FaFileExport } from 'react-icons/fa';
 import { Paginate } from '../../../utils/Paginate';
+import ConfirmModal from '../../ui/ConfirmModal';
+import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function TopicList() {
-  const { getTopicData } = useTopic();
+  const { getTopicData,handleTopic } = useTopic();
   const [filteredTopics, setFilteredTopics] = useState([]);
-
+  // modal states
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState(null);
   //  useEffect to filter topics where status is null
   useEffect(() => {
     if (getTopicData && getTopicData.length > 0) {
@@ -41,27 +45,30 @@ function TopicList() {
     alert("Exporting to Excel...");
   };
   const handleRaiseRequest = async (rowData) => {
-    console.log("Requested Row Data:", rowData);
+    setSelectedTopic(rowData);
+    setConfirmModal(true);
+  };
+  const confirmRequest = async () => {
+    if (!selectedTopic) return;
+
     try {
       const requestBody = {
-        user_id: rowData.user_id,
-        hr_id: rowData.hr_id,
-        topic: rowData.topic_name
+        user_id: selectedTopic.user_id,
+        hr_id: selectedTopic.hr_id,
+        topic: selectedTopic.topic_name
       };
-      console.log('requestBody:', requestBody);
-      // const response = await fatchedPostRequest(postURL.requestTopic, requestBody);
-      // if (response.status === 200 || response.success === true) {
-      //   console.log(response);
-      //   alert("Request raised successfully!");
-      // } else {  
-      //   console.error("Failed to raise request:", response.message);
-      //   alert("Failed to raise request: " + response.message);
-      // }
 
+      const response = await fatchedPostRequest(postURL.requestTopic, requestBody);
+
+      if (response.status === 200 || response.success === true) {
+        await handleTopic({ user_id: selectedTopic.user_id });
+      } else {
+      }
     } catch (error) {
       console.error('Failed to handle Raise Request:', error);
     }
 
+    setConfirmModal(false);
   };
 
   return (
@@ -91,6 +98,12 @@ function TopicList() {
         itemsPerPage={itemsPerPage}
         onPageChange={paginate}
         onItemsPerPageChange={handleItemsPerPageChange}
+      />
+      <ConfirmModal
+        isOpen={confirmModal}
+        onClose={() => setConfirmModal(false)}
+        onConfirm={confirmRequest}
+        message={`Do you want to request "${selectedTopic?.topic_name}"?`}
       />
     </div>
   );
