@@ -7,7 +7,7 @@ export default function ReportRow({
   isShowAction = false,
   keys = [],
   isRaiseRequest = false,
-  raiseRequest = () => {},
+  raiseRequest = () => { },
 }) {
   return (
     <tr
@@ -18,9 +18,13 @@ export default function ReportRow({
       }
     >
       {keys.map((key) => {
-        const value = row[key];
+        let value;
+        if (key.toLowerCase() === "id") {
+          value = index + 1;
+        } else {
+          value = row[key];
+        }
         const isStatus = key.toLowerCase() === "status";
-
         return (
           <td
             key={key}
@@ -28,13 +32,12 @@ export default function ReportRow({
           >
             {isStatus ? (
               <span
-                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  value === "Completed"
-                    ? "bg-green-900/50 text-green-300"
-                    : value === "Pending"
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${value === "Completed"
+                  ? "bg-green-900/50 text-green-300"
+                  : value === "Pending"
                     ? "bg-yellow-900/50 text-yellow-300"
                     : "bg-red-900/50 text-red-300"
-                }`}
+                  }`}
               >
                 {value}
               </span>

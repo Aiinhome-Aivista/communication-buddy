@@ -9,7 +9,8 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
         <h2 className="text-lg font-semibold mb-4">Confirm Request</h2>
         <p className="mb-6">{message}</p>
 
-        <div className="flex justify-end space-x-3">
+        {/* ✅ Button দুটি দুই পাশে */}
+        <div className="flex justify-between w-full">
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded"

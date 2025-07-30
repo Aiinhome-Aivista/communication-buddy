@@ -8,7 +8,7 @@ import ConfirmModal from '../../ui/ConfirmModal';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function TopicList() {
-  const { getTopicData,handleTopic } = useTopic();
+  const { getTopicData, handleTopic } = useTopic();
   const [filteredTopics, setFilteredTopics] = useState([]);
   // modal states
   const [confirmModal, setConfirmModal] = useState(false);
@@ -103,7 +103,7 @@ function TopicList() {
         isOpen={confirmModal}
         onClose={() => setConfirmModal(false)}
         onConfirm={confirmRequest}
-        message={`Do you want to request "${selectedTopic?.topic_name}"?`}
+        message={<>Are you sure you want to request <strong>{selectedTopic?.topic_name}</strong>?</>}
       />
     </div>
   );
