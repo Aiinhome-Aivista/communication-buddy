@@ -30,12 +30,12 @@ const menuList = [
     path: null,
     allowedRoles: ["candidate"],
   },
-  {
-    icon: <List size={20} />,
-    title: "Topics",
-    path: "/dashboard/topics",
-    allowedRoles: ["candidate"],
-  },
+  // {
+  //   icon: <List size={20} />,
+  //   title: "Topics",
+  //   path: "/dashboard/topics",
+  //   allowedRoles: ["candidate"],
+  // },
   {
     icon: <UserPlus size={20} />,
     title: "Users",
