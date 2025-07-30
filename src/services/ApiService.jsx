@@ -8,6 +8,7 @@ export const postURL = {
   getAllTopics: `${BASE_URL}/get-topics`,
   getQuestions: `${BASE_URL}/get-questions`,
   requestTopic: `${BASE_URL}/insert-user-topic`,
+  hrDashboard: `${BASE_URL}/hr-dashboard`,
 };
 
 

@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
+import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 export default function Default() {
   const userName = sessionStorage.getItem("userName");
   const userRole = sessionStorage.getItem("userRole");
-
-  const requestData = {
-    active: ["John Doe", "Sara Ali"],
-    pending: ["Alice Johnson", "Bob Smith", "Carlos Ray"],
-    rejected: ["Ravi Kumar", "Meena Singh", "Tom Lee", "Anna Liu"]
-  };
-
+  const hrId = sessionStorage.getItem("user_id");
   const [modalType, setModalType] = useState(null); // 'active' | 'pending' | 'rejected' | null
+  const [dashboardData, setDashboardData] = useState([]);
 
   const openModal = (type) => setModalType(type);
   const closeModal = () => setModalType(null);
+  useEffect(() => {
+    if (userRole === 'hr' && hrId !== '') {
+      handleHRData(hrId);
+    }
+  }, [userRole, hrId]);
+  const handleHRData = async (hrId) => {
+    const JsonBody = {
+      hr_id: hrId,
+    };
+    try {
+      const response = await fatchedPostRequest(postURL.hrDashboard, JsonBody);
 
+      console.log('HR Dashboard Data:', response);
+      if (response.success === true || response.status === 200) {
+        setDashboardData(response.dashboard_statuses);
+      } else {
+        console.error('Failed to fetch HR dashboard data:', response.message);
+      }
+    } catch (error) {
+      console.error('Error fetching HR dashboard data:', error);
+    }
+  };
+  //  Helper to get count & names
+  const getData = (status) => {
+    const item = dashboardData.find(d => d.status === status);
+    return {
+      count: item ? item.user_count : 0,
+      names: item?.candidate_names || []
+    };
+  };
   return (
     <>
       <h1 className="text-2xl text-gray-400">Dashboard</h1>
@@ -24,25 +49,32 @@ export default function Default() {
       {userRole === 'hr' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card
-            title="Active Requests"
-            count={requestData.active.length}
+            title="Assigned Requests"
+            count={getData('assigned').count}
             borderColor="green"
             iconColor="green"
-            onClick={() => openModal('active')}
+            onClick={() => openModal('assigned')}
           />
           <Card
             title="Pending Requests"
-            count={requestData.pending.length}
+            count={getData('pending').count}
             borderColor="yellow"
             iconColor="yellow"
-            onClick={() => openModal('pending')}
+            onClick={() => openModal("pending")}
           />
           <Card
             title="Rejected Requests"
-            count={requestData.rejected.length}
+            count={getData("rejected").count}
             borderColor="red"
             iconColor="red"
-            onClick={() => openModal('rejected')}
+            onClick={() => openModal("rejected")}
+          />
+          <Card
+            title="Completed Requests"
+            count={getData("completed").count}
+            borderColor="blue"
+            iconColor="blue"
+            onClick={() => openModal("completed")}
           />
         </div>
       )}
@@ -52,9 +84,13 @@ export default function Default() {
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-white w-[90%] max-w-md rounded-lg shadow-xl p-6 z-50 border">
           <h2 className="text-xl font-bold mb-4 text-gray-800 capitalize">{modalType} Request List</h2>
           <ol className="list-decimal pl-5 mb-4 text-gray-700">
-            {requestData[modalType].map((name, idx) => (
-              <li key={idx}>{name}</li>
-            ))}
+            {getData(modalType).names.length > 0 ? (
+              <ol className="list-decimal pl-5 mb-4 text-gray-700">
+                {getData(modalType).names.map((name, idx) => <li key={idx}>{name}</li>)}
+              </ol>
+            ) : (
+              <p className="text-gray-500">No candidates found.</p>
+            )}
           </ol>
           <div className="text-center">
             <button
@@ -84,6 +120,11 @@ function Card({ title, count, borderColor, iconColor, onClick }) {
     ),
     red: (
       <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ),
+    blue: (
+      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       </svg>
     )

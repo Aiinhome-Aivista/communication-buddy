@@ -52,8 +52,8 @@ const reportsData = [
   },
 ];
 
-const headers = ["ID", "Report Name", "Date", "Status"];
-const keys = ["id", "name", "date", "status"];
+const headers = ["Name", "Email", "Session Date", "Session Time","Session Duration","Session Insights"];
+const keys = ["id", "name", "date", "status","date", "status"];
 
 export default function Reports() {
   // State for pagination
@@ -82,19 +82,19 @@ export default function Reports() {
     <div className="text-teal-100 p-2">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-teal-300">Reports Management</h1>
-        <button
+        {/* <button
           onClick={handleExport}
           className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
         >
           <FaFileExport className="mr-2" />
           Export to Excel
-        </button>
+        </button> */}
       </div>
 
       <ReportTable 
         tableData={currentItems} 
         headers={headers} 
-        isShowAction={true}
+        isShowAction={false}
         isRaiseRequest={false} 
         keys={keys}
       />

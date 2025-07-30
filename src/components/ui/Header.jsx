@@ -62,7 +62,7 @@ export default function Header() {
                   notifications={notifications}
                   onAction={handleAction}
                   onClose={() => setShowNotifications(false)}
-                  role = {userRole}
+                  role={userRole}
                 />
               )}
             </div>

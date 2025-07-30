@@ -9,6 +9,7 @@ import {
   ChevronUp,
   Users,
   UserPlus,
+  Hourglass,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
@@ -21,12 +22,6 @@ const menuList = [
     icon: <Bell size={20} />,
     title: "Notifications",
     path: "/dashboard/notifications",
-    allowedRoles: ["hr"],
-  },
-  {
-    icon: <ChartColumnStacked size={20} />,
-    title: "Reports & Review",
-    path: "/dashboard/reports",
     allowedRoles: ["hr"],
   },
   {
@@ -43,15 +38,21 @@ const menuList = [
   },
   {
     icon: <UserPlus size={20} />,
-    title: "HR",
-    path: "/dashboard/hr",
-    allowedRoles: ["admin"],
+    title: "Users",
+    path: "/dashboard/user",
+    allowedRoles: ["hr", "admin"],
   },
   {
-    icon: <Users size={20} />,
-    title: "Candidate",
-    path: "/dashboard/candidate",
-    allowedRoles: ["admin"],
+    icon: <Hourglass size={20} />,
+    title: "Schedule Sessions",
+    path: "/dashboard/schedule",
+    allowedRoles: ["hr", "admin"],
+  },
+  {
+    icon: <ChartColumnStacked size={20} />,
+    title: "Reports & Review",
+    path: "/dashboard/reports",
+    allowedRoles: ["hr", "admin"],
   },
 ];
 

@@ -4,21 +4,20 @@ import ReportTable from '../../ui/ReportTable'
 import Pagination from '../../ui/Pagination'
 import { Paginate } from '../../../utils/Paginate';
 import { Plus, Search } from 'lucide-react';
-import AddModal from '../../ui/AddModal';
+import AddUserModal from '../../ui/AddUserModal';
 
-function ManageCandidate() {
-    const headers = ["Sl. No.", "Candidate Name", "HR Name"];
-    const keys = ["id", "candidate_name", "hr_name"];
-    const [candidateData, setCandidateData] = useState([]);
+function ManageUser() {
+    const headers = ["Sl. No.", "Name", "Email", "Phone", "DOB", "User Type"];
+    const keys = ["id", "id", "hr_name", "skill_name", "id", "hr_name", "skill_name"];
+    const [hrData, setHrData] = useState([]);
     const [showModal, setShowModal] = useState(false);
-
     // State for pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     // Paginate the reports data
     const { currentItems, totalPages } = Paginate(
-        candidateData,
+        hrData,
         currentPage,
         itemsPerPage
     );
@@ -32,7 +31,8 @@ function ManageCandidate() {
     const handleExport = () => {
         alert("Exporting to Excel...");
     };
-    const handleNewCandidate = () => {
+    const handleNewHR = () => {
+        // alert("Add New HR clicked!");
         setShowModal(true);
     }
     const handleCloseModal = () => {
@@ -41,22 +41,25 @@ function ManageCandidate() {
     return (
         <div className="text-teal-100 p-2">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-teal-300">Manage Candidate</h1>
+                <h1 className="text-2xl font-bold text-teal-300">Manage User</h1>
+                {/* Add Icon + Search + Export */}
                 <div className="flex items-center space-x-3">
+                    {/* Search Field */}
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-300" />
                         <input
                             type="text"
-                            placeholder="Search Candidate"
+                            placeholder="Search User"
                             className="pl-10 pr-3 py-2 rounded-lg bg-teal-700 text-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
                     </div>
+
                     <button
-                        onClick={handleNewCandidate}
+                        onClick={handleNewHR}
                         className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
                     >
                         <Plus className="mr-2" />
-                        Add New Candidate
+                        Add New User
                     </button>
                 </div>
             </div>
@@ -76,16 +79,16 @@ function ManageCandidate() {
                 onPageChange={paginate}
                 onItemsPerPageChange={handleItemsPerPageChange}
             />
-            <AddModal
+
+            <AddUserModal
                 isOpen={showModal}
-                title="Add New HR"
+                title="Add New User"
                 onClose={handleCloseModal}
-                defaultRole={{ id: 2, name: "Candidate" }}   
+                defaultRole={{ id: 1, name: "HR" }}
             // onSave={handleSaveCandidate}
             />
         </div>
-        
     )
 }
 
-export default ManageCandidate
+export default ManageUser

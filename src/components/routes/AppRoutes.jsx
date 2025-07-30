@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
-import ManageCandidate from "../pages/admin/ManageCandidate";
-import ManageHR from "../pages/admin/ManageHR";
+import ManageSchedule from "../pages/admin/ManageSchedule";
+import ManageUser from "../pages/admin/ManageUser";
 
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
@@ -92,15 +92,15 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/hr",
+            path: "/dashboard/user",
             element: (
-              <ManageHR />
+              <ManageUser />
             ),
           },
           {
-            path: "/dashboard/candidate",
+            path: "/dashboard/schedule",
             element: (
-              <ManageCandidate />
+              <ManageSchedule />
             ),
           },
         ],

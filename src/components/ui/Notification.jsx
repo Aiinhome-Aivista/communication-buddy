@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function Notification({ notifications, onAction, onClose, role }) {
-    console.log('notifications:', notifications);
-    console.log('userRole:', role);
+    console.log('notifications', notifications, role)
+    const navigate = useNavigate();
     const dropdownRef = useRef(null);
 
     // Close dropdown on outside click
@@ -15,15 +16,14 @@ export default function Notification({ notifications, onAction, onClose, role })
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [onClose]);
-
+    const limitedNotifications = notifications.slice(0, 4);
     return (
         <div ref={dropdownRef} className="absolute right-0 mt-2 w-96 bg-white rounded-md shadow-lg border z-50">
             <div className="p-4 border-b font-semibold text-slate-700">Notifications</div>
             {/*  HR NOTIFICATION UI */}
             {role === "hr" && (
                 <ul className="max-h-80 overflow-y-auto divide-y">
-                    {notifications
-                        .filter((n) => n.status === "pending") //  only pending requests
+                    {limitedNotifications
                         .map((n) => (
                             <li key={n.id} className="p-3 text-sm text-gray-800">
                                 <div className="mb-2">
@@ -51,7 +51,7 @@ export default function Notification({ notifications, onAction, onClose, role })
             {/* CANDIDATE NOTIFICATION UI */}
             {role === "candidate" && (
                 <ul className="max-h-80 overflow-y-auto divide-y">
-                    {notifications
+                    {limitedNotifications
                         .filter((n) => n.status === "pending") // only pending notifications
                         .map((n) => (
                             <li key={n.id} className="p-3 text-sm text-gray-800">
@@ -63,9 +63,11 @@ export default function Notification({ notifications, onAction, onClose, role })
                         ))}
                 </ul>
             )}
-            <div className="p-2 text-center text-sm text-blue-600 hover:underline cursor-pointer">
-                View all
-            </div>
+            {notifications.length > 5 && (
+                <div className="p-2 text-center text-sm text-blue-600 hover:underline cursor-pointer" onClick={() => { onClose(); navigate("/dashboard/notifications", { state: { notifications } }); }}>
+                    View all
+                </div>
+            )}
         </div>
     );
 }
