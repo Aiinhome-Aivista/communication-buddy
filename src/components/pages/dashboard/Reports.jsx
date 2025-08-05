@@ -3,57 +3,9 @@ import { FaFileExport } from "react-icons/fa";
 import Pagination from "../../ui/Pagination";
 import ReportTable from "../../ui/ReportTable";
 import { Paginate } from "../../../utils/Paginate";
-
-const reportsData = [
-  { id: 1, name: "Monthly Sales", date: "2023-05-15", status: "Completed" },
-  { id: 2, name: "User Activity", date: "2023-05-10", status: "Pending" },
-  { id: 3, name: "Inventory", date: "2023-05-05", status: "Completed" },
-  { id: 4, name: "Financial Summary", date: "2023-04-30", status: "Failed" },
-  {
-    id: 5,
-    name: "Customer Feedback",
-    date: "2023-04-25",
-    status: "Completed",
-  },
-  { id: 6, name: "Quarterly Report", date: "2023-04-20", status: "Completed" },
-  { id: 7, name: "Marketing Analysis", date: "2023-04-15", status: "Pending" },
-  { id: 8, name: "Annual Review", date: "2023-04-10", status: "Failed" },
-  {
-    id: 9,
-    name: "Product Performance",
-    date: "2023-04-05",
-    status: "Completed",
-  },
-  { id: 10, name: "Sales Forecast", date: "2023-03-30", status: "Pending" },
-  {
-    id: 11,
-    name: "Website Analytics",
-    date: "2023-03-25",
-    status: "Completed",
-  },
-  {
-    id: 12,
-    name: "Employee Performance",
-    date: "2023-03-20",
-    status: "Completed",
-  },
-  { id: 13, name: "Budget Report", date: "2023-03-15", status: "Pending" },
-  {
-    id: 14,
-    name: "Customer Acquisition",
-    date: "2023-03-10",
-    status: "Failed",
-  },
-  {
-    id: 15,
-    name: "Revenue Analysis",
-    date: "2023-03-05",
-    status: "Completed",
-  },
-];
-
+import { getSessionDuration } from "../../../utils/Timer";
 const headers = ["Name", "Email", "Topic", "Session Date", "Session Time", "Session Duration", "Score", "Session Insights"];
-const keys = ["username", "name", "topic", "date", "status", "date", "score", "feedback"];
+const keys = ["username", "name", "topic", "date", "status", "session_duration", "score", "feedback"];
 
 export default function Reports() {
   // State for pagination
@@ -98,7 +50,11 @@ export default function Reports() {
       }
 
       const data = await response.json();
-      setReportsData(data.sessions || []); // Adjust if your API has a different structure
+      const processed = (data.sessions || []).map((session) => ({
+        ...session,
+        session_duration: getSessionDuration(session.chat_history)
+      }));
+      setReportsData(processed); // Adjust if your API has a different structure
     } catch (err) {
       setError("Failed to load reports. Please try again.");
     } finally {
