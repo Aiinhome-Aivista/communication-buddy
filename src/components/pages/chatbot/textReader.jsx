@@ -7,7 +7,6 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useNavigate, useParams } from "react-router";
 import { useTopic } from "../../../provider/TopicProvider";
-
 const TextReader = ({
   chatStarted,
   setChatStarted,
@@ -80,19 +79,19 @@ const TextReader = ({
     console.log("caht api :", userInput);
 
     let updatedUserInput = userInput;
-
+    let updatedUserLanguage = ""
     // ✅ Prevent API call & typing indicator immediately after new session starts
     if (isNewSessionRef.current) {
       console.log("🛑 Skipping API call & Typing... because a new session just started");
       isNewSessionRef.current = false; // reset flag
-      return; // stop execution here
+      // return; // stop execution here
     }
 
     // ✅ Prevent API call for initial language selection (English)
-    if (userInput.toLowerCase() === "english") {
+    if (userInput.toLowerCase() === "english" || userInput.toLowerCase() === "हिंदी" || userInput.toLowerCase() === "hindi") {
       updatedUserInput = "";
     }
-
+    updatedUserLanguage = languageRef.current === "en-IN" ? "English" : "hindi";
     // ✅ Show Typing... only when a real API call is made
     setTimeout(() => {
       if (!isNewSessionRef.current) {
@@ -107,8 +106,10 @@ const TextReader = ({
         body: JSON.stringify({
           session_id: random4DigitID?.toString(),
           topic: topic,
-          time: "1 min",
+          time: "2 min",
           user_input: updatedUserInput,
+          language: updatedUserLanguage
+
           // conversation_history: fullConversation
         }),
       });
@@ -223,7 +224,12 @@ const TextReader = ({
       if (validLang) {
         // ✅ Immediately call your existing API with the user-selected language
         setTimeout(() => {
-          const topicMessage = `Our topic is ${topic} and let's begin our communication on it.`;
+          // const topicMessage = `Our topic is ${topic} and let's begin our communication on it.`;
+          const topicMessage =
+            languageRef.current === "hi-IN"
+              ? `हमारा विषय ${topic} है और आइए इस पर अपनी बातचीत शुरू करें।`
+              : `Our topic is ${topic} and let's begin our communication on it.`;
+
           speakAndAdd(topicMessage);
         }, 5000);
         callChatAPI(text);
@@ -259,14 +265,15 @@ const TextReader = ({
 
   const sendFinalConversation = async () => {
     try {
-      await fetch("http://122.163.121.176:3004/chat-session", {
+      await fetch("http://122.163.121.176:3004/chat-session-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: userId,
           hr_id: hrId,
           topic: topic,
-          chat_history: fullConversation
+          chat_history: fullConversation,
+          use_lstm: false
 
         }),
       });

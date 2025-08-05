@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaFileExport } from "react-icons/fa";
 import Pagination from "../../ui/Pagination";
 import ReportTable from "../../ui/ReportTable";
@@ -52,14 +52,15 @@ const reportsData = [
   },
 ];
 
-const headers = ["Name", "Email", "Session Date", "Session Time","Session Duration","Session Insights"];
-const keys = ["id", "name", "date", "status","date", "status"];
+const headers = ["Name", "Email", "Topic", "Session Date", "Session Time", "Session Duration", "Score", "Session Insights"];
+const keys = ["username", "name", "topic", "date", "status", "date", "score", "feedback"];
 
 export default function Reports() {
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
+  const [reportsData, setReportsData] = useState([]);
+  const hrId = sessionStorage.getItem("user_id");
   // Paginate the reports data
   const { currentItems, totalPages } = Paginate(
     reportsData,
@@ -77,6 +78,33 @@ export default function Reports() {
   const handleExport = () => {
     alert("Exporting to Excel...");
   };
+  useEffect(() => {
+    fetchReports();
+  }, []);
+  const fetchReports = async () => {
+    try {
+      const response = await fetch("http://122.163.121.176:3004/hr-sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hr_id: parseInt(hrId)
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      setReportsData(data.sessions || []); // Adjust if your API has a different structure
+    } catch (err) {
+      setError("Failed to load reports. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="text-teal-100 p-2">
@@ -91,11 +119,11 @@ export default function Reports() {
         </button> */}
       </div>
 
-      <ReportTable 
-        tableData={currentItems} 
-        headers={headers} 
+      <ReportTable
+        tableData={currentItems}
+        headers={headers}
         isShowAction={false}
-        isRaiseRequest={false} 
+        isRaiseRequest={false}
         keys={keys}
       />
 
