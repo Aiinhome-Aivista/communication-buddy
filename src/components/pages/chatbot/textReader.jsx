@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import { chatSession } from "../../../data/chatSession";
 import { staticImages } from "../../../utils/Constant";
-import { useSpeechSynthesis } from "react-speech-kit";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useNavigate, useParams } from "react-router";
 import { useTopic } from "../../../provider/TopicProvider";
+
 const TextReader = ({
   chatStarted,
   setChatStarted,
@@ -30,13 +30,11 @@ const TextReader = ({
   const [isAILoading, setIsAILoading] = useState(false);
   const [response, setresponse] = useState("");
   const [showTimeUpPopup, setShowTimeUpPopup] = useState(false);
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-  } = useSpeechRecognition();
-  const { speak, speaking: isSpeaking, cancel } = useSpeechSynthesis();
+  const [isSpeaking, setIsSpeaking] = useState(false); // ✅ Manage speech state
+
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const navigate = useNavigate();
+
   const generateRandomID = () => {
     const id = Math.floor(1000 + Math.random() * 9000);
     setRandomID(id);
@@ -46,8 +44,9 @@ const TextReader = ({
   };
 
   useEffect(() => {
-    window.speechSynthesis.cancel();   // ✅ stops any ongoing AI speech
+    window.speechSynthesis.cancel();   // ✅ stop any speech on mount
   }, []);
+
   useEffect(() => {
     // ✅ Reset everything on fresh load
     setSession([chatSession[0]]);
@@ -64,14 +63,60 @@ const TextReader = ({
     setIsAILoading(false);
     setIsTerminated(false);
     setChatStarted(false);
-  }, []); // ✅ runs only on mount
+  }, []); // only on mount
 
-  // Handle session by api call
+  // ✅ Native Speech API
+  const speakMessage = (text, lang = languageRef.current) => {
+    return new Promise((resolve) => {
+      if (!text) return resolve();
+
+      window.speechSynthesis.cancel(); // stop any ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+
+      setIsSpeaking(true);
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        console.log("✅ Speech ended:", text);
+        resolve();
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        console.error("❌ Speech synthesis error");
+        resolve();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+
+  const stopSpeaking = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+
+  const speakAndAdd = (message) => {
+    return new Promise(async (resolve) => {
+      setSession((prev) => [
+        ...prev,
+        { role: "ai", message, time: new Date().toLocaleTimeString() },
+      ]);
+      setFullConversation((prev) => [
+        ...prev,
+        { role: "ai", message, time: new Date().toLocaleTimeString() },
+      ]);
+      await speakMessage(message); // ✅ native speech
+      resolve();
+    });
+  };
+
+  // API Call
   const { id: topic } = useParams();
   const { getTopicData } = useTopic();
-  const userId = parseInt(sessionStorage.getItem("user_id"), 10); // ✅ convert to number
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   const topicData = getTopicData;
-  // ✅ Extract HR ID for this user
   const matchedRecord = topicData.find(item => item.user_id === userId);
   const hrId = matchedRecord?.hr_id || null;
 
@@ -79,20 +124,19 @@ const TextReader = ({
     console.log("caht api :", userInput);
 
     let updatedUserInput = userInput;
-    let updatedUserLanguage = ""
-    // ✅ Prevent API call & typing indicator immediately after new session starts
+    let updatedUserLanguage = "";
+
     if (isNewSessionRef.current) {
       console.log("🛑 Skipping API call & Typing... because a new session just started");
-      isNewSessionRef.current = false; // reset flag
-      // return; // stop execution here
+      isNewSessionRef.current = false;
     }
 
-    // ✅ Prevent API call for initial language selection (English)
     if (userInput.toLowerCase() === "english" || userInput.toLowerCase() === "हिंदी" || userInput.toLowerCase() === "hindi") {
       updatedUserInput = "";
     }
+
     updatedUserLanguage = languageRef.current === "en-IN" ? "English" : "hindi";
-    // ✅ Show Typing... only when a real API call is made
+
     setTimeout(() => {
       if (!isNewSessionRef.current) {
         setIsAILoading(true);
@@ -106,11 +150,9 @@ const TextReader = ({
         body: JSON.stringify({
           session_id: random4DigitID?.toString(),
           topic: topic,
-          time: "2 min",
+          time: "3 min",
           user_input: updatedUserInput,
           language: updatedUserLanguage
-
-          // conversation_history: fullConversation
         }),
       });
 
@@ -119,7 +161,7 @@ const TextReader = ({
 
       setresponse(aiMessage);
       setIsAILoading(false);
-      await speakAndAdd(aiMessage); // Speak and update chat
+      await speakAndAdd(aiMessage);
     } catch (error) {
       console.error("API error:", error);
       setIsAILoading(false);
@@ -127,141 +169,58 @@ const TextReader = ({
     }
   };
 
-  // const callChatAPI = async (userInput) => {
-  //   console.log("caht api :", userInput);
-  //   // const updatedUserInput = userInput === 'English' ? "" : userInput;
-  //   let updatedUserInput = userInput;
-
-  //   // ✅ Prevent API call immediately after new session starts
-  //   if (isNewSessionRef.current) {
-  //     console.log("🛑 Skipping API call because new session just started");
-  //     isNewSessionRef.current = false; // reset flag
-  //     return; // stop execution
-  //   }
-
-  //   // ✅ Prevent API call for language selection
-  //   if (userInput.toLowerCase() === "english") {
-  //     updatedUserInput = "";
-  //   }
-
-  //   setTimeout(() => {
-  //     setIsAILoading(true);
-  //   }, 10000);
-  //   try {
-  //     const response = await fetch("http://122.163.121.176:3004/chat", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         session_id: random4DigitID?.toString(),
-  //         topic: topic,
-  //         time: "1 min",
-  //         user_input: updatedUserInput,
-  //         // conversation_history: fullConversation
-  //       }),
-  //     });
-
-  //     const data = await response.json();
-  //     const aiMessage = data?.message || "Invalid Message";
-  //     setresponse(aiMessage)
-  //     setIsAILoading(false);
-  //     await speakAndAdd(aiMessage); // Speak and update chat
-  //   } catch (error) {
-  //     console.error("API error:", error);
-  //     setIsAILoading(false);
-  //     await speakAndAdd("There was a problem connecting to the server.");
-  //   }
-  // };
-  const speakAndAdd = (message) => {
-    return new Promise((resolve) => {
-      setSession(prev => [...prev, { role: "ai", message, time: new Date().toLocaleTimeString() }]);
-      setFullConversation(prev => [...prev, { role: "ai", message, time: new Date().toLocaleTimeString() }]);
-
-      speak({
-        text: message,
-        lang: languageRef.current,
-        onEnd: () => {
-          console.log("✅ Speech ended:", message);
-          resolve();
-        },
-      });
-    });
-  };
   const handleUserMessage = async (text) => {
     console.log("User input:", text);
     if (!text.trim()) return;
-    // Add user's message to session
-    setSession((prev) => [
-      ...prev,
-      { role: "user", message: text, time: new Date().toLocaleTimeString() },
-    ]);
-    setFullConversation((prev) => [
-      ...prev,
-      { role: "user", message: text, time: new Date().toLocaleTimeString() }
-    ]);
+
+    setSession((prev) => [...prev, { role: "user", message: text, time: new Date().toLocaleTimeString() }]);
+    setFullConversation((prev) => [...prev, { role: "user", message: text, time: new Date().toLocaleTimeString() }]);
     setUserInput("");
 
     if (stageRef.current === "language") {
       let message = "";
       let validLang = false;
 
-      // Detect language
       if (text.toLowerCase().includes("english")) {
         languageRef.current = "en-IN";
         message = "Great! Let's continue in English. Thank you for your response.";
         validLang = true;
-      } else if (
-        text.toLowerCase().includes("hindi") ||
-        text.toLowerCase().includes("हिंदी")
-      ) {
+      } else if (text.toLowerCase().includes("hindi") || text.toLowerCase().includes("हिंदी")) {
         languageRef.current = "hi-IN";
         message = "बहुत बढ़िया! आइए हिंदी में आगे बढ़ते हैं। आपके उत्तर के लिए धन्यवाद।";
         validLang = true;
       } else {
-        message =
-          "Language not recognized. Please respond with English, हिंदी (Hindi), or বাংলা (Bengali).";
+        message = "Language not recognized. Please respond with English, हिंदी (Hindi), or বাংলা (Bengali).";
       }
 
+      await speakAndAdd(message);
+
       if (validLang) {
-        // ✅ Immediately call your existing API with the user-selected language
         setTimeout(() => {
-          // const topicMessage = `Our topic is ${topic} and let's begin our communication on it.`;
           const topicMessage =
             languageRef.current === "hi-IN"
               ? `हमारा विषय ${topic} है और आइए इस पर अपनी बातचीत शुरू करें।`
               : `Our topic is ${topic} and let's begin our communication on it.`;
-
           speakAndAdd(topicMessage);
         }, 5000);
         callChatAPI(text);
-
-        // Move to next conversation stage
         setConversationStage("awaitingDetails");
         stageRef.current = "awaitingDetails";
       }
-
-      // Speak greeting message
-      await speakAndAdd(message);
-
     } else {
-      // For other stages, continue with normal API call
       await callChatAPI(text);
     }
   };
 
   useEffect(() => {
     const lowerMsg = response.toLowerCase();
-    console.log('lowerMsg', lowerMsg)
     if (lowerMsg.includes("time is up") || lowerMsg.includes("thank you for the discussion")) {
-      console.log('calling')
       sendFinalConversation();
-      setIsAILoading(false);  // 🔹 Send final conversation
-      // setShowNewSessionBtn(true)
-      setIsTerminated(true); // <-- Disable chat and mic
-      setTimeout(() => {
-        setShowTimeUpPopup(true); // <-- Show popup 
-      }, 5000);
+      setIsAILoading(false);
+      setIsTerminated(true);
+      setTimeout(() => setShowTimeUpPopup(true), 5000);
     }
-  }, [response])
+  }, [response]);
 
   const sendFinalConversation = async () => {
     try {
@@ -274,10 +233,9 @@ const TextReader = ({
           topic: topic,
           chat_history: fullConversation,
           use_lstm: false
-
         }),
       });
-      console.log("✅ Final conversation saved (time’s up)");
+      console.log("✅ Final conversation saved");
     } catch (error) {
       console.error("❌ Error saving conversation:", error);
     }
@@ -288,18 +246,12 @@ const TextReader = ({
     const currentChat = session[currentIndex];
     if (currentChat.role === "ai") {
       setIsReading(true);
-      speak({
-        text: currentChat.message,
-        onEnd: () => {
-          setIsReading(false);
-          setCurrentIndex((prev) => prev + 1);
-        },
-        lang: languageRef.current,
+      speakMessage(currentChat.message).then(() => {
+        setIsReading(false);
+        setCurrentIndex((prev) => prev + 1);
       });
     } else {
-      const timeout = setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1);
-      }, 2000);
+      const timeout = setTimeout(() => setCurrentIndex((prev) => prev + 1), 2000);
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, chatStarted, isReading]);
@@ -309,10 +261,7 @@ const TextReader = ({
   }, [conversationStage]);
 
   useEffect(() => {
-    chatRef.current?.scrollTo({
-      top: chatRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
   }, [session]);
 
   useEffect(() => {
@@ -322,9 +271,8 @@ const TextReader = ({
       setIsMicActive(false);
     }
   }, [listening]);
-  const gotoPreviousPage = () => {
-    navigate('/dashboard/test')
-  }
+
+  const gotoPreviousPage = () => navigate('/dashboard/test');
   return (
     <div className="flex flex-col h-[calc(90vh-100px)] px-4 pt-4">
       {!chatStarted ? (
@@ -459,7 +407,7 @@ const TextReader = ({
           </div>
         </div>
       )}
-      {showTimeUpPopup && (
+     {showTimeUpPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg text-center w-[350px] space-y-4">
             <p className="text-lg font-medium">Do you want to start a new session?</p>
@@ -468,9 +416,8 @@ const TextReader = ({
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
                 onClick={() => {
                   setShowTimeUpPopup(false);
-                  cancel(); // stop any ongoing speech
+                  stopSpeaking(); // ✅ replaced cancel()
 
-                  // ✅ Reset all chat states
                   setSession([chatSession[0]]);
                   setFullConversation([chatSession[0].message]);
                   setConversationStage("language");
@@ -481,68 +428,22 @@ const TextReader = ({
                   setIsReading(false);
                   setUserInput("");
                   setIsMicActive(false);
-                  setIsAILoading(false); // ✅ prevent Typing... from showing
+                  setIsAILoading(false);
                   setIsTerminated(false);
                   setresponse("");
-                  isNewSessionRef.current = true; // ✅ ensures first call is skipped
+                  isNewSessionRef.current = true;
 
-                  // ✅ Generate new ID and restart the flow
                   generateRandomID();
                   setChatStarted(true);
                 }}
-
-
-              // onClick={() => {
-              //   setShowTimeUpPopup(false);
-              //   // Reset all chat states
-              //   setChatStarted(false);
-              //   setIsTerminated(false);
-              //   setSession([chatSession[0]]);
-              //   setFullConversation([chatSession[0].message]);
-              //   setConversationStage("language");
-              //   stageRef.current = "language";
-              //   languageRef.current = "en-IN";
-              //   setRandomID(null);
-              //   setCurrentIndex(0);
-              //   setIsReading(false);
-              //   setUserInput("");
-              //   setIsMicActive(false);
-              //   setIsAILoading(false);
-              //   cancel(); // Cancel any ongoing speech
-              // }}
               >
                 Yes
               </button>
-              {/* <button
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  setShowTimeUpPopup(false);
-                  setIsTerminated(false);
-                  generateRandomID(); // restart chat
-                  setChatStarted(true);
-                }}
-              >
-                Yes
-              </button> */}
-              {/* <button
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  setShowTimeUpPopup(false);
-                  alert("Thank you for participating.");
-
-                }}
-              >
-                No
-              </button> */}
             </div>
           </div>
         </div>
       )}
-
-
-
     </div>
-
   );
 };
 
