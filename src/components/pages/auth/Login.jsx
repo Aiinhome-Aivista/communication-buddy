@@ -84,7 +84,7 @@ export default function Login() {
                   id="username"
                   name="email"
                   value={userInfo.email}
-                  placeholder=" enter your email"
+                  placeholder=" Enter your email"
                   className="w-full bg-[#131313] text-white border border-[#424b57] px-4 py-2 rounded focus:outline-none focus:border-[#8b04f5]"
                   onChange={(e) => handleOnChange(e)}
                 />
@@ -101,7 +101,7 @@ export default function Login() {
                   id="password"
                   name="password"
                   value={userInfo.password}
-                  placeholder="Enter password"
+                  placeholder="Enter your password"
                   className="w-full bg-[#131313] text-white border border-[#424b57] px-4 py-2 rounded focus:outline-none focus:border-[#8b04f5]"
                   onChange={(e) => handleOnChange(e)}
                 />

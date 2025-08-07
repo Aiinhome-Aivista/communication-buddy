@@ -18,12 +18,12 @@ import { useTopic } from "../../provider/TopicProvider";
 
 // static menu list
 const menuList = [
-  {
-    icon: <Bell size={20} />,
-    title: "Notifications",
-    path: "/dashboard/notifications",
-    allowedRoles: ["hr"],
-  },
+  // {
+  //   icon: <Bell size={20} />,
+  //   title: "Notifications",
+  //   path: "/dashboard/notifications",
+  //   allowedRoles: ["hr"],
+  // },
   {
     icon: <BookOpenCheck size={20} />,
     title: "Practice & Test",

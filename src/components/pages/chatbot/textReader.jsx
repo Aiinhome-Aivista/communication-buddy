@@ -66,31 +66,132 @@ const TextReader = ({
   }, []); // only on mount
 
   // ✅ Native Speech API
+  // const speakMessage = (text, lang = languageRef.current) => {
+  //   return new Promise((resolve) => {
+  //     if (!text) return resolve();
+
+  //     window.speechSynthesis.cancel(); // stop any ongoing speech
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.lang = lang;
+
+  //     setIsSpeaking(true);
+
+  //     utterance.onend = () => {
+  //       setIsSpeaking(false);
+  //       console.log("✅ Speech ended:", text);
+  //       resolve();
+  //     };
+
+  //     utterance.onerror = () => {
+  //       setIsSpeaking(false);
+  //       console.error("❌ Speech synthesis error");
+  //       resolve();
+  //     };
+
+  //     window.speechSynthesis.speak(utterance);
+  //   });
+  // };
+  // ✅ Native Speech API with Indian English & Hindi voice selection
+  // const speakMessage = (text, lang = languageRef.current) => {
+  //   return new Promise((resolve) => {
+  //     if (!text) return resolve();
+
+  //     window.speechSynthesis.cancel(); // stop any ongoing speech
+
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.lang = lang;
+
+  //     // ✅ Set slower speech rate for better clarity
+  //     utterance.rate = 0.7;
+  //     utterance.pitch = 1;
+
+  //     // ✅ Select appropriate voice dynamically
+  //     const voices = window.speechSynthesis.getVoices();
+
+  //     let selectedVoice = null;
+  //     if (lang === "en-IN") {
+  //       // Indian English voice
+  //       selectedVoice = voices.find(v => v.lang === "en-IN")
+  //         || voices.find(v => v.lang.startsWith("en")); // fallback
+  //     }
+  //     else if (lang === "hi-IN") {
+  //       // Hindi voice
+  //       selectedVoice = voices.find(v => v.lang === "hi-IN")
+  //         || voices.find(v => v.lang.startsWith("hi")); // fallback
+  //     }
+
+  //     if (selectedVoice) {
+  //       utterance.voice = selectedVoice;
+  //       console.log("🎤 Using voice:", selectedVoice.name, selectedVoice.lang);
+  //     }
+
+  //     setIsSpeaking(true);
+
+  //     utterance.onend = () => {
+  //       setIsSpeaking(false);
+  //       console.log("✅ Speech ended:", text);
+  //       resolve();
+  //     };
+
+  //     utterance.onerror = () => {
+  //       setIsSpeaking(false);
+  //       console.error("❌ Speech synthesis error");
+  //       resolve();
+  //     };
+
+  //     window.speechSynthesis.speak(utterance);
+  //   });
+  // };
+
   const speakMessage = (text, lang = languageRef.current) => {
-    return new Promise((resolve) => {
-      if (!text) return resolve();
+  return new Promise((resolve) => {
+    if (!text) return resolve();
 
-      window.speechSynthesis.cancel(); // stop any ongoing speech
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
+    window.speechSynthesis.cancel();
 
-      setIsSpeaking(true);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
 
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        console.log("✅ Speech ended:", text);
-        resolve();
-      };
+    // ✅ Make speech slow & natural
+    utterance.rate = 0.8;  // slower than before
+    utterance.pitch = 1.1;  // slight variation to sound natural
 
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        console.error("❌ Speech synthesis error");
-        resolve();
-      };
+    const voices = window.speechSynthesis.getVoices();
 
-      window.speechSynthesis.speak(utterance);
-    });
-  };
+    // ✅ Filter Indian female voice
+    let selectedVoice = null;
+    if (lang === "en-IN") {
+      selectedVoice = voices.find(v => v.lang === "en-IN" && v.name.toLowerCase().includes("female")) ||
+                      voices.find(v => v.name.toLowerCase().includes("india") && v.name.toLowerCase().includes("female")) ||
+                      voices.find(v => v.lang === "en-IN") ||
+                      voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("female"));
+    } else if (lang === "hi-IN") {
+      selectedVoice = voices.find(v => v.lang === "hi-IN" && v.name.toLowerCase().includes("female")) ||
+                      voices.find(v => v.lang.startsWith("hi") && v.name.toLowerCase().includes("female"));
+    }
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      console.log("🎤 Using Indian Female Voice:", selectedVoice.name);
+    } else {
+      console.warn("⚠️ No female Indian voice found, using default.");
+    }
+
+    setIsSpeaking(true);
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      resolve();
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      resolve();
+    };
+
+    window.speechSynthesis.speak(utterance);
+  });
+};
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -150,7 +251,7 @@ const TextReader = ({
         body: JSON.stringify({
           session_id: random4DigitID?.toString(),
           topic: topic,
-          time: "3 min",
+          time: "5 min",
           user_input: updatedUserInput,
           language: updatedUserLanguage
         }),
@@ -202,7 +303,7 @@ const TextReader = ({
               ? `हमारा विषय ${topic} है और आइए इस पर अपनी बातचीत शुरू करें।`
               : `Our topic is ${topic} and let's begin our communication on it.`;
           speakAndAdd(topicMessage);
-        }, 5000);
+        }, 3000);
         callChatAPI(text);
         setConversationStage("awaitingDetails");
         stageRef.current = "awaitingDetails";
@@ -407,7 +508,7 @@ const TextReader = ({
           </div>
         </div>
       )}
-     {showTimeUpPopup && (
+      {showTimeUpPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg text-center w-[350px] space-y-4">
             <p className="text-lg font-medium">Do you want to start a new session?</p>

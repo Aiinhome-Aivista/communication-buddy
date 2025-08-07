@@ -3,9 +3,9 @@ import { FaFileExport } from "react-icons/fa";
 import Pagination from "../../ui/Pagination";
 import ReportTable from "../../ui/ReportTable";
 import { Paginate } from "../../../utils/Paginate";
-import { getSessionDuration } from "../../../utils/Timer";
+import { getDate, getTime } from "../../../utils/Timer";
 const headers = ["Name", "Email", "Topic", "Session Date", "Session Time", "Session Duration", "Score", "Session Insights"];
-const keys = ["username", "name", "topic", "date", "status", "session_duration", "score", "feedback"];
+const keys = ["username", "email", "topic", "session_date", "session_time", "total_time", "score", "feedback"];
 
 export default function Reports() {
   // State for pagination
@@ -50,11 +50,13 @@ export default function Reports() {
       }
 
       const data = await response.json();
+      // setReportsData(data.sessions); 
       const processed = (data.sessions || []).map((session) => ({
         ...session,
-        session_duration: getSessionDuration(session.chat_history)
+        session_date: getDate(session.session_time),
+        session_time: getTime(session.session_time),
       }));
-      setReportsData(processed); // Adjust if your API has a different structure
+      setReportsData(processed);
     } catch (err) {
       setError("Failed to load reports. Please try again.");
     } finally {

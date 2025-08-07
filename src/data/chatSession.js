@@ -1,7 +1,7 @@
 export const chatSession = [
   {
     "role": "ai",
-    "message": "Welcome! Please share your preferred language to continue: English or हिंदी (Hindi).",
+    "message": "Welcome! Please share your preferred language to continue: English or हिंदी.",
     "time": "09:48:49"
   },
 ]

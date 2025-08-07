@@ -1,16 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaFileExport } from 'react-icons/fa'
 import ReportTable from '../../ui/ReportTable'
 import Pagination from '../../ui/Pagination'
 import { Paginate } from '../../../utils/Paginate';
 import { Plus, Search } from 'lucide-react';
 import AddScheduleModal from '../../ui/AddScheduleModal';
+import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function ManageSchedule() {
-    const headers = ["Sl. No.", "Candidate Name","Email","Session Date","Session Time", "Session Topic"];
-    const keys = ["id", "candidate_name", "hr_name","id", "candidate_name", "hr_name"];
+    const headers = ["Sl. No.", "Candidate Name", "Email", "Session Date", "Session Time", "Comparative Time", "Qualitative Time", "Session Joining Time", "Session Exit Time", "Session Status", "Session Topic"];
+    const keys = ["id", "candidate_name", "hr_name", "id", "candidate_name", "Comparative Time", "Qualitative Time", "Session Joining Time", "Session Exit Time", "Session Status","hr_name"];
     const [candidateData, setCandidateData] = useState([]);
+    const [topics, setTopics] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [userData, setUserData] = useState([
+        // { id: 1, name: "John Doe" },
+        // { id: 2, name: "Jane Smith" },
+        // { id: 3, name: "Alice Johnson" },
+        // { id: 4, name: "Bob Brown" },
+    ]);
+    const [sessionData, setSessionData] = useState([])
+    const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+    const userRole = sessionStorage.getItem("userRole");
 
     // State for pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +49,57 @@ function ManageSchedule() {
     const handleCloseModal = () => {
         setShowModal(false);
     }
+    useEffect(() => {
+        if (userRole === "hr") {
+            fetchUserData();
+        }
+    }, []);
+    const fetchUserData = async () => {
+        try {
+            const JsonBody = {
+                "hr_id": userId
+            }
+            const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
+            if (response.success === true || response.status === 200) {
+                setUserData(response.candidates);
+                setTopics(response.topics);
+            }
+
+        } catch (error) {
+            console.error('Error fetching Data', error.message);
+
+        }
+    }
+    const fetchSessionData = async () => {
+        try {
+            const JsonBody = {
+            }
+            const response = await fatchedPostRequest(postURL.insertUserTopic, JsonBody);
+            if (response.message === "Success" || response.Success === true) {
+                setSessionData(response.data);
+            }
+
+        } catch (error) {
+            console.error('Error fetching Data', error.message);
+
+        }
+    }
+    const handleSaveSchedule = async (scheduleData) => {
+        try {
+            const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
+
+            if (response.message === "request updated" || response.success === true) {
+                // setShowModal(false);  // modal close
+                // setTimeout(() => document.dispatchEvent(new Event("reset-add-schedule")), 0);
+
+                // fetchSessionData();   // new data refresh
+            } else {
+            }
+        } catch (error) {
+            console.error("Error inserting schedule:", error);
+        }
+    };
+
     return (
         <div className="text-teal-100 p-2">
             <div className="flex justify-between items-center mb-6">
@@ -80,11 +142,13 @@ function ManageSchedule() {
                 isOpen={showModal}
                 title="Add New Schedule"
                 onClose={handleCloseModal}
-                defaultRole={{ id: 2, name: "Candidate" }}   
-            // onSave={handleSaveCandidate}
+                userData={userData}
+                topics={topics}
+                hrId={userId}
+                onSave={handleSaveSchedule}
             />
         </div>
-        
+
     )
 }
 

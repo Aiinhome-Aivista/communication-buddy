@@ -5,8 +5,11 @@ import Pagination from '../../ui/Pagination'
 import { Paginate } from '../../../utils/Paginate';
 import { Plus, Search } from 'lucide-react';
 import AddUserModal from '../../ui/AddUserModal';
+import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 function ManageUser() {
+    const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+    const userRole = sessionStorage.getItem("userRole");
     const headers = ["Sl. No.", "Name", "Email", "Phone", "DOB", "User Type"];
     const keys = ["id", "id", "hr_name", "skill_name", "id", "hr_name", "skill_name"];
     const [hrData, setHrData] = useState([]);
@@ -37,6 +40,26 @@ function ManageUser() {
     }
     const handleCloseModal = () => {
         setShowModal(false);
+    }
+    useEffect(() => {
+        if (userRole === "hr") {
+            fetchUserData();
+        }
+    }, []);
+    const fetchUserData = async () => {
+        try {
+            const JsonBody = {
+                "hr_id": userId
+            }
+            const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
+            if (response.success === true || response.status === 200) {
+                setHrData(response.candidates);
+            }
+
+        } catch (error) {
+            console.error('Error fetching Data', error.message);
+
+        }
     }
     return (
         <div className="text-teal-100 p-2">
