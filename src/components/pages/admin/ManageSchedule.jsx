@@ -92,10 +92,7 @@ function ManageSchedule() {
             const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
 
             if (response.message === "request updated" || response.success === true) {
-                // setShowModal(false);  // modal close
-                // setTimeout(() => document.dispatchEvent(new Event("reset-add-schedule")), 0);
-
-                // fetchSessionData();   // new data refresh
+                fetchSessionData();   // new data refresh
             } else {
             }
         } catch (error) {

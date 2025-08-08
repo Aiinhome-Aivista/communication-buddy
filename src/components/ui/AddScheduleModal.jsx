@@ -65,7 +65,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
 
     // ✅ Save
     const handleInitiate = () => {
-        if (!selectedUser || !sessionDate || !sessionTime || !searchTopic || !sessionCategory) {
+        if (!selectedUser || !sessionDate || !sessionTime || !searchTopic ) {
             alert("Please fill all fields");
             return;
         }
