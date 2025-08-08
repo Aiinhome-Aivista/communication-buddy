@@ -6,19 +6,14 @@ import { Paginate } from '../../../utils/Paginate';
 import { Plus, Search } from 'lucide-react';
 import AddScheduleModal from '../../ui/AddScheduleModal';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
+import { getDate, getTime } from '../../../utils/Timer';
 
 function ManageSchedule() {
-    const headers = ["Sl. No.", "Candidate Name", "Email", "Session Date", "Session Time", "Comparative Time", "Qualitative Time", "Session Joining Time", "Session Exit Time", "Session Status", "Session Topic"];
-    const keys = ["id", "candidate_name", "hr_name", "id", "candidate_name", "Comparative Time", "Qualitative Time", "Session Joining Time", "Session Exit Time", "Session Status","hr_name"];
-    const [candidateData, setCandidateData] = useState([]);
+    const headers = ["Candidate Name", "Email", "Session Date", "Session Time", "Status", "Session Topic"];
+    const keys = ["candidate_name", "email", "session_date", "session_time", "status", "topic"];
     const [topics, setTopics] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [userData, setUserData] = useState([
-        // { id: 1, name: "John Doe" },
-        // { id: 2, name: "Jane Smith" },
-        // { id: 3, name: "Alice Johnson" },
-        // { id: 4, name: "Bob Brown" },
-    ]);
+    const [userData, setUserData] = useState([]);
     const [sessionData, setSessionData] = useState([])
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
     const userRole = sessionStorage.getItem("userRole");
@@ -29,7 +24,7 @@ function ManageSchedule() {
 
     // Paginate the reports data
     const { currentItems, totalPages } = Paginate(
-        candidateData,
+        sessionData,
         currentPage,
         itemsPerPage
     );
@@ -52,6 +47,7 @@ function ManageSchedule() {
     useEffect(() => {
         if (userRole === "hr") {
             fetchUserData();
+            fetchSessionData();
         }
     }, []);
     const fetchUserData = async () => {
@@ -73,10 +69,17 @@ function ManageSchedule() {
     const fetchSessionData = async () => {
         try {
             const JsonBody = {
+                "p_user_id": userId
             }
-            const response = await fatchedPostRequest(postURL.insertUserTopic, JsonBody);
+            const response = await fatchedPostRequest(postURL.getScheduleDataHrWise, JsonBody);
             if (response.message === "Success" || response.Success === true) {
-                setSessionData(response.data);
+                const processed = (response.data || []).map((session) => ({
+                    ...session,
+                    session_date: getDate(session.session_time),
+                    session_time: getTime(session.session_time),
+                }));
+                console.log("Processed Session Data:", processed);
+                setSessionData(processed);
             }
 
         } catch (error) {
@@ -126,7 +129,7 @@ function ManageSchedule() {
             <ReportTable
                 tableData={currentItems}
                 headers={headers}
-                isRaiseRequest={true}
+                isShowAction={true}
                 // raiseRequest={handleRaiseRequest}
                 keys={keys}
             />

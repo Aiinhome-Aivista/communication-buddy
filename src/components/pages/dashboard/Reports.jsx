@@ -4,8 +4,8 @@ import Pagination from "../../ui/Pagination";
 import ReportTable from "../../ui/ReportTable";
 import { Paginate } from "../../../utils/Paginate";
 import { getDate, getTime } from "../../../utils/Timer";
-const headers = ["Name", "Email", "Topic", "Session Date", "Session Time", "Session Duration", "Score", "Session Insights"];
-const keys = ["username", "email", "topic", "session_date", "session_time", "total_time", "score", "feedback"];
+const headers = ["Name", "Email", "Topic", "Session Date", "Session Time", "Session Duration","Comparative Time", "Qualitative Time", "Session Joining Time", "Session Exit Time", "Session Status", "Score", "Session Insights"];
+const keys = ["username", "email", "topic", "session_date", "session_time", "total_time", "comparative_time_ratio", "qualitative_score", "session_join_time", "session_exit_time", "status", "score", "feedback"];
 
 export default function Reports() {
   // State for pagination

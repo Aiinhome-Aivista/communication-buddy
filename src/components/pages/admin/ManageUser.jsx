@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaFileExport } from 'react-icons/fa'
 import ReportTable from '../../ui/ReportTable'
 import Pagination from '../../ui/Pagination'
 import { Paginate } from '../../../utils/Paginate';
 import { Plus, Search } from 'lucide-react';
 import AddUserModal from '../../ui/AddUserModal';
-import { fatchedPostRequest, postURL } from '../../../services/ApiService';
+import { fatchedGetRequest, fatchedPostRequest, getURL, postURL } from '../../../services/ApiService';
+import { getDate } from '../../../utils/Timer';
 
 function ManageUser() {
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
     const userRole = sessionStorage.getItem("userRole");
     const headers = ["Sl. No.", "Name", "Email", "Phone", "DOB", "User Type"];
-    const keys = ["id", "id", "hr_name", "skill_name", "id", "hr_name", "skill_name"];
+    const keys = ["id", "name", "email", "phone_number", "dob", "userType"];
+
     const [hrData, setHrData] = useState([]);
     const [showModal, setShowModal] = useState(false);
     // State for pagination
@@ -48,12 +50,13 @@ function ManageUser() {
     }, []);
     const fetchUserData = async () => {
         try {
-            const JsonBody = {
-                "hr_id": userId
-            }
-            const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
-            if (response.success === true || response.status === 200) {
-                setHrData(response.candidates);
+            const response = await fatchedGetRequest(getURL.GetAllUser);
+            if (response.Success === true || response.status === 200) {
+                const processed = (response.data || []).map((session) => ({
+                    ...session,
+                    dob: getDate(session.dob),
+                }));
+                setHrData(processed);
             }
 
         } catch (error) {
@@ -90,9 +93,8 @@ function ManageUser() {
             <ReportTable
                 tableData={currentItems}
                 headers={headers}
-                isRaiseRequest={true}
-                // raiseRequest={handleRaiseRequest}
                 keys={keys}
+                isShowAction={true}
             />
 
             <Pagination

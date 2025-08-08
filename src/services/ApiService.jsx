@@ -1,7 +1,10 @@
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const getURL = {};
+export const getURL = {
+  GetAllUser: `${BASE_URL}/get-all-users`,
+
+};
 
 export const postURL = {
   login: `${BASE_URL}/auth/login`,
@@ -10,7 +13,8 @@ export const postURL = {
   requestTopic: `${BASE_URL}/insert-user-topic`,
   hrDashboard: `${BASE_URL}/hr-dashboard`,
   insertUserTopic: `${BASE_URL}/insert-user-topic`,
-  hrTopicCandidate: `${BASE_URL}/hr-topics-candidates`
+  hrTopicCandidate: `${BASE_URL}/hr-topics-candidates`,
+  getScheduleDataHrWise: `${BASE_URL}/get-schedule-data-hr-wise`,
 };
 
 
