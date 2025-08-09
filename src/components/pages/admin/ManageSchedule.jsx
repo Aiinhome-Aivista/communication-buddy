@@ -7,6 +7,9 @@ import { Plus, Search } from 'lucide-react';
 import AddScheduleModal from '../../ui/AddScheduleModal';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
+import CustomTooltip from '../../ui/CustomTooltip';
+import { FaRotate } from 'react-icons/fa6';
+import Loader from '../../ui/Loader';
 
 function ManageSchedule() {
     const headers = ["Candidate Name", "Email", "Session Date", "Session Time", "Status", "Session Topic"];
@@ -17,7 +20,9 @@ function ManageSchedule() {
     const [sessionData, setSessionData] = useState([])
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
     const userRole = sessionStorage.getItem("userRole");
-
+    const [loading, setLoading] = useState(false); // Full page loader
+    const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
+    const [rotation, setRotation] = useState(false);
     // State for pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -99,20 +104,62 @@ function ManageSchedule() {
             console.error("Error inserting schedule:", error);
         }
     };
+    // Initial data load
+    useEffect(() => {
+        if (userRole === 'hr') {
+            const loadData = async () => {
+                setLoading(true);
+                await fetchUserData();
+                await fetchSessionData();
+                setLoading(false);
+            };
+            loadData();
+        }
+    }, [userRole]);
 
+    // Reload data (sync button)
+    const ReloadGridData = async () => {
+        try {
+            setRotation(true);
+            setLoadingTable(true);
+            await fetchUserData();
+            await fetchSessionData();
+        } catch (error) {
+            console.error('Error reloading data:', error.message);
+        } finally {
+            setLoadingTable(false);
+            setTimeout(() => setRotation(false), 500);
+        }
+    };
     return (
         <div className="text-teal-100 p-2">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-teal-300">Manage Schedule</h1>
+                {/* Left side: Title + Sync */}
+                <div className="flex items-center">
+                    <h1 className="text-2xl font-bold text-teal-300">Manage Schedule</h1>
+                    <span className="inline-block w-4"></span>
+                    <CustomTooltip content="Sync Data" type="reload">
+                        <span
+                            onClick={ReloadGridData}
+                            className="sync-icon cursor-pointer align-middle"
+                            style={{ position: "relative", top: "2px" }}
+                        >
+                            <FaRotate className={`${rotation ? "rotate" : ""}`} />
+                        </span>
+                    </CustomTooltip>
+                </div>
+
+                {/* Right side: Search + Add Button */}
                 <div className="flex items-center space-x-3">
-                    {/* <div className="relative">
+                    <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-300" />
                         <input
                             type="text"
-                            placeholder="Search Candidate"
+                            placeholder="Search User"
                             className="pl-10 pr-3 py-2 rounded-lg bg-teal-700 text-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
-                    </div> */}
+                    </div>
+
                     <button
                         onClick={handleNewSchedule}
                         className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
@@ -122,13 +169,14 @@ function ManageSchedule() {
                     </button>
                 </div>
             </div>
-
             <ReportTable
                 tableData={currentItems}
                 headers={headers}
                 isShowAction={true}
                 // raiseRequest={handleRaiseRequest}
                 keys={keys}
+                loadingTable={loadingTable}
+
             />
 
             <Pagination
@@ -147,6 +195,8 @@ function ManageSchedule() {
                 hrId={userId}
                 onSave={handleSaveSchedule}
             />
+            {/* Full page loader */}
+            <Loader show={loading} />
         </div>
 
     )
