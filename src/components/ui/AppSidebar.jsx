@@ -10,6 +10,7 @@ import {
   Users,
   UserPlus,
   Hourglass,
+  CircleEqual
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
@@ -32,8 +33,8 @@ const menuList = [
     allowedRoles: ["candidate"],
   },
   {
-    icon: <BookOpenCheck size={20} />,
-    title: "Test",
+    icon: <CircleEqual size={20} />,
+    title: "Test Result",
     path: null,
     allowedRoles: ["candidate"],
   },
@@ -78,14 +79,33 @@ export default function AppSidebar() {
   const [practiceSubmenu, setPracticeSubmenu] = useState([]);
 
   // Fetch submenu items for candidate role
+  // useEffect(() => {
+  //   if (userRole === "candidate") {
+  //     const assignedTopics = getTopicData.filter(topic => topic.status === "assigned");
+
+  //     // Fetch topics for candidate
+  //     setPracticeSubmenu(assignedTopics);
+  //   }
+  // }, [userRole, getTopicData]);
+  // Fetch submenu items for candidate role (grouped by category)
   useEffect(() => {
     if (userRole === "candidate") {
-      const assignedTopics = getTopicData.filter(topic => topic.status === "assigned");
+      const assignedTopics = getTopicData.filter(
+        topic => topic.status === "assigned" && topic.topic_category // null বা undefined বাদ
+      );
 
-      // Fetch topics for candidate
-      setPracticeSubmenu(assignedTopics);
+      // Group topics by category
+      const grouped = assignedTopics.reduce((acc, topic) => {
+        const category = topic.topic_category;
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(topic);
+        return acc;
+      }, {});
+
+      setPracticeSubmenu(grouped);
     }
   }, [userRole, getTopicData]);
+
 
   const filteredMenu = menuList.filter((item) =>
     item.allowedRoles.includes(userRole)
@@ -168,7 +188,7 @@ export default function AppSidebar() {
                   </button>
 
                   {/* Submenu */}
-                  {subMenuOpen && !collapsed && (
+                  {/* {subMenuOpen && !collapsed && (
                     <div className="ml-6 mt-1 space-y-1 p-2">
                       {practiceSubmenu.map((subItem, subIndex) => (
                         <NavLink
@@ -178,6 +198,24 @@ export default function AppSidebar() {
                         >
                           {`${subIndex + 1}. ${subItem.topic_name}`}
                         </NavLink>
+                      ))}
+                    </div>
+                  )} */}
+                  {subMenuOpen && !collapsed && (
+                    <div className="ml-6 mt-1 space-y-2 p-2">
+                      {Object.keys(practiceSubmenu).map((category, catIndex) => (
+                        <div key={catIndex}>
+                          <h4 className="text-teal-400 font-semibold mb-1">{category}</h4>
+                          {practiceSubmenu[category].map((subItem, subIndex) => (
+                            <NavLink
+                              key={subIndex}
+                              to={`/dashboard/test/${subItem.topic_name}`}
+                              className="block px-3 py-1 text-sm text-teal-300 hover:text-white hover:bg-teal-600/10 rounded truncate"
+                            >
+                              {`${subIndex + 1}. ${subItem.topic_name}`}
+                            </NavLink>
+                          ))}
+                        </div>
                       ))}
                     </div>
                   )}

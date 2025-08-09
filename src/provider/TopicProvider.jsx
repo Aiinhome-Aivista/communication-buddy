@@ -44,7 +44,7 @@ export const TopicProvider = ({ children }) => {
       setIsLoading(false);
       setIsError(true);
       console.error("Error during calling:", error);
-      alert("An error occurred while logging in. Please try again.");
+      // alert("An error occurred while logging in. Please try again.");
       return { success: false };
     }
   };

@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { staticImages, staticIcons } from "../../../utils/Constant";
 import { useAuth } from "../../../provider/AuthProvider";
 import { useNavigate } from "react-router";
+import Loader from "../../ui/Loader";
+import { Toast } from 'primereact/toast';
 
 export default function Login() {
   const { login } = useAuth();
-
   const navigate = useNavigate();
-
   const [userInfo, setUserInfo] = React.useState({
     email: "",
     password: "",
   });
-
+  const toast = useRef(null);
+  const [loading, setLoading] = useState(false);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prev) => ({
@@ -20,23 +21,60 @@ export default function Login() {
       [name]: value,
     }));
   };
-
   const handleOnLogin = async () => {
-    // check if email and password are not empty
+    // Check if email and password are provided
     if (!userInfo.email || !userInfo.password) {
+      showWarn("Email and Password are required");
       return;
     }
+
     try {
-      // call login function from AuthProvider
+      setLoading(true);
       const result = await login(userInfo);
+
       if (result?.success) {
-        navigate("/dashboard");
+        setLoading(false);
+        showSuccess("Successfully Logged In");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1200);
+      } else {
+        setLoading(false);
+        showError(result?.message || "Login failed, please try again.");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      setLoading(false);
+      showError(err?.message || "Something went wrong");
     }
   };
 
+  // const handleOnLogin = async () => {
+  //   // check if email and password are not empty
+  //   if (!userInfo.email || !userInfo.password) {
+  //     return;
+  //   }
+  //   try {
+  //     // call login function from AuthProvider
+  //     const result = await login(userInfo);
+  //     if (result?.success) {
+  //       navigate("/dashboard");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  const showSuccess = (data) => {
+    toast.current.show({ severity: 'success', summary: 'Success', detail: data, life: 3000 });
+  }
+
+  const showWarn = (data) => {
+    toast.current.show({ severity: 'warn', summary: 'Warning', detail: data, life: 3000 });
+  }
+
+  const showError = (data) => {
+    toast.current.show({ severity: 'error', summary: 'Error', detail: data, life: 3000 });
+  }
   return (
     <>
       <div
@@ -45,6 +83,8 @@ export default function Login() {
           backgroundImage: `url(${staticImages.loginBackground}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
         }}
       >
+        <Toast ref={toast} />
+
         <div className="relative flex flex-col items-center text-white h-full w-full max-w-md bg-transparent pt-24 px-6">
           <div className="w-full flex flex-col items-center justify-start gap-4">
             {/* login & welcome */}
@@ -118,6 +158,7 @@ export default function Login() {
             </div>
           </div>
         </div>
+        <Loader show={loading} />
       </div>
     </>
   );

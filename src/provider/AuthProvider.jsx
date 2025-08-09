@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setIsLoading(false);
       setIsError(true);
-      alert("An error occurred while logging in. Please try again.");
+      // alert("An error occurred while logging in. Please try again.");
       return { success: false };
     }
   };
