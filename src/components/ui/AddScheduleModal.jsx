@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { X, ChevronDown } from "lucide-react";
 import { selectedDateFormat } from "../../utils/Timer";
 
-export default function AddScheduleModal({ isOpen, title, onClose, userData, topics = [], onSave, hrId }) {
+export default function AddScheduleModal({ isOpen, title, onClose, userData, topics = [], onSave, hrId, categories }) {
     const [selectedUser, setSelectedUser] = useState("");
     const [sessionDate, setSessionDate] = useState("");
     const [sessionTime, setSessionTime] = useState("");
@@ -13,7 +13,8 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
     const suggestionRef = useRef(null);
     const userDropdownRef = useRef(null);
     const [sessionCategory, setSessionCategory] = useState("");
-
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const categoryDropdownRef = useRef(null);
     // ✅ Load topics
     useEffect(() => {
         if (topics?.length) setTopicList(topics.map(t => t.topic_name));
@@ -27,6 +28,9 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
             }
             if (userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
                 setShowUserDropdown(false);
+            }
+            if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(e.target)) {
+                setShowCategoryDropdown(false);
             }
         };
         document.addEventListener("mousedown", closeDropdowns);
@@ -62,10 +66,14 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
             setShowSuggestions(false);
         }
     };
-
+    // Select category
+    const handleSelectCategory = (category) => {
+        setSessionCategory(category);
+        setShowCategoryDropdown(false);
+    };
     // ✅ Save
     const handleInitiate = () => {
-        if (!selectedUser || !sessionDate || !sessionTime || !searchTopic ) {
+        if (!selectedUser || !sessionDate || !sessionTime || !searchTopic || !sessionCategory) {
             alert("Please fill all fields");
             return;
         }
@@ -75,15 +83,21 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
             total_time: Number(sessionTime),
             topic: searchTopic,
             hr_id: hrId,
-            category: sessionCategory,
+            topic_category: sessionCategory,
         });
         resetForm();
         onClose();
     };
 
-    const filteredTopics = searchTopic
-        ? topicList.filter(t => t.toLowerCase().includes(searchTopic.toLowerCase()))
-        : topicList;
+    // const filteredTopics = searchTopic
+    //     ? topicList.filter(t => t.toLowerCase().includes(searchTopic.toLowerCase()))
+    //     : topicList;
+    const filteredTopics = sessionCategory
+        ? topics
+            .filter(t => t.topic_category === sessionCategory)
+            .map(t => t.topic_name)
+            .filter(name => name.toLowerCase().includes(searchTopic.toLowerCase()))
+        : [];
     const resetForm = () => {
         setSelectedUser("");
         setSessionDate("");
@@ -133,7 +147,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                 {/* Date & Time */}
                 <div className="flex gap-3">
                     <div className="w-1/2">
-                        <label className="block text-sm font-medium text-white mb-1">Session Date</label>
+                        <label className="block text-sm font-medium text-white mb-1">Session Date & Time</label>
                         <input
                             type="datetime-local"
                             value={sessionDate}
@@ -142,7 +156,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                         />
                     </div>
                     <div className="w-1/2">
-                        <label className="block text-sm font-medium text-white mb-1">Session Time</label>
+                        <label className="block text-sm font-medium text-white mb-1">Session Duration</label>
                         <input
                             type="number"
                             min="1"
@@ -161,24 +175,30 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                     </div>
                 </div>
                 <label className="text-white text-sm mt-3 mb-1 block">Session Category</label>
+                <div ref={categoryDropdownRef} className="relative mb-3">
+                    <div
+                        className="w-full px-3 py-2 border rounded-lg text-white cursor-pointer relative flex justify-between items-center"
+                        onClick={() => setShowCategoryDropdown(prev => !prev)}
+                    >
+                        <span>{sessionCategory || "Select Category"}</span>
+                        <ChevronDown className={`transition-transform ${showCategoryDropdown ? "rotate-180" : ""}`} size={18} />
+                    </div>
 
-                <select
-                    value={sessionCategory}
-                    onChange={(e) => setSessionCategory(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-white bg-teal-600 border-white appearance-none"
-                >
-                    <option value="" disabled className="bg-teal-800 text-white">
-                        Select Category
-                    </option>
-                    <option value="Communication" className="bg-teal-800 text-white hover:bg-teal-600">
-                        Communication
-                    </option>
-                    <option value="Technical" className="bg-teal-800 text-white hover:bg-teal-600">
-                        Technical
-                    </option>
-                </select>
+                    {showCategoryDropdown && (
+                        <div className="absolute top-full left-0 w-full bg-teal-700 text-white border rounded shadow-lg max-h-[150px] overflow-y-auto z-10">
+                            {categories.map((catObj, i) => (
+                                <div
+                                    key={i}
+                                    onMouseDown={() => handleSelectCategory(catObj.topic_category)}
+                                    className="p-2 hover:bg-teal-800 cursor-pointer"
+                                >
+                                    {catObj.topic_category}
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-
+                </div>
 
 
                 {/* ✅ Topic Search with Scrollable Dropdown */}
@@ -190,35 +210,37 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                             value={searchTopic}
                             onChange={handleTopicChange}
                             onKeyDown={handleKeyDown}
-                            placeholder="Search or add topic..."
-                            className="w-full px-3 py-2 border rounded-lg mb-1 pr-8 cursor-pointer placeholder-white focus:placeholder-white text-white bg-transparent"
-                            onFocus={() => setShowSuggestions(true)}
+                            placeholder={
+                                sessionCategory
+                                    ? "Search or add topic..."
+                                    : "Select category first"
+                            }
+                            className="w-full px-3 py-2 border rounded-lg mb-1 pr-8 cursor-pointer placeholder:text-white focus:placeholder:text-white text-white bg-transparent disabled:cursor-not-allowed"
+                            onFocus={() => sessionCategory && setShowSuggestions(true)}
+                            disabled={!sessionCategory} // 🔹 Disabled until category is selected
                         />
 
-                        {/* 🔽 Clickable Arrow */}
                         <ChevronDown
                             className={`absolute right-2 top-3 text-gray-300 cursor-pointer transition-transform ${showSuggestions ? "rotate-180" : ""}`}
                             size={18}
                             onClick={(e) => {
-                                e.stopPropagation();  // Prevent input focus overriding
-                                setShowSuggestions(prev => !prev); // ✅ Toggle dropdown manually
+                                e.stopPropagation();
+                                if (sessionCategory) setShowSuggestions(prev => !prev);
                             }}
                         />
                     </div>
 
-                    {showSuggestions && (
+                    {showSuggestions && sessionCategory && (
                         <div className="absolute top-full left-0 bg-teal-700 text-white border rounded w-full max-h-[150px] overflow-y-auto shadow-lg z-50">
                             {filteredTopics.map((t, i) => (
                                 <div key={i} onMouseDown={() => handleSelectTopic(t)}
                                     className="p-2 cursor-pointer hover:bg-teal-800">{t}</div>
                             ))}
 
-                            {/* ✅ Always show the searchTopic as the last option (even if exists) */}
                             {searchTopic && (
                                 <div
                                     onMouseDown={() => {
-                                        // If it's a new topic, add to list dynamically
-                                        if (!topicList.some(t => t.toLowerCase() === searchTopic.toLowerCase())) {
+                                        if (!filteredTopics.some(t => t.toLowerCase() === searchTopic.toLowerCase())) {
                                             setTopicList(prev => [...prev, searchTopic]);
                                         }
                                         handleSelectTopic(searchTopic);
@@ -228,7 +250,6 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                                 </div>
                             )}
                         </div>
-
                     )}
                 </div>
 

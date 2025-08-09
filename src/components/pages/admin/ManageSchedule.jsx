@@ -12,9 +12,10 @@ import { FaRotate } from 'react-icons/fa6';
 import Loader from '../../ui/Loader';
 
 function ManageSchedule() {
-    const headers = ["Candidate Name", "Email", "Session Date", "Session Time", "Status", "Session Topic"];
-    const keys = ["candidate_name", "email", "session_date", "session_time", "status", "topic"];
+    const headers = ["Candidate Name", "Email", "Session Date", "Session Time", "Session Topic", "Session Category", "Status",];
+    const keys = ["candidate_name", "email", "session_date", "session_time", "topic", "topic_category", "status",];
     const [topics, setTopics] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [userData, setUserData] = useState([]);
     const [sessionData, setSessionData] = useState([])
@@ -49,12 +50,12 @@ function ManageSchedule() {
     const handleCloseModal = () => {
         setShowModal(false);
     }
-    useEffect(() => {
-        if (userRole === "hr") {
-            fetchUserData();
-            fetchSessionData();
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (userRole === "hr") {
+    //         fetchUserData();
+    //         fetchSessionData();
+    //     }
+    // }, []);
     const fetchUserData = async () => {
         try {
             const JsonBody = {
@@ -64,6 +65,7 @@ function ManageSchedule() {
             if (response.success === true || response.status === 200) {
                 setUserData(response.candidates);
                 setTopics(response.topics);
+                setCategories(response.distinct_topic_category);
             }
 
         } catch (error) {
@@ -83,7 +85,7 @@ function ManageSchedule() {
                     session_date: getDate(session.session_time),
                     session_time: getTime(session.session_time),
                 }));
-                console.log("Processed Session Data:", processed);
+                // console.log("Processed Session Data:", processed);
                 setSessionData(processed);
             }
 
@@ -94,13 +96,15 @@ function ManageSchedule() {
     }
     const handleSaveSchedule = async (scheduleData) => {
         try {
+            setLoadingTable(true);
             const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
-
             if (response.message === "request updated" || response.success === true) {
-                fetchSessionData();   // new data refresh
+                await fetchSessionData();   // new data refresh
+                setLoadingTable(false);
             } else {
             }
         } catch (error) {
+            setLoadingTable(false);
             console.error("Error inserting schedule:", error);
         }
     };
@@ -192,6 +196,7 @@ function ManageSchedule() {
                 onClose={handleCloseModal}
                 userData={userData}
                 topics={topics}
+                categories={categories}
                 hrId={userId}
                 onSave={handleSaveSchedule}
             />
