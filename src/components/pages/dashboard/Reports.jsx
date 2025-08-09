@@ -7,6 +7,15 @@ import { FaRotate } from "react-icons/fa6";
 import CustomTooltip from "../../ui/CustomTooltip";
 import Loader from "../../ui/Loader";
 
+
+export default function Reports() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [reportsData, setReportsData] = useState([]);
+  const [loading, setLoading] = useState(false); // Full page loader
+  const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
+  const [rotation, setRotation] = useState(false);
+  const [error, setError] = useState(null);
 const headers = [
   "Name",
   "Email",
@@ -38,15 +47,6 @@ const keys = [
   "score",
   "feedback"
 ];
-
-export default function Reports() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [reportsData, setReportsData] = useState([]);
-  const [loading, setLoading] = useState(false); // Full page loader
-  const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
-  const [rotation, setRotation] = useState(false);
-  const [error, setError] = useState(null);
 
   const hrId = sessionStorage.getItem("user_id");
 
