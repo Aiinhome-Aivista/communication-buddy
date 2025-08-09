@@ -6,12 +6,29 @@ body {
 /* font-family: "Ubuntu", sans-serif; */
 }
 
-.scrollbar ::-webkit-scrollbar {
+/* .scrollbar ::-webkit-scrollbar {
   display: none;
-  /* background-color: rgb(32, 119, 103); */
 
-}
+} */
 /* ::-webkit-scrollbar-thumb {
   background-color: #04092b;
   border-radius:  .25rem;
 } */
+ ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2E4257;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2E4257;
+}

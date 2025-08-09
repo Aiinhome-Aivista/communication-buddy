@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../provider/AuthProvider";
 import { useTopic } from "../../provider/TopicProvider";
+import { saveChatSession } from "../../utils/saveChatSessionReview";
 
 // static menu list
 const menuList = [
@@ -27,6 +28,12 @@ const menuList = [
   {
     icon: <BookOpenCheck size={20} />,
     title: "Practice & Test",
+    path: null,
+    allowedRoles: ["candidate"],
+  },
+  {
+    icon: <BookOpenCheck size={20} />,
+    title: "Test",
     path: null,
     allowedRoles: ["candidate"],
   },
@@ -61,12 +68,14 @@ export default function AppSidebar() {
 
   const { getTopicData } = useTopic();
   const navigate = useNavigate();
-
+  const topicData = getTopicData;
+  const userRole = sessionStorage.getItem("userRole")?.toLowerCase() || "";
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+  const matchedRecord = topicData.find(item => item.user_id === userId);
+  const hrId = matchedRecord?.hr_id || null;
   const [collapsed, setCollapsed] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [practiceSubmenu, setPracticeSubmenu] = useState([]);
-
-  const userRole = sessionStorage.getItem("userRole")?.toLowerCase() || "";
 
   // Fetch submenu items for candidate role
   useEffect(() => {
@@ -82,9 +91,25 @@ export default function AppSidebar() {
     item.allowedRoles.includes(userRole)
   );
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+
     navigate("/");
+    if (userRole === "candidate") {
+      // sessionStorage বা context থেকে conversation ডাটা নাও
+      const topic = sessionStorage.getItem("topic");
+      const conversation = JSON.parse(sessionStorage.getItem("fullConversation"));
+      const aiResponse = sessionStorage.getItem("aiResponse");
+      if (!aiResponse.includes("time is up")) {
+        await saveChatSession({
+          userId,
+          hrId,
+          topic,
+          fullConversation: conversation
+        });
+      }
+    }
+    logout();
+
   };
 
   return (

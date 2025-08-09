@@ -35,6 +35,25 @@ export const getTime = (isoString) => {
   minutes = minutes.toString().padStart(2, '0');
   return `${hours}:${minutes} ${ampm}`;
 };
+// Time-only format function
+export const formatTimeOnly = (timeString) => {
+  if (!timeString) return "";
+
+  // Dummy date দিয়ে parse করা
+  const date = new Date(`1970-01-01T${timeString}Z`);
+
+  if (isNaN(date.getTime())) return ""; // invalid হলে খালি string
+
+  let hours = date.getUTCHours();
+  let minutes = date.getUTCMinutes();
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+  minutes = minutes.toString().padStart(2, "0");
+
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 
 
 

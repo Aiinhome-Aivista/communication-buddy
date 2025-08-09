@@ -6,13 +6,19 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useNavigate, useParams } from "react-router";
 import { useTopic } from "../../../provider/TopicProvider";
-
+import { greettingMessage, saveChatSession } from "../../../utils/saveChatSessionReview";
 const TextReader = ({
   chatStarted,
   setChatStarted,
   isTerminated,
   setIsTerminated,
+  startMessage,
 }) => {
+  console.log('startMessage', startMessage, chatSession)
+  const initialMessage =
+    startMessage && startMessage.length > 0
+      ? startMessage[0]
+      : { role: "ai", message: "Hello! Welcome!", time: new Date().toLocaleTimeString() };
   const chatRef = useRef(null);
   const stageRef = useRef("language");
   const languageRef = useRef("en-IN");
@@ -21,16 +27,18 @@ const TextReader = ({
   const [random4DigitID, setRandomID] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [conversationStage, setConversationStage] = useState("language");
-  const [session, setSession] = useState([chatSession[0]]);
+  const [session, setSession] = useState([initialMessage]);
   const [isReading, setIsReading] = useState(false);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [isMicActive, setIsMicActive] = useState(false);
-  const [fullConversation, setFullConversation] = useState([chatSession[0].message]);
+  const [fullConversation, setFullConversation] = useState([initialMessage]);
   const [isAILoading, setIsAILoading] = useState(false);
   const [response, setresponse] = useState("");
   const [showTimeUpPopup, setShowTimeUpPopup] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false); // ✅ Manage speech state
+  const fullName = sessionStorage.getItem("userName");
+  const userName = fullName.split(" ")[0];
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const navigate = useNavigate();
@@ -40,7 +48,7 @@ const TextReader = ({
     setRandomID(id);
     setConversationStage("language");
     setCurrentIndex(0);
-    setSession([chatSession[0]]);
+    setSession([initialMessage]);
   };
 
   useEffect(() => {
@@ -49,8 +57,8 @@ const TextReader = ({
 
   useEffect(() => {
     // ✅ Reset everything on fresh load
-    setSession([chatSession[0]]);
-    setFullConversation([chatSession[0].message]);
+    setSession([initialMessage]);
+    setFullConversation([initialMessage.message]);
     setConversationStage("language");
     stageRef.current = "language";
     languageRef.current = "en-IN";
@@ -65,133 +73,55 @@ const TextReader = ({
     setChatStarted(false);
   }, []); // only on mount
 
-  // ✅ Native Speech API
-  // const speakMessage = (text, lang = languageRef.current) => {
-  //   return new Promise((resolve) => {
-  //     if (!text) return resolve();
-
-  //     window.speechSynthesis.cancel(); // stop any ongoing speech
-  //     const utterance = new SpeechSynthesisUtterance(text);
-  //     utterance.lang = lang;
-
-  //     setIsSpeaking(true);
-
-  //     utterance.onend = () => {
-  //       setIsSpeaking(false);
-  //       console.log("✅ Speech ended:", text);
-  //       resolve();
-  //     };
-
-  //     utterance.onerror = () => {
-  //       setIsSpeaking(false);
-  //       console.error("❌ Speech synthesis error");
-  //       resolve();
-  //     };
-
-  //     window.speechSynthesis.speak(utterance);
-  //   });
-  // };
-  // ✅ Native Speech API with Indian English & Hindi voice selection
-  // const speakMessage = (text, lang = languageRef.current) => {
-  //   return new Promise((resolve) => {
-  //     if (!text) return resolve();
-
-  //     window.speechSynthesis.cancel(); // stop any ongoing speech
-
-  //     const utterance = new SpeechSynthesisUtterance(text);
-  //     utterance.lang = lang;
-
-  //     // ✅ Set slower speech rate for better clarity
-  //     utterance.rate = 0.7;
-  //     utterance.pitch = 1;
-
-  //     // ✅ Select appropriate voice dynamically
-  //     const voices = window.speechSynthesis.getVoices();
-
-  //     let selectedVoice = null;
-  //     if (lang === "en-IN") {
-  //       // Indian English voice
-  //       selectedVoice = voices.find(v => v.lang === "en-IN")
-  //         || voices.find(v => v.lang.startsWith("en")); // fallback
-  //     }
-  //     else if (lang === "hi-IN") {
-  //       // Hindi voice
-  //       selectedVoice = voices.find(v => v.lang === "hi-IN")
-  //         || voices.find(v => v.lang.startsWith("hi")); // fallback
-  //     }
-
-  //     if (selectedVoice) {
-  //       utterance.voice = selectedVoice;
-  //       console.log("🎤 Using voice:", selectedVoice.name, selectedVoice.lang);
-  //     }
-
-  //     setIsSpeaking(true);
-
-  //     utterance.onend = () => {
-  //       setIsSpeaking(false);
-  //       console.log("✅ Speech ended:", text);
-  //       resolve();
-  //     };
-
-  //     utterance.onerror = () => {
-  //       setIsSpeaking(false);
-  //       console.error("❌ Speech synthesis error");
-  //       resolve();
-  //     };
-
-  //     window.speechSynthesis.speak(utterance);
-  //   });
-  // };
-
   const speakMessage = (text, lang = languageRef.current) => {
-  return new Promise((resolve) => {
-    if (!text) return resolve();
+    return new Promise((resolve) => {
+      if (!text) return resolve();
 
-    window.speechSynthesis.cancel();
+      window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
 
-    // ✅ Make speech slow & natural
-    utterance.rate = 0.8;  // slower than before
-    utterance.pitch = 1.1;  // slight variation to sound natural
+      // ✅ Make speech slow & natural
+      utterance.rate = 0.8;  // slower than before
+      utterance.pitch = 1.1;  // slight variation to sound natural
 
-    const voices = window.speechSynthesis.getVoices();
+      const voices = window.speechSynthesis.getVoices();
 
-    // ✅ Filter Indian female voice
-    let selectedVoice = null;
-    if (lang === "en-IN") {
-      selectedVoice = voices.find(v => v.lang === "en-IN" && v.name.toLowerCase().includes("female")) ||
-                      voices.find(v => v.name.toLowerCase().includes("india") && v.name.toLowerCase().includes("female")) ||
-                      voices.find(v => v.lang === "en-IN") ||
-                      voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("female"));
-    } else if (lang === "hi-IN") {
-      selectedVoice = voices.find(v => v.lang === "hi-IN" && v.name.toLowerCase().includes("female")) ||
-                      voices.find(v => v.lang.startsWith("hi") && v.name.toLowerCase().includes("female"));
-    }
+      // ✅ Filter Indian female voice
+      let selectedVoice = null;
+      if (lang === "en-IN") {
+        selectedVoice = voices.find(v => v.lang === "en-IN" && v.name.toLowerCase().includes("female")) ||
+          voices.find(v => v.name.toLowerCase().includes("india") && v.name.toLowerCase().includes("female")) ||
+          voices.find(v => v.lang === "en-IN") ||
+          voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("female"));
+      } else if (lang === "hi-IN") {
+        selectedVoice = voices.find(v => v.lang === "hi-IN" && v.name.toLowerCase().includes("female")) ||
+          voices.find(v => v.lang.startsWith("hi") && v.name.toLowerCase().includes("female"));
+      }
 
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-      console.log("🎤 Using Indian Female Voice:", selectedVoice.name);
-    } else {
-      console.warn("⚠️ No female Indian voice found, using default.");
-    }
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log("🎤 Using Indian Female Voice:", selectedVoice.name);
+      } else {
+        console.warn("⚠️ No female Indian voice found, using default.");
+      }
 
-    setIsSpeaking(true);
+      setIsSpeaking(true);
 
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      resolve();
-    };
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        resolve();
+      };
 
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      resolve();
-    };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        resolve();
+      };
 
-    window.speechSynthesis.speak(utterance);
-  });
-};
+      window.speechSynthesis.speak(utterance);
+    });
+  };
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -251,7 +181,7 @@ const TextReader = ({
         body: JSON.stringify({
           session_id: random4DigitID?.toString(),
           topic: topic,
-          time: "5 min",
+          time: "10 min",
           user_input: updatedUserInput,
           language: updatedUserLanguage
         }),
@@ -267,6 +197,7 @@ const TextReader = ({
       console.error("API error:", error);
       setIsAILoading(false);
       await speakAndAdd("There was a problem connecting to the server.");
+      return;
     }
   };
 
@@ -281,14 +212,45 @@ const TextReader = ({
     if (stageRef.current === "language") {
       let message = "";
       let validLang = false;
+      setIsAILoading(true)
 
       if (text.toLowerCase().includes("english")) {
         languageRef.current = "en-IN";
-        message = "Great! Let's continue in English. Thank you for your response.";
+        // message = "Great! Let's continue in English. Thank you for your response.";
+        try {
+          const res = await greettingMessage({
+            username: userName,
+            topic: topic,
+            userinput: "english",
+          });
+          console.log('res', res);
+          const data = await res.json();
+          setIsAILoading(false)
+
+          const aiMsg = data?.message
+          message = aiMsg || "Great! Let's continue in English. Thank you for your response.";
+        } catch (err) {
+          console.error("Error fetching greeting:", err);
+        }
         validLang = true;
       } else if (text.toLowerCase().includes("hindi") || text.toLowerCase().includes("हिंदी")) {
         languageRef.current = "hi-IN";
-        message = "बहुत बढ़िया! आइए हिंदी में आगे बढ़ते हैं। आपके उत्तर के लिए धन्यवाद।";
+        // message = "बहुत बढ़िया! आइए हिंदी में आगे बढ़ते हैं। आपके उत्तर के लिए धन्यवाद।";
+        try {
+          const res = await greettingMessage({
+            username: userName,
+            topic: topic,
+            userinput: "hindi",
+          });
+          console.log('res', res);
+          const data = await res.json();
+          setIsAILoading(false)
+
+          const aiMsg = data?.message
+          message = aiMsg || "Great! Let's continue in English. Thank you for your response.";
+        } catch (err) {
+          console.error("Error fetching greeting:", err);
+        }
         validLang = true;
       } else {
         message = "Language not recognized. Please respond with English, हिंदी (Hindi), or বাংলা (Bengali).";
@@ -297,13 +259,7 @@ const TextReader = ({
       await speakAndAdd(message);
 
       if (validLang) {
-        setTimeout(() => {
-          const topicMessage =
-            languageRef.current === "hi-IN"
-              ? `हमारा विषय ${topic} है और आइए इस पर अपनी बातचीत शुरू करें।`
-              : `Our topic is ${topic} and let's begin our communication on it.`;
-          speakAndAdd(topicMessage);
-        }, 3000);
+        setIsAILoading(true)
         callChatAPI(text);
         setConversationStage("awaitingDetails");
         stageRef.current = "awaitingDetails";
@@ -316,31 +272,26 @@ const TextReader = ({
   useEffect(() => {
     const lowerMsg = response.toLowerCase();
     if (lowerMsg.includes("time is up") || lowerMsg.includes("thank you for the discussion")) {
-      sendFinalConversation();
+      // sendFinalConversation();
+      saveChatSession({
+        userId,
+        hrId,
+        topic,
+        fullConversation
+      });
       setIsAILoading(false);
       setIsTerminated(true);
       setTimeout(() => setShowTimeUpPopup(true), 5000);
     }
   }, [response]);
-
-  const sendFinalConversation = async () => {
-    try {
-      await fetch("http://122.163.121.176:3004/chat-session-review", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: userId,
-          hr_id: hrId,
-          topic: topic,
-          chat_history: fullConversation,
-          use_lstm: false
-        }),
-      });
-      console.log("✅ Final conversation saved");
-    } catch (error) {
-      console.error("❌ Error saving conversation:", error);
+  useEffect(() => {
+    if (response !== '') {
+      sessionStorage.setItem("aiResponse", response);
+      sessionStorage.setItem("fullConversation", JSON.stringify(fullConversation));
+      sessionStorage.setItem("topic", topic);
     }
-  };
+  }, [response]);
+
 
   useEffect(() => {
     if (!chatStarted || currentIndex >= session.length || isReading) return;
@@ -519,8 +470,8 @@ const TextReader = ({
                   setShowTimeUpPopup(false);
                   stopSpeaking(); // ✅ replaced cancel()
 
-                  setSession([chatSession[0]]);
-                  setFullConversation([chatSession[0].message]);
+                  setSession([initialMessage]);
+                  setFullConversation([initialMessage.message]);
                   setConversationStage("language");
                   stageRef.current = "language";
                   languageRef.current = "en-IN";
