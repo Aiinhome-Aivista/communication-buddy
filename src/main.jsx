@@ -7,6 +7,8 @@ import { TopicProvider } from "./provider/TopicProvider.jsx";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import './utils/ColorTemplate.css';
+
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
     <TopicProvider>

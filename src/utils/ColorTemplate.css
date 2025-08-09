@@ -1,0 +1,40 @@
+:root {
+    --ptin-color-blueice: #569CB4;
+    --ptin-color-slate-blue: #6BA4B8;
+    --ptin-color-shade-cyan: #2b94ba;
+    --ptin-color-hover-cyan: #1d637c;
+    --ptin-color-hover-blue: #0a536d;
+
+    --ptin-color-platinum-silver: #CECECE;
+    --ptin-color-chinese-silver: #ccc;
+    --ptin-color-silver: #CCCCCC;
+    --ptin-color-hover-white: #edf6f6;
+    --ptin-color-white: #FFFFFF;
+    --ptin-color-white-8: #f8f8f8;
+    --ptin-color-white-bg: #EBEBEB;
+    --ptin-color-light-grey-50: #dddddd;
+    --ptin-color-border: #dddddd;
+
+    --ptin-color-black: black;
+    --ptin-color-dark-charcoal: #333333;
+    --ptin-color-Silver-chalice: #afaeaa;
+    --ptin-color-midnight-blue: #0C2340;
+    --ptin-color-dark-blue: #00000026;
+    --ptin-color-boxshadow: #00000026;
+    --ptin-color-dark-grey6: #676767;
+
+    --ptin-color-font-gray: #535252;
+    --ptin-color-font-dark: #555555;
+    --ptin-color-dark-grey: #555555;
+    --ptin-color-grey-chateau: #97999B;
+    --ptin-color-grey-bx: #acacacc0;
+    --ptin-color-font-gray2: #686767;
+    --ptin-color-font-greym: #898886;
+
+    --ptin-color-black: black;
+    --ptin-color-green: green;
+    --ptin-color-red: red;
+    --ptin-color-amber: #FFBF00;
+    --ptin-color-Orange: #f57309;
+
+}
