@@ -1,6 +1,6 @@
 export const saveChatSession = async ({ userId, hrId, topic, fullConversation }) => {
     try {
-        await fetch("http://122.163.121.176:3004/chat-session-review", {
+        await fetch("https://chatbuddyapi1.site:3030/chat-session-review", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -21,7 +21,7 @@ export const saveChatSession = async ({ userId, hrId, topic, fullConversation })
 
 export const greettingMessage = async ({ username, topic, userinput }) => {
     try {
-        const response = await fetch("http://122.163.121.176:3004/start_session", {
+        const response = await fetch("https://chatbuddyapi1.site:3030/start_session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

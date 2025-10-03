@@ -21,90 +21,91 @@ const Loader = () => (
   <div className="text-center text-teal-300 py-6"></div>
 );
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <Login />
+        </Suspense>
+      ),
+    },
+    {
+      path: "/dashboard",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <AppLayout />
+        </Suspense>
+      ),
+      children: [
+        {
+          path: "/dashboard",
+          element: (
+            <Suspense fallback={<Loader />}>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            </Suspense>
+          ),
+          errorElement: <div>Error loading dashboard</div>,
+          children: [
+            {
+              path: "/dashboard/",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <Default />
+                </Suspense>
+              ),
+            },
+            {
+              path: "/dashboard/test/:id?",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <PracticeAndTest />
+                </Suspense>
+              ),
+            },
+            {
+              path: "/dashboard/reports",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <Reports />
+                </Suspense>
+              ),
+            },
+            {
+              path: "/dashboard/notifications",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <RequestNotification />
+                </Suspense>
+              ),
+            },
+            {
+              path: "/dashboard/topics",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <ProtectedRoute>
+                    <TopicList />
+                  </ProtectedRoute>
+                </Suspense>
+              ),
+            },
+            {
+              path: "/dashboard/user",
+              element: <ManageUser />,
+            },
+            {
+              path: "/dashboard/schedule",
+              element: <ManageSchedule />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: (
-      <Suspense fallback={<Loader />}>
-        <Login />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <Suspense fallback={<Loader />}>
-        <AppLayout />
-      </Suspense>
-    ),
-    children: [
-      {
-        path: "/dashboard",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          </Suspense>
-        ),
-        errorElement: <div>Error loading dashboard</div>,
-        children: [
-          {
-            path: "/dashboard/",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <Default />
-              </Suspense>
-            ),
-          },
-          {
-            path: "/dashboard/test/:id?",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <PracticeAndTest />
-              </Suspense>
-            ),
-          },
-          {
-            path: "/dashboard/reports",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <Reports />
-              </Suspense>
-            ),
-          },
-          {
-            path: "/dashboard/notifications",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <RequestNotification />
-              </Suspense>
-            ),
-          },
-          {
-            path: "/dashboard/topics",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <ProtectedRoute>
-                  <TopicList />
-                </ProtectedRoute>
-              </Suspense>
-            ),
-          },
-          {
-            path: "/dashboard/user",
-            element: (
-              <ManageUser />
-            ),
-          },
-          {
-            path: "/dashboard/schedule",
-            element: (
-              <ManageSchedule />
-            ),
-          },
-        ],
-      },
-    ],
-  },
-]);
+    basename: "/communication_buddy",   // ✅ Correct placement
+  }
+);

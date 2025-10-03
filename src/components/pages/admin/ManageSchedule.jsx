@@ -24,16 +24,32 @@ function ManageSchedule() {
     const [loading, setLoading] = useState(false); // Full page loader
     const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
     const [rotation, setRotation] = useState(false);
+
     // State for pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    // Paginate the reports data
+    // State for search
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Filtered data based on search term
+    const filteredData = sessionData.filter(item => {
+        const term = searchTerm.toLowerCase();
+        return (
+            item.candidate_name?.toLowerCase().includes(term) ||
+            item.email?.toLowerCase().includes(term) ||
+            item.topic?.toLowerCase().includes(term) ||
+            item.topic_category?.toLowerCase().includes(term)
+        );
+    });
+
+    // Paginate the filtered data
     const { currentItems, totalPages } = Paginate(
-        sessionData,
+        filteredData,
         currentPage,
         itemsPerPage
     );
+
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     // Handle items per page change
@@ -41,43 +57,36 @@ function ManageSchedule() {
         setItemsPerPage(Number(e.target.value));
         setCurrentPage(1);
     };
+
     const handleExport = () => {
         alert("Exporting to Excel...");
     };
+
     const handleNewSchedule = () => {
         setShowModal(true);
-    }
+    };
+
     const handleCloseModal = () => {
         setShowModal(false);
-    }
-    // useEffect(() => {
-    //     if (userRole === "hr") {
-    //         fetchUserData();
-    //         fetchSessionData();
-    //     }
-    // }, []);
+    };
+
     const fetchUserData = async () => {
         try {
-            const JsonBody = {
-                "hr_id": userId
-            }
+            const JsonBody = { "hr_id": userId };
             const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
             if (response.success === true || response.status === 200) {
                 setUserData(response.candidates);
                 setTopics(response.topics);
                 setCategories(response.distinct_topic_category);
             }
-
         } catch (error) {
             console.error('Error fetching Data', error.message);
-
         }
-    }
+    };
+
     const fetchSessionData = async () => {
         try {
-            const JsonBody = {
-                "p_user_id": userId
-            }
+            const JsonBody = { "p_user_id": userId };
             const response = await fatchedPostRequest(postURL.getScheduleDataHrWise, JsonBody);
             if (response.message === "Success" || response.Success === true) {
                 const processed = (response.data || []).map((session) => ({
@@ -85,29 +94,27 @@ function ManageSchedule() {
                     session_date: getDate(session.session_time),
                     session_time: getTime(session.session_time),
                 }));
-                // console.log("Processed Session Data:", processed);
                 setSessionData(processed);
             }
-
         } catch (error) {
             console.error('Error fetching Data', error.message);
-
         }
-    }
+    };
+
     const handleSaveSchedule = async (scheduleData) => {
         try {
             setLoadingTable(true);
             const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
             if (response.message === "request updated" || response.success === true) {
                 await fetchSessionData();   // new data refresh
-                setLoadingTable(false);
-            } else {
             }
         } catch (error) {
-            setLoadingTable(false);
             console.error("Error inserting schedule:", error);
+        } finally {
+            setLoadingTable(false);
         }
     };
+
     // Initial data load
     useEffect(() => {
         if (userRole === 'hr') {
@@ -135,6 +142,7 @@ function ManageSchedule() {
             setTimeout(() => setRotation(false), 500);
         }
     };
+
     return (
         <div className="text-teal-100 p-2">
             <div className="flex justify-between items-center mb-6">
@@ -160,6 +168,11 @@ function ManageSchedule() {
                         <input
                             type="text"
                             placeholder="Search User"
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
                             className="pl-10 pr-3 py-2 rounded-lg bg-teal-700 text-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
                     </div>
@@ -169,18 +182,17 @@ function ManageSchedule() {
                         className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
                     >
                         <Plus className="mr-2" />
-                        Add New SChedule
+                        Add New Schedule
                     </button>
                 </div>
             </div>
+
             <ReportTable
                 tableData={currentItems}
                 headers={headers}
                 isShowAction={true}
-                // raiseRequest={handleRaiseRequest}
                 keys={keys}
                 loadingTable={loadingTable}
-
             />
 
             <Pagination
@@ -190,6 +202,7 @@ function ManageSchedule() {
                 onPageChange={paginate}
                 onItemsPerPageChange={handleItemsPerPageChange}
             />
+
             <AddScheduleModal
                 isOpen={showModal}
                 title="Add New Schedule"
@@ -200,10 +213,10 @@ function ManageSchedule() {
                 hrId={userId}
                 onSave={handleSaveSchedule}
             />
+
             {/* Full page loader */}
             <Loader show={loading} />
         </div>
-
     )
 }
 

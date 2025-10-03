@@ -64,9 +64,12 @@ const keys = [
 
   // Common fetch function
   const fetchReports = async () => {
-    const response = await fetch("http://122.163.121.176:3004/hr-sessions", {
+    const response = await fetch("https://chatbuddyapi1.site:3030/hr-sessions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" ,
+        "X-Custom-Referrer": window.location.href // full page URL
+      },
+    
       body: JSON.stringify({ hr_id: parseInt(hrId) }),
     });
 

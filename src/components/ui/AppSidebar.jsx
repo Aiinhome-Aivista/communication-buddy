@@ -2,6 +2,7 @@ import {
   Bell,
   BookOpenCheck,
   ChartColumnStacked,
+  ChevronLeft,
   ChevronRight,
   LogOut,
   List,
@@ -12,20 +13,19 @@ import {
   Hourglass,
   CircleEqual
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  useRef,  } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../provider/AuthProvider";
 import { useTopic } from "../../provider/TopicProvider";
 import { saveChatSession } from "../../utils/saveChatSessionReview";
+import { useContext } from "react";
+import { UserContext } from "../../context/Context";
+
+
 
 // static menu list
 const menuList = [
-  // {
-  //   icon: <Bell size={20} />,
-  //   title: "Notifications",
-  //   path: "/dashboard/notifications",
-  //   allowedRoles: ["hr"],
-  // },
+
   {
     icon: <BookOpenCheck size={20} />,
     title: "Practice & Test",
@@ -38,12 +38,7 @@ const menuList = [
     path: null,
     allowedRoles: ["candidate"],
   },
-  // {
-  //   icon: <List size={20} />,
-  //   title: "Topics",
-  //   path: "/dashboard/topics",
-  //   allowedRoles: ["candidate"],
-  // },
+
   {
     icon: <UserPlus size={20} />,
     title: "Users",
@@ -76,18 +71,57 @@ export default function AppSidebar() {
   const hrId = matchedRecord?.hr_id || null;
   const [collapsed, setCollapsed] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const [hovering, setHovering] = useState(false);
   const [practiceSubmenu, setPracticeSubmenu] = useState([]);
+  const [width, setWidth] = useState(collapsed ? 80 : 320); // starting widths
+  const isResizing = useRef(false);
 
-  // Fetch submenu items for candidate role
-  // useEffect(() => {
-  //   if (userRole === "candidate") {
-  //     const assignedTopics = getTopicData.filter(topic => topic.status === "assigned");
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
-  //     // Fetch topics for candidate
-  //     setPracticeSubmenu(assignedTopics);
-  //   }
-  // }, [userRole, getTopicData]);
-  // Fetch submenu items for candidate role (grouped by category)
+   const { setUserData } = useContext(UserContext);
+
+  const startResizing = () => { isResizing.current = true; document.body.style.cursor = "col-resize"; };
+  const stopResizing = () => { isResizing.current = false; document.body.style.cursor = ""; };
+  const resize = (e) => {
+    if (isResizing.current) {
+      const newWidth = e.clientX;
+      if (newWidth > 80 && newWidth < 500) {
+        setWidth(newWidth);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", resize);
+    window.addEventListener("mouseup", stopResizing);
+    return () => {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+    };
+  }, []);
+
+  const getTopicDetails = async (data)=> {
+    console.log("getTopicDetails", data);
+       
+      
+
+      const response = await fetch("https://chatbuddyapi1.site:3030/get_session_status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+  "user_id": data.user_id,
+  "hr_id": data.hr_id,
+  "topic": data.topic_name
+}),
+      });
+
+      const getResponse = await response.json();
+      console.log("getSessionStatus",getResponse);
+
+    setUserData(getResponse);
+  }
+
+
   useEffect(() => {
     if (userRole === "candidate") {
       const assignedTopics = getTopicData.filter(
@@ -133,14 +167,26 @@ export default function AppSidebar() {
   };
 
   return (
-    <div
-      className={`sidebar ${collapsed ? "w-20" : "w-64"
-        } bg-slate-800 text-white h-[calc(100vh-8rem)] border-r-4 border-teal-500 p-3 relative flex flex-col transition-all duration-300 ease-in-out`}
+  <div
+      className={`sidebar bg-slate-800 text-white border-r-4 border-teal-500 p-3 relative flex flex-col transition-[width] duration-200 ease-linear`}
+      style={{ width: `${collapsed ? 80 : width}px`, height: "calc(100vh - 8rem)" }}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
+      {/* Drag handle */}
+      <div
+        className={`absolute top-0 right-0 h-full w-2 ${hovering ? "bg-teal-500/30" : "bg-transparent"} cursor-col-resize flex items-center justify-end pr-1 transition-all duration-200`}
+        onMouseDown={startResizing}
+        style={{ zIndex: 10 }}
+      >
+        {hovering && (
+          collapsed ? <span className="text-white"></span> : <span className="text-white"></span>
+        )}
+      </div>
+
       {/* Header */}
       <div
-        className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"
-          }`}
+        className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"}`}
       >
         {!collapsed && (
           <h2 className="text-teal-200 block">
@@ -152,11 +198,12 @@ export default function AppSidebar() {
           </h2>
         )}
 
-        <ChevronRight
-          className={`text-teal-400 cursor-pointer transition-transform duration-300 ${collapsed ? "rotate-180" : ""
-            }`}
+        <span
+          className={`text-teal-400 cursor-pointer transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
           onClick={() => setCollapsed((prev) => !prev)}
-        />
+        >
+          ▶
+        </span>
       </div>
 
       {/* Sidebar body */}
@@ -210,8 +257,12 @@ export default function AppSidebar() {
                             <NavLink
                               key={subIndex}
                               to={`/dashboard/test/${subItem.topic_name}`}
-                              className="block px-3 py-1 text-sm text-teal-300 hover:text-white hover:bg-teal-600/10 rounded truncate"
-                            >
+                              onClick={ () => {getTopicDetails(subItem); setSelectedTopic(subItem.topic_name);}}
+className={
+  selectedTopic === subItem.topic_name
+    ? "bg-teal-600 text-white block px-3 py-1 text-sm rounded truncate"
+    : "text-teal-300 hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
+}                            >
                               {`${subIndex + 1}. ${subItem.topic_name}`}
                             </NavLink>
                           ))}
