@@ -95,16 +95,16 @@ const TextReader = ({
 
   useEffect(() => {
     window.speechSynthesis.cancel();   // ✅ stop any speech on mount
-    
+
     // ✅ Clear localStorage on fresh load for clean state
     localStorage.removeItem("voiceGender");
-    
+
     // ✅ Set default voice gender to female
     const defaultGender = "female";
     localStorage.setItem("voiceGender", defaultGender);
     setVoiceGender(defaultGender);
     console.log("🎵 Fresh session - Voice gender reset to:", defaultGender);
-    
+
     // ✅ Initialize voices for better cross-browser support
     if (window.speechSynthesis.getVoices().length === 0) {
       window.speechSynthesis.addEventListener('voiceschanged', () => {
@@ -144,9 +144,9 @@ const TextReader = ({
     const handleVoiceGenderChange = () => {
       const newGender = localStorage.getItem("voiceGender") || "female";
       const currentGender = voiceGender;
-      
+
       console.log("🎵 Voice gender change event received:", { currentGender, newGender });
-      
+
       if (currentGender !== newGender) {
         // ✅ Stop any current speech before changing voice
         if (window.speechSynthesis.speaking) {
@@ -154,10 +154,10 @@ const TextReader = ({
           setIsSpeaking(false);
           console.log("🛑 Stopped current speech for voice change");
         }
-        
+
         setVoiceGender(newGender);
         console.log("✅ Voice gender updated from", currentGender, "to", newGender, "- will apply immediately to next response");
-        
+
         // ✅ Optional: Test the new voice with a quick sample (uncomment if needed)
         // setTimeout(() => {
         //   speakMessage(`Voice changed to ${newGender}`);
@@ -172,22 +172,22 @@ const TextReader = ({
       const currentGenderInStorage = localStorage.getItem("voiceGender") || "female";
       if (voiceGender !== currentGenderInStorage) {
         console.log("🔄 Detected voice gender mismatch, syncing immediately:", voiceGender, "→", currentGenderInStorage);
-        
+
         // Stop current speech if any
         if (window.speechSynthesis.speaking) {
           window.speechSynthesis.cancel();
           setIsSpeaking(false);
         }
-        
+
         setVoiceGender(currentGenderInStorage);
       }
     };
 
     window.addEventListener("voiceGenderChanged", handleVoiceGenderChange);
-    
+
     // Check more frequently for better responsiveness (every 1 second)
     const syncInterval = setInterval(checkVoiceGender, 1000);
-    
+
     return () => {
       window.removeEventListener("voiceGenderChanged", handleVoiceGenderChange);
       clearInterval(syncInterval);
@@ -266,7 +266,7 @@ const TextReader = ({
             // Different browsers handle voice loading differently
             let attempts = 0;
             const maxAttempts = 10;
-            
+
             const checkVoices = () => {
               const voices = window.speechSynthesis.getVoices();
               if (voices.length > 0) {
@@ -281,7 +281,7 @@ const TextReader = ({
                   voiceResolve(window.speechSynthesis.getVoices());
                 };
                 window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
-                
+
                 // Fallback timeout for stubborn browsers
                 setTimeout(() => {
                   window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
@@ -289,7 +289,7 @@ const TextReader = ({
                 }, 2000);
               }
             };
-            
+
             checkVoices();
           }
         });
@@ -303,13 +303,13 @@ const TextReader = ({
         utterance.rate = 0.80;   // Optimal speed for Indian accent clarity
         utterance.pitch = 0.9;   // Slightly lower pitch for warmer, more natural tone
         utterance.volume = 0.8;  // Clear but not overwhelming volume
-        
+
         // Browser-specific adjustments for Indian voices
         const isChrome = /Chrome/.test(navigator.userAgent);
         const isFirefox = /Firefox/.test(navigator.userAgent);
         const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         const isEdge = /Edg/.test(navigator.userAgent);
-        
+
         if (isFirefox) {
           utterance.rate = 0.8; // Firefox tends to be faster, slow down more
           utterance.pitch = 0.85; // Lower pitch for Firefox
@@ -323,50 +323,50 @@ const TextReader = ({
 
         // ✅ Enhanced Indian voice selection with natural tone priority
         let selectedVoice = null;
-        
+
         // ✅ Improved gender detection for Indian voices
         const isLikelyMaleVoice = (voice) => {
           const name = voice.name.toLowerCase();
-          
+
           // Specific Indian male voice names
           const indianMaleNames = [
-            'ravi', 'hemant', 'arjun', 'kiran', 'raj', 'suresh', 'mohan', 
+            'ravi', 'hemant', 'arjun', 'kiran', 'raj', 'suresh', 'mohan',
             'kumar', 'singh', 'sharma', 'gupta', 'male', 'man'
           ];
-          
+
           // Specific Indian female voice names  
           const indianFemaleNames = [
             'heera', 'priya', 'sunita', 'kavya', 'ananya', 'shreya', 'pooja',
             'meera', 'sita', 'female', 'woman', 'lady'
           ];
-          
+
           // Check for explicit male indicators
           const hasMaleIndicator = indianMaleNames.some(keyword => name.includes(keyword));
           const hasFemaleIndicator = indianFemaleNames.some(keyword => name.includes(keyword));
-          
+
           if (hasMaleIndicator) return true;
           if (hasFemaleIndicator) return false;
-          
+
           // For voices without clear gender indicators, use additional heuristics
           // Microsoft voices often have gender in description
           if (name.includes('microsoft')) {
             // Default assumption for ambiguous Microsoft voices
             return !name.includes('aria') && !name.includes('jenny') && !name.includes('emma');
           }
-          
+
           // Default to male for ambiguous cases (many system defaults are male)
           return true;
         };
 
         console.log("🎤 Selecting natural Indian voice for:", { lang, gender: voiceGender });
         console.log("🎤 Available voices:", voices.length, voices.map(v => ({ name: v.name, lang: v.lang })));
-        
+
         if (lang === "en-IN") {
           // ✅ Priority order for natural Indian English voices
           const naturalIndianVoices = voices.filter(v => {
             const name = v.name.toLowerCase();
             return (
-              v.lang === "en-IN" || 
+              v.lang === "en-IN" ||
               name.includes("india") ||
               name.includes("ravi") ||
               name.includes("heera") ||
@@ -375,7 +375,7 @@ const TextReader = ({
               (name.includes("microsoft") && name.includes("desktop"))
             );
           });
-          
+
           const premiumVoices = voices.filter(v => {
             const name = v.name.toLowerCase();
             return (
@@ -385,12 +385,12 @@ const TextReader = ({
               (name.includes("microsoft") && name.includes("neural"))
             );
           });
-          
+
           const englishVoices = voices.filter(v => v.lang.startsWith("en"));
-          
+
           console.log("🇮🇳 Natural Indian voices found:", naturalIndianVoices.length, naturalIndianVoices.map(v => v.name));
           console.log("⭐ Premium voices found:", premiumVoices.length, premiumVoices.map(v => v.name));
-          
+
           if (voiceGender === "male") {
             selectedVoice =
               // Top priority: Natural Indian male voices
@@ -440,7 +440,7 @@ const TextReader = ({
               (name.includes("microsoft") && v.lang === "hi-IN")
             );
           });
-          
+
           const premiumHindiVoices = hindiVoices.filter(v => {
             const name = v.name.toLowerCase();
             return (
@@ -450,10 +450,10 @@ const TextReader = ({
               name.includes("desktop")
             );
           });
-          
+
           console.log("🇮🇳 Hindi voices found:", hindiVoices.length, hindiVoices.map(v => v.name));
           console.log("⭐ Premium Hindi voices found:", premiumHindiVoices.length, premiumHindiVoices.map(v => v.name));
-          
+
           if (voiceGender === "male") {
             selectedVoice =
               // Premium Hindi male voices
@@ -480,14 +480,14 @@ const TextReader = ({
           const bengaliVoices = voices.filter(v => {
             const name = v.name.toLowerCase();
             return (
-              v.lang.startsWith("bn") || 
+              v.lang.startsWith("bn") ||
               name.includes("bengali") ||
               name.includes("bangla") ||
               name.includes("bangladesh") ||
               (name.includes("microsoft") && v.lang.startsWith("bn"))
             );
           });
-          
+
           const premiumBengaliVoices = bengaliVoices.filter(v => {
             const name = v.name.toLowerCase();
             return (
@@ -497,10 +497,10 @@ const TextReader = ({
               name.includes("desktop")
             );
           });
-          
+
           console.log("🇧🇩 Bengali voices found:", bengaliVoices.length, bengaliVoices.map(v => v.name));
           console.log("⭐ Premium Bengali voices found:", premiumBengaliVoices.length, premiumBengaliVoices.map(v => v.name));
-          
+
           if (voiceGender === "male") {
             selectedVoice =
               // Premium Bengali male voices
@@ -562,7 +562,7 @@ const TextReader = ({
             console.warn("⚠️ Voice changed during setup, reapplying:", selectedVoice.name);
             utterance.voice = selectedVoice;
           }
-          
+
           try {
             window.speechSynthesis.speak(utterance);
             console.log("🎤 Speech started with voice:", utterance.voice?.name || "default");
@@ -597,15 +597,15 @@ const TextReader = ({
   const forceVoiceGenderUpdate = () => {
     const currentGender = localStorage.getItem("voiceGender") || "female";
     console.log("🔄 Forcing voice gender update to:", currentGender);
-    
+
     // Stop any current speech
     if (window.speechSynthesis.speaking) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
     }
-    
+
     setVoiceGender(currentGender);
-    
+
     // Test with a sample message to verify voice change
     setTimeout(() => {
       speakMessage(`Voice gender is now set to ${currentGender}. This is a test of the current voice.`);
@@ -646,20 +646,34 @@ const TextReader = ({
       console.log(" Skipping API call & Typing... because a new session just started");
       isNewSessionRef.current = false;
     }
-
-    if (userInput.toLowerCase() === "english" || userInput.toLowerCase() === "हिंदी" || userInput.toLowerCase() === "hindi" || userInput.toLowerCase() === "bengali" || userInput.toLowerCase() === "bangla" || userInput.toLowerCase() === "বাংলা") {
+if (
+      userInput.toLowerCase() === "english" ||
+      userInput.toLowerCase() === "हिंदी" ||
+      userInput.toLowerCase() === "hindi" ||
+      userInput.toLowerCase() === "spanish" ||
+      userInput.toLowerCase() === "español" ||
+      userInput.toLowerCase() === "french" ||
+      userInput.toLowerCase() === "français"
+    ) {
       updatedUserInput = "";
     }
 
-    // ✅ Enhanced language mapping with Bengali support
-    if (languageRef.current === "en-IN") {
-      updatedUserLanguage = "English";
-    } else if (languageRef.current === "hi-IN") {
-      updatedUserLanguage = "hindi";
-    } else if (languageRef.current === "bn-IN") {
-      updatedUserLanguage = "bengali";
-    } else {
-      updatedUserLanguage = "English"; // fallback
+    //  Map languageRef.current → readable language for API
+    switch (languageRef.current) {
+      case "en-IN":
+        updatedUserLanguage = "English";
+        break;
+      case "hi-IN":
+        updatedUserLanguage = "Hindi";
+        break;
+      case "es-ES":
+        updatedUserLanguage = "Spanish";
+        break;
+      case "fr-FR":
+        updatedUserLanguage = "French";
+        break;
+      default:
+        updatedUserLanguage = "English"; 
     }
 
     setTimeout(() => {
@@ -669,7 +683,7 @@ const TextReader = ({
     }, 10000);
 
     try {
-      const response = await fetch("https://chatbuddyapi1.site:3030/chat", {
+      const response = await fetch("http://122.163.121.176:3004/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -699,66 +713,108 @@ const TextReader = ({
     console.log("User input:", text);
     if (!text.trim()) return;
 
-    setSession((prev) => [...prev, { role: "user", message: text, time: new Date().toLocaleTimeString() }]);
-    setFullConversation((prev) => [...prev, { role: "user", message: text, time: new Date().toLocaleTimeString() }]);
+    setSession((prev) => [
+      ...prev,
+      { role: "user", message: text, time: new Date().toLocaleTimeString() }
+    ]);
+    setFullConversation((prev) => [
+      ...prev,
+      { role: "user", message: text, time: new Date().toLocaleTimeString() }
+    ]);
     setUserInput("");
 
     if (stageRef.current === "language") {
       let message = "";
       let validLang = false;
-      setIsAILoading(true)
+      setIsAILoading(true);
 
+      //  English
       if (text.toLowerCase().includes("english")) {
         languageRef.current = "en-IN";
-        // message = "Great! Let's continue in English. Thank you for your response.";
         try {
           const res = await greettingMessage({
             username: userName,
             topic: topic,
             userinput: "english",
           });
-          console.log('res', res);
           const data = await res.json();
-          setIsAILoading(false)
-
-          const aiMsg = data?.message
+          setIsAILoading(false);
+          const aiMsg = data?.message;
           message = aiMsg || "Great! Let's continue in English. Thank you for your response.";
         } catch (err) {
           console.error("Error fetching greeting:", err);
         }
         validLang = true;
+
+        //  Hindi
       } else if (text.toLowerCase().includes("hindi") || text.toLowerCase().includes("हिंदी")) {
         languageRef.current = "hi-IN";
-        // message = "बहुत बढ़िया! आइए हिंदी में आगे बढ़ते हैं। आपके उत्तर के लिए धन्यवाद।";
         try {
           const res = await greettingMessage({
             username: userName,
             topic: topic,
             userinput: "hindi",
           });
-          console.log('res', res);
           const data = await res.json();
-          setIsAILoading(false)
-
-          const aiMsg = data?.message
-          message = aiMsg || "Great! Let's continue in English. Thank you for your response.";
+          setIsAILoading(false);
+          const aiMsg = data?.message;
+          message = aiMsg || "बहुत बढ़िया! आइए हिंदी में आगे बढ़ते हैं। आपके उत्तर के लिए धन्यवाद।";
         } catch (err) {
           console.error("Error fetching greeting:", err);
         }
         validLang = true;
-     
+
+        //  Spanish
+      } else if (text.toLowerCase().includes("spanish") || text.toLowerCase().includes("español")) {
+        languageRef.current = "es-ES";
+        try {
+          const res = await greettingMessage({
+            username: userName,
+            topic: topic,
+            userinput: "spanish",
+          });
+          const data = await res.json();
+          setIsAILoading(false);
+          const aiMsg = data?.message;
+          message = aiMsg || "¡Genial! Continuemos en español. Gracias por tu respuesta.";
+        } catch (err) {
+          console.error("Error fetching greeting:", err);
+        }
+        validLang = true;
+
+        // French
+      } else if (text.toLowerCase().includes("french") || text.toLowerCase().includes("français")) {
+        languageRef.current = "fr-FR";
+        try {
+          const res = await greettingMessage({
+            username: userName,
+            topic: topic,
+            userinput: "french",
+          });
+          const data = await res.json();
+          setIsAILoading(false);
+          const aiMsg = data?.message;
+          message = aiMsg || "Super ! Continuons en français. Merci pour votre réponse.";
+        } catch (err) {
+          console.error("Error fetching greeting:", err);
+        }
+        validLang = true;
+
       } else {
-        message = "Language not recognized. Please respond with English, हिंदी (Hindi), or বাংলা (Bengali).";
+        //  If language not recognized
+        message =
+          "Language not recognized. Please respond with English, हिंदी (Hindi), Español (Spanish), or Français (French).";
       }
 
       await speakAndAdd(message);
 
       if (validLang) {
-        setIsAILoading(true)
+        setIsAILoading(true);
         callChatAPI(text);
         setConversationStage("awaitingDetails");
         stageRef.current = "awaitingDetails";
       }
+
     } else {
       await callChatAPI(text);
     }

@@ -105,7 +105,7 @@ export default function AppSidebar() {
        
       
 
-      const response = await fetch("https://chatbuddyapi1.site:3030/get_session_status", {
+    const response = await fetch("http://122.163.121.176:3004/get_session_status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
