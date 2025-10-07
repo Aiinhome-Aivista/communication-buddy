@@ -195,13 +195,16 @@ function ManageSchedule() {
                 loadingTable={loadingTable}
             />
 
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                itemsPerPage={itemsPerPage}
-                onPageChange={paginate}
-                onItemsPerPageChange={handleItemsPerPageChange}
-            />
+            {/* Gap between table and pagination */}
+            <div className="mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={paginate}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
+            </div>
 
             <AddScheduleModal
                 isOpen={showModal}

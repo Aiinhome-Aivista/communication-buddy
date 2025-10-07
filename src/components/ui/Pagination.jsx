@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 export default function Pagination({
   currentPage,
@@ -7,32 +7,68 @@ export default function Pagination({
   onPageChange,
   onItemsPerPageChange,
 }) {
-  return (
-    <div className="flex justify-center items-center mt-4 space-x-4">
-      <div className="flex space-x-1">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-          <button
-            key={number}
-            onClick={() => onPageChange(number)}
-            className={`px-3 py-1 rounded-md ${
-              currentPage === number
-                ? "bg-teal-600 text-teal-50"
-                : "bg-teal-800/50 text-teal-200 hover:bg-teal-700/50"
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-      </div>
-      <select
-        value={itemsPerPage}
-        onChange={onItemsPerPageChange}
-        className="bg-teal-900/50 border border-teal-700/50 text-teal-100 rounded px-2 py-1 text-sm"
+  const total = Math.max(0, Number(totalPages) || 0);
+  const current = Math.max(1, Number(currentPage) || 1);
+
+  const pages = useMemo(() => {
+    if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1);
+
+    const res = [1];
+    const left = Math.max(2, current - 2);
+    const right = Math.min(total - 1, current + 2);
+    if (left > 2) res.push("...");
+    for (let i = left; i <= right; i++) res.push(i);
+    if (right < total - 1) res.push("...");
+    res.push(total);
+    return res;
+  }, [total, current]);
+
+  const outlinedBtn = (content, key, opts = {}) => {
+    const { active = false, disabled = false, onClick } = opts;
+    const base = "px-3 py-1 rounded-md border text-sm font-medium";
+    const activeCls = "bg-white border-teal-600 text-teal-700";
+    const inactiveCls = "bg-transparent border-teal-600/30 text-teal-100 hover:bg-teal-600/10";
+    const disabledCls = "opacity-50 cursor-not-allowed";
+
+    return (
+      <button
+        key={key}
+        onClick={onClick}
+        disabled={disabled}
+        className={`${base} ${active ? activeCls : inactiveCls} ${disabled ? disabledCls : ""}`}
       >
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-      </select>
+        {content}
+      </button>
+    );
+  };
+
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <div className="inline-flex items-center gap-2">
+        {outlinedBtn("Prev", "prev", { disabled: current <= 1, onClick: () => current > 1 && onPageChange(current - 1) })}
+
+        {pages.map((p, idx) =>
+          p === "..."
+            ? (
+              <span key={`ell-${idx}`} className="px-3 py-1 text-teal-200">...</span>
+            )
+            : outlinedBtn(p, `p-${p}`, { active: p === current, onClick: () => onPageChange(p) })
+        )}
+
+        {outlinedBtn("Next", "next", { disabled: current >= total, onClick: () => current < total && onPageChange(current + 1) })}
+      </div>
+
+      <div>
+        <select
+          value={itemsPerPage}
+          onChange={onItemsPerPageChange}
+          className="bg-transparent border border-teal-600/30 text-teal-100 rounded px-2 py-1 text-sm"
+        >
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
     </div>
   );
 }

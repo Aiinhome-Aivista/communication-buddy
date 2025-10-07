@@ -145,6 +145,8 @@ export default function Reports() {
         keys={keys}
         loadingTable={loadingTable}
       />
+      <div className="mt-4">
+     
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -152,7 +154,7 @@ export default function Reports() {
         onPageChange={paginate}
         onItemsPerPageChange={handleItemsPerPageChange}
       />
-
+      </div>
       {/* Full page loader */}
       <Loader show={loading} />
     </div>
