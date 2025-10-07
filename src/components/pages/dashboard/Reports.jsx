@@ -16,37 +16,37 @@ export default function Reports() {
   const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
   const [rotation, setRotation] = useState(false);
   const [error, setError] = useState(null);
-const headers = [
-  "Name",
-  "Email",
-  "Topic",
-  "Session Date",
-  "Session Time",
-  "Session Duration",
-  "Comparative Time",
-  "Qualitative Score",
-  "Session Joining Time",
-  "Session Exit Time",
-  "Session Status",
-  "Score",
-  "Session Insights"
-];
+  const headers = [
+    "Name",
+    "Email",
+    "Topic",
+    "Session Date",
+    "Session Time",
+    "Session Duration",
+    "Comparative Time",
+    "Qualitative Score",
+    "Session Joining Time",
+    "Session Exit Time",
+    "Session Status",
+    "Score",
+    "Session Insights"
+  ];
 
-const keys = [
-  "username",
-  "email",
-  "topic",
-  "session_date",
-  "session_time",
-  "total_time",
-  "comparative_time_ratio",
-  "qualitative_score",
-  "session_join_time",
-  "session_exit_time",
-  "status",
-  "score",
-  "feedback"
-];
+  const keys = [
+    "username",
+    "email",
+    "topic",
+    "session_date",
+    "session_time",
+    "total_time",
+    "comparative_time_ratio",
+    "qualitative_score",
+    "session_join_time",
+    "session_exit_time",
+    "status",
+    "score",
+    "feedback"
+  ];
 
   const hrId = sessionStorage.getItem("user_id");
 
@@ -64,12 +64,13 @@ const keys = [
 
   // Common fetch function
   const fetchReports = async () => {
-    const response = await fetch("http://122.163.121.176:3004/hr-sessions", {
+    const response = await fetch("https://aiinhome.com/communication/hr-sessions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" ,
+      headers: {
+        "Content-Type": "application/json",
         "X-Custom-Referrer": window.location.href // full page URL
       },
-    
+
       body: JSON.stringify({ hr_id: parseInt(hrId) }),
     });
 

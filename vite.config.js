@@ -3,9 +3,6 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
-  base: '/communication_buddy/', // ✅ required for subfolder hosting
-})
+  plugins: [react(), tailwindcss()],
+  base: "/comm_buddy_v2.0/", // ✅ required for subfolder hosting
+});

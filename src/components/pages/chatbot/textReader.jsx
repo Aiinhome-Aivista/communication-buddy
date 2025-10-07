@@ -614,14 +614,17 @@ const TextReader = ({
 
   const speakAndAdd = (message) => {
     return new Promise(async (resolve) => {
+      // Mark this message as already spoken so the session playback doesn't double-speak it
+      const entry = { role: "ai", message, time: new Date().toLocaleTimeString(), spoken: true };
       setSession((prev) => [
         ...prev,
-        { role: "ai", message, time: new Date().toLocaleTimeString() },
+        entry,
       ]);
       setFullConversation((prev) => [
         ...prev,
-        { role: "ai", message, time: new Date().toLocaleTimeString() },
+        entry,
       ]);
+
       await speakMessage(message); // ✅ native speech
       resolve();
     });
@@ -646,7 +649,7 @@ const TextReader = ({
       console.log(" Skipping API call & Typing... because a new session just started");
       isNewSessionRef.current = false;
     }
-if (
+    if (
       userInput.toLowerCase() === "english" ||
       userInput.toLowerCase() === "हिंदी" ||
       userInput.toLowerCase() === "hindi" ||
@@ -673,17 +676,14 @@ if (
         updatedUserLanguage = "French";
         break;
       default:
-        updatedUserLanguage = "English"; 
+        updatedUserLanguage = "English";
     }
 
-    setTimeout(() => {
-      if (!isNewSessionRef.current) {
-        setIsAILoading(true);
-      }
-    }, 10000);
+    // Show loading/typing immediately when starting the API call
+    setIsAILoading(true);
 
     try {
-      const response = await fetch("http://122.163.121.176:3004/chat", {
+      const response = await fetch("https://aiinhome.com/communication/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -699,12 +699,14 @@ if (
       const aiMessage = data?.message || "Invalid Message";
 
       setresponse(aiMessage);
-      setIsAILoading(false);
+      // Add the AI message and speak it, then clear the typing state
       await speakAndAdd(aiMessage);
+      setIsAILoading(false);
     } catch (error) {
       console.error("API error:", error);
-      setIsAILoading(false);
+      // On error, speak the error reply and then clear typing
       await speakAndAdd("Oops..I missed that one, Can you repeat please?");
+      setIsAILoading(false);
       return;
     }
   };
@@ -847,7 +849,8 @@ if (
   useEffect(() => {
     if (!chatStarted || currentIndex >= session.length || isReading) return;
     const currentChat = session[currentIndex];
-    if (currentChat.role === "ai") {
+    // Skip messages that were already spoken (e.g., added via speakAndAdd)
+    if (currentChat.role === "ai" && !currentChat.spoken) {
       setIsReading(true);
       speakMessage(currentChat.message).then(() => {
         setIsReading(false);
@@ -945,7 +948,7 @@ if (
                         </div>
                       )}
                     </div>
-                    {isAILoading && index === session.length - 1 && (
+                    {isAILoading && index === session.length - 1 && session[session.length - 1]?.role === 'user' && (
                       <div className="mb-4 flex items-start">
                         <div className="max-w-[60%] flex items-start gap-3 px-4 py-3 rounded-r-3xl rounded-b-3xl text-xs bg-gray-200 animate-pulse">
                           <img src={getAvatarImage()} alt={`AI ${voiceGender}`} className="w-7 h-7 rounded-full opacity-70" />

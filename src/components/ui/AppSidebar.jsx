@@ -13,7 +13,7 @@ import {
   Hourglass,
   CircleEqual
 } from "lucide-react";
-import React, { useEffect, useState,  useRef,  } from "react";
+import React, { useEffect, useState, useRef, } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../provider/AuthProvider";
 import { useTopic } from "../../provider/TopicProvider";
@@ -78,7 +78,7 @@ export default function AppSidebar() {
 
   const [selectedTopic, setSelectedTopic] = useState(null);
 
-   const { setUserData } = useContext(UserContext);
+  const { setUserData } = useContext(UserContext);
 
   const startResizing = () => { isResizing.current = true; document.body.style.cursor = "col-resize"; };
   const stopResizing = () => { isResizing.current = false; document.body.style.cursor = ""; };
@@ -100,23 +100,29 @@ export default function AppSidebar() {
     };
   }, []);
 
-  const getTopicDetails = async (data)=> {
+  const getTopicDetails = async (data) => {
     console.log("getTopicDetails", data);
-       
-      
 
-    const response = await fetch("http://122.163.121.176:3004/get_session_status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-  "user_id": data.user_id,
-  "hr_id": data.hr_id,
-  "topic": data.topic_name
-}),
-      });
 
-      const getResponse = await response.json();
-      console.log("getSessionStatus",getResponse);
+
+    // Format current datetime as YYYY-MM-DD HH:MM:SS
+    const pad = (n) => String(n).padStart(2, '0');
+    const nowDate = new Date();
+    const nowFormatted = `${nowDate.getFullYear()}-${pad(nowDate.getMonth() + 1)}-${pad(nowDate.getDate())} ${pad(nowDate.getHours())}:${pad(nowDate.getMinutes())}:${pad(nowDate.getSeconds())}`;
+
+    const response = await fetch("https://aiinhome.com/communication/get_session_status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        "user_id": data.user_id,
+        "hr_id": data.hr_id,
+        "topic": data.topic_name,
+        "now": nowFormatted
+      }),
+    });
+
+    const getResponse = await response.json();
+    console.log("getSessionStatus", getResponse);
 
     setUserData(getResponse);
   }
@@ -167,7 +173,7 @@ export default function AppSidebar() {
   };
 
   return (
-  <div
+    <div
       className={`sidebar bg-slate-800 text-white border-r-4 border-teal-500 p-3 relative flex flex-col transition-[width] duration-200 ease-linear`}
       style={{ width: `${collapsed ? 80 : width}px`, height: "calc(100vh - 8rem)" }}
       onMouseEnter={() => setHovering(true)}
@@ -257,12 +263,12 @@ export default function AppSidebar() {
                             <NavLink
                               key={subIndex}
                               to={`/dashboard/test/${subItem.topic_name}`}
-                              onClick={ () => {getTopicDetails(subItem); setSelectedTopic(subItem.topic_name);}}
-className={
-  selectedTopic === subItem.topic_name
-    ? "bg-teal-600 text-white block px-3 py-1 text-sm rounded truncate"
-    : "text-teal-300 hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
-}                            >
+                              onClick={() => { getTopicDetails(subItem); setSelectedTopic(subItem.topic_name); }}
+                              className={
+                                selectedTopic === subItem.topic_name
+                                  ? "bg-teal-600 text-white block px-3 py-1 text-sm rounded truncate"
+                                  : "text-teal-300 hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
+                              }                            >
                               {`${subIndex + 1}. ${subItem.topic_name}`}
                             </NavLink>
                           ))}
