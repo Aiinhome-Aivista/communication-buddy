@@ -1,14 +1,9 @@
-import React from 'react'
-import Container from './Container';
+import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="footer-app-container h-16 bg-gray-700 text-gray-100 flex items-center justify-center shadow-sm">
-      <Container width="w-[90%]">
-        <p className="text-center">
-          Copyright © AIINHOME Technologies Pvt Ltd, All rights reserved.
-        </p>
-      </Container>
+    <footer className="bg-white text-center text-gray-500 text-sm py-3 border-t">
+      ©2020 Aiinhome Technologies Pvt. Ltd. All rights reserved
     </footer>
   );
 }
