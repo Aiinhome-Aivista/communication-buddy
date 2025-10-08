@@ -20,13 +20,10 @@ export default function Footer() {
   return (
     <footer className="flex justify-between items-center bg-gray-100 border-t rounded-b-lg px-6 py-3 text-sm text-gray-600">
       <Container width="w-[90%]">
-        <div className="flex items-center gap-2">
-          <Info size={16} className="text-gray-500" />
-          <span>Help and FAQ</span>
-        </div>
-        <div className="flex-1 text-center text-gray-500 text-xs">
-          ©2020 Aiinhome Technologies Pvt. Ltd. All rights reserved
-        </div>
+<div className="text-gray-500 text-xs -ml-20">
+  ©2020 Aiinhome Technologies Pvt. Ltd. All rights reserved
+</div>
+
       </Container>
     </footer>
   );
