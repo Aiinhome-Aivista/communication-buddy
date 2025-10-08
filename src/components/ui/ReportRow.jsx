@@ -7,6 +7,8 @@ export default function ReportRow({
   keys = [],
   isRaiseRequest = false,
   raiseRequest = () => { },
+  onEdit = null,
+  onDelete = null,
 }) {
   return (
     <tr
@@ -54,10 +56,18 @@ export default function ReportRow({
       {isShowAction && (
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
           <div className="flex space-x-3">
-            <button className="text-amber-300 hover:text-amber-100 transition-colors" title="Edit">
+            <button
+              className="text-amber-300 hover:text-amber-100 transition-colors"
+              title="Edit"
+              onClick={() => onEdit && onEdit(row)}
+            >
               <FaEdit />
             </button>
-            <button className="text-red-300 hover:text-red-100 transition-colors" title="Delete">
+            <button
+              className="text-red-300 hover:text-red-100 transition-colors"
+              title="Delete"
+              onClick={() => onDelete && onDelete(row)}
+            >
               <FaTrash />
             </button>
           </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { X, ChevronDown } from "lucide-react";
-import { selectedDateFormat } from "../../utils/Timer";
+import { selectedDateFormat, toDatetimeLocalInput } from "../../utils/Timer";
 
-export default function AddScheduleModal({ isOpen, title, onClose, userData, topics = [], onSave, hrId, categories }) {
+export default function AddScheduleModal({ isOpen, title, onClose, userData, topics = [], onSave, hrId, categories, initialData = null, isEdit = false }) {
     const [selectedUser, setSelectedUser] = useState("");
     const [sessionDate, setSessionDate] = useState("");
     const [sessionTime, setSessionTime] = useState("");
@@ -19,6 +19,25 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
     useEffect(() => {
         if (topics?.length) setTopicList(topics.map(t => t.topic_name));
     }, [topics]);
+
+    // Prefill when editing
+    useEffect(() => {
+        if (initialData) {
+            // find user in userData list
+            const user = userData.find(u => u.id === initialData.user_id) || null;
+            if (user) setSelectedUser(user);
+
+            // assign_datetime might be in various formats; convert to datetime-local value
+            if (initialData.assign_datetime) {
+                const dtLocal = toDatetimeLocalInput(initialData.assign_datetime);
+                if (dtLocal) setSessionDate(dtLocal);
+            }
+
+            if (initialData.total_time) setSessionTime(String(initialData.total_time));
+            if (initialData.topic) setSearchTopic(initialData.topic);
+            if (initialData.topic_category) setSessionCategory(initialData.topic_category);
+        }
+    }, [initialData, userData]);
 
     // ✅ Close dropdowns on outside click
     useEffect(() => {
@@ -77,14 +96,26 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
             alert("Please fill all fields");
             return;
         }
-        onSave?.({
+        const payload = {
             user_id: selectedUser.id,
             assign_datetime: selectedDateFormat(sessionDate),
             total_time: Number(sessionTime),
             topic: searchTopic,
             hr_id: hrId,
             topic_category: sessionCategory,
-        });
+        };
+        // Mark whether this is an edit action so parent can enforce update-only behavior
+        if (isEdit) {
+            // Ensure we have an id to update
+            if (!initialData?.id) {
+                alert('Edit mode: missing record id. Cannot update.');
+                return;
+            }
+            payload.id = initialData.id; // API expects `id` for update
+            payload.__isEdit = true;
+        }
+
+        onSave?.(payload);
         resetForm();
         onClose();
     };
@@ -256,7 +287,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                 {/* Buttons */}
                 <div className="flex justify-between mt-6">
                     <button onClick={onClose} className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Cancel</button>
-                    <button onClick={handleInitiate} className="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800">Initiate</button>
+                    <button onClick={handleInitiate} className="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800">{isEdit ? 'Update' : 'Initiate'}</button>
                 </div>
             </div>
         </div>

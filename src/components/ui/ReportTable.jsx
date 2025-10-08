@@ -6,15 +6,17 @@ export default function ReportTable({
   tableData,
   headers,
   isShowAction = false,
-  keys=[],
+  keys = [],
   isRaiseRequest = false,
-   loadingTable = false,
-  raiseRequest = () => {}
+  loadingTable = false,
+  raiseRequest = () => { },
+  onEdit = null,
+  onDelete = null,
 }) {
   return (
     <div className="overflow-hidden rounded-lg border border-teal-500/30 mb-0 scrollbar">
       <div className="max-h-[calc(100vh-350px)] overflow-auto">
-         {loadingTable && (
+        {loadingTable && (
           <div className="absolute inset-0 flex items-center justify-center bg-teal-900/40 z-10">
             <FaRotate className="animate-spin text-teal-300 text-3xl" />
           </div>
@@ -49,6 +51,8 @@ export default function ReportTable({
                 keys={keys}
                 isRaiseRequest={isRaiseRequest}
                 raiseRequest={raiseRequest}
+                onEdit={onEdit}
+                onDelete={onDelete}
               />
             ))}
           </tbody>

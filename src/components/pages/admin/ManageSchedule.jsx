@@ -17,6 +17,8 @@ function ManageSchedule() {
     const [topics, setTopics] = useState([]);
     const [categories, setCategories] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingSchedule, setEditingSchedule] = useState(null);
     const [userData, setUserData] = useState([]);
     const [sessionData, setSessionData] = useState([])
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
@@ -63,6 +65,8 @@ function ManageSchedule() {
     };
 
     const handleNewSchedule = () => {
+        setEditingSchedule(null);
+        setIsEditMode(false);
         setShowModal(true);
     };
 
@@ -104,12 +108,95 @@ function ManageSchedule() {
     const handleSaveSchedule = async (scheduleData) => {
         try {
             setLoadingTable(true);
-            const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
-            if (response.message === "request updated" || response.success === true) {
-                await fetchSessionData();   // new data refresh
+            let response;
+
+            // If the modal explicitly marked this payload as an edit, only call update
+            if (scheduleData && scheduleData.__isEdit) {
+                const payload = { ...scheduleData };
+                delete payload.__isEdit; // remove internal flag before sending
+
+                if (!payload.id) {
+                    alert('Update failed: missing record id');
+                    return;
+                }
+
+                response = await fatchedPostRequest(postURL.updateUserTopic, payload);
+                if (response && (response.success === true || response.status === 200 || String(response.message || '').toLowerCase().includes('updated'))) {
+                    alert('Update successful');
+                    await fetchSessionData();
+                } else {
+                    alert('Update failed');
+                }
+            } else {
+                // Insert new schedule
+                response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
+                if (response && (response.message === "request updated" || response.success === true || response.status === 200)) {
+                    await fetchSessionData();   // new data refresh
+                }
             }
         } catch (error) {
             console.error("Error inserting schedule:", error);
+        } finally {
+            setLoadingTable(false);
+        }
+    };
+
+    // Handler when Edit is clicked on a row
+    const handleEdit = async (row) => {
+        try {
+            setLoadingTable(true);
+            // Expect row to contain either user_topic_id (preferred) or id
+            const id = row.user_topic_id || row.id || row.user_topic_id_raw || row.id_raw;
+            if (!id) {
+                alert('Cannot edit: missing id');
+                return;
+            }
+
+            // Backend expects { user_topic_id: <id> } for get-user-topic-by-id in many cases
+            const payload = row.user_topic_id ? { user_topic_id: id } : { id };
+            const response = await fatchedPostRequest(postURL.getUserTopicById, payload);
+            if (response && response.topic) {
+                const topic = response.topic;
+                // Map response to modal initial fields
+                const initialData = {
+                    user_id: topic.user_id,
+                    id: topic.user_topic_id || topic.id,
+                    hr_id: topic.hr_id,
+                    topic: topic.topic,
+                    topic_category: topic.topic_category,
+                    assign_datetime: topic.assign_datetime, // keep raw string (could be RFC string)
+                    total_time: topic.total_time,
+                };
+
+                setEditingSchedule(initialData);
+                setIsEditMode(true);
+                setShowModal(true);
+            } else {
+                alert('Failed to fetch schedule details');
+            }
+        } catch (err) {
+            console.error('Error fetching schedule by id', err.message);
+        } finally {
+            setLoadingTable(false);
+        }
+    };
+
+    // Handler for delete
+    const handleDelete = async (row) => {
+        try {
+            if (!confirm('Are you sure you want to delete this schedule?')) return;
+            setLoadingTable(true);
+            const id = row.id || row.id;
+            if (!id) return alert('Missing id to delete');
+            const payload = { id };
+            const response = await fatchedPostRequest(postURL.deleteUserTopic, payload);
+            if (response && (response.success === true || response.status === 200 || response.message === 'Deleted')) {
+                await fetchSessionData();
+            } else {
+                alert('Failed to delete schedule');
+            }
+        } catch (err) {
+            console.error('Delete error', err.message);
         } finally {
             setLoadingTable(false);
         }
@@ -193,6 +280,8 @@ function ManageSchedule() {
                 isShowAction={true}
                 keys={keys}
                 loadingTable={loadingTable}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
             />
 
             {/* Gap between table and pagination */}
@@ -215,6 +304,8 @@ function ManageSchedule() {
                 categories={categories}
                 hrId={userId}
                 onSave={handleSaveSchedule}
+                initialData={editingSchedule}
+                isEdit={isEditMode}
             />
 
             {/* Full page loader */}
