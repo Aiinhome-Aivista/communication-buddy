@@ -30,6 +30,16 @@ export const TopicProvider = ({ children }) => {
       if (response.success || response.status === 200) {
         // console.log(" handleTopic: ", response);
         setTopicData(response.topics);
+        try {
+          // Persist total_time for the current user into sessionStorage so chat can read it
+          const currentUserId = String(getUserID || "");
+          const matched = (response.topics || []).find(t => String(t.user_id) === currentUserId);
+          if (matched && matched.total_time != null) {
+            sessionStorage.setItem('session_total_time', String(matched.total_time));
+          }
+        } catch (err) {
+          console.warn('Could not persist session_total_time:', err);
+        }
         setIsLoading(false);
         return { success: true };
       } else {

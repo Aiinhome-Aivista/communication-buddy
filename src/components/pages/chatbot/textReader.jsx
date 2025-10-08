@@ -98,6 +98,13 @@ const TextReader = ({
     setSession([initialMessage]);
   };
 
+  // Session timer refs/state
+  const sessionTimerRef = useRef(null);
+  const sessionStartRef = useRef(null);
+  const [sessionTotalTime, setSessionTotalTime] = useState(null); // minutes
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+
   useEffect(() => {
     window.speechSynthesis.cancel();   // ✅ stop any speech on mount
 
@@ -216,6 +223,45 @@ const TextReader = ({
     setIsTerminated(false);
     setChatStarted(false);
   }, []); // only on mount
+
+  // Read configured total_time from sessionStorage (set by TopicProvider) on mount
+  useEffect(() => {
+    const t = sessionStorage.getItem('session_total_time');
+    if (t) {
+      const n = Number(t);
+      if (!isNaN(n)) setSessionTotalTime(n);
+    }
+  }, []);
+
+  // Start session timer when chatStarted becomes true
+  useEffect(() => {
+    if (!chatStarted) return;
+    // record start time
+    sessionStartRef.current = Date.now();
+
+    // clear any existing
+    if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
+
+    // tick every second to check elapsed minutes
+    sessionTimerRef.current = setInterval(() => {
+      if (!sessionStartRef.current || sessionTotalTime == null) return;
+      const elapsedMs = Date.now() - sessionStartRef.current;
+      const elapsedMinutes = Math.floor(elapsedMs / (1000 * 60));
+      // when elapsed minutes >= configured total time, end session and show popup
+      if (elapsedMinutes >= Number(sessionTotalTime)) {
+        clearInterval(sessionTimerRef.current);
+        sessionTimerRef.current = null;
+        setIsAILoading(false);
+        setIsTerminated(true);
+        setSessionExpired(true);
+        setShowTimeUpPopup(true);
+      }
+    }, 1000);
+
+    return () => {
+      if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
+    };
+  }, [chatStarted, sessionTotalTime]);
 
   const sanitizeTextForSpeech = (text) => {
     if (!text) return "";
@@ -688,7 +734,7 @@ const TextReader = ({
     setIsAILoading(true);
 
     try {
-      const response = await fetch("https://aiinhome.com/communication/chat", {
+      const response = await fetch("http://122.163.121.176:3004/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1110,46 +1156,66 @@ const TextReader = ({
             {showTimeUpPopup && (
               <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50">
                 <div className="bg-white p-6 rounded-xl shadow-lg text-center w-[350px] space-y-4">
-                  <p className="text-lg font-medium">Do you want to start a new session?</p>
-                  <div className="flex justify-center gap-4">
-                    <button
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                      onClick={() => {
-                        setShowTimeUpPopup(false);
-                        stopSpeaking(); // ✅ replaced cancel()
+                  {sessionExpired ? (
+                    <>
+                      <p className="text-lg font-medium">Your session time has expired.</p>
+                      <div className="flex justify-center">
+                        <button
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                          onClick={() => {
+                            setShowTimeUpPopup(false);
+                            // Close session and navigate back to dashboard
+                            navigate("/dashboard/");
+                          }}
+                        >
+                          OK
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-lg font-medium">Do you want to start a new session?</p>
+                      <div className="flex justify-center gap-4">
+                        <button
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                          onClick={() => {
+                            setShowTimeUpPopup(false);
+                            stopSpeaking(); // ✅ replaced cancel()
 
-                        setSession([initialMessage]);
-                        setFullConversation([initialMessage.message]);
-                        setConversationStage("language");
-                        stageRef.current = "language";
-                        languageRef.current = "en-IN";
-                        setRandomID(null);
-                        setCurrentIndex(0);
-                        setIsReading(false);
-                        setUserInput("");
-                        setIsMicActive(false);
-                        setIsAILoading(false);
-                        setIsTerminated(false);
-                        setresponse("");
-                        isNewSessionRef.current = true;
+                            setSession([initialMessage]);
+                            setFullConversation([initialMessage.message]);
+                            setConversationStage("language");
+                            stageRef.current = "language";
+                            languageRef.current = "en-IN";
+                            setRandomID(null);
+                            setCurrentIndex(0);
+                            setIsReading(false);
+                            setUserInput("");
+                            setIsMicActive(false);
+                            setIsAILoading(false);
+                            setIsTerminated(false);
+                            setresponse("");
+                            isNewSessionRef.current = true;
 
-                        generateRandomID();
-                        setChatStarted(true);
-                      }}
-                    >
-                      Yes
-                    </button>
-                    {/* NO button */}
-                    <button
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                      onClick={() => {
-                        setShowTimeUpPopup(false);
-                        navigate("/dashboard/");
-                      }}
-                    >
-                      No
-                    </button>
-                  </div>
+                            generateRandomID();
+                            setChatStarted(true);
+                          }}
+                        >
+                          Yes
+                        </button>
+                        {/* NO button */}
+                        <button
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                          onClick={() => {
+                            setShowTimeUpPopup(false);
+                            navigate("/dashboard/");
+                          }}
+                        >
+                          No
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )} </div>}
