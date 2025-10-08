@@ -83,6 +83,11 @@ const TextReader = ({
 
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  const speechTimerRef = useRef(null);
+  // When true, the effect that auto-commits transcript on listening=false should skip one commit.
+  const ignoreNextTranscriptCommitRef = useRef(false);
+  // Auto-send delay (ms) after silence when mic is on. Per user request, set to 5000ms (5s).
+  const AUTO_SEND_DELAY_MS = 5000;
   const navigate = useNavigate();
 
   const generateRandomID = () => {
@@ -876,12 +881,59 @@ const TextReader = ({
   };
 
   useEffect(() => {
-    if (!listening && transcript.trim().length > 0) {
-      handleUserMessage(transcript.trim());
-      resetTranscript();
-      setIsMicActive(false);
+    if (!listening) {
+      // If we explicitly asked to ignore the next auto-commit (e.g., just started listening), skip it once
+      if (ignoreNextTranscriptCommitRef.current) {
+        ignoreNextTranscriptCommitRef.current = false;
+        return;
+      }
+
+      if (transcript.trim().length > 0) {
+        // If recognition stopped unexpectedly (not via our debounce handler), commit any pending transcript
+        handleUserMessage(transcript.trim());
+        resetTranscript();
+        setIsMicActive(false);
+      }
     }
   }, [listening]);
+
+  // Debounce interim transcript updates so long sentences are captured fully.
+  useEffect(() => {
+    // Only debounce while actively listening
+    if (!listening) return;
+
+    const text = transcript.trim();
+    if (!text) return;
+
+    // Reset existing timer
+    if (speechTimerRef.current) {
+      clearTimeout(speechTimerRef.current);
+    }
+
+    // Wait for configured silence duration before finalizing the transcript
+    speechTimerRef.current = setTimeout(() => {
+      // We're going to manually commit the transcript; ensure the auto-listening-change handler doesn't duplicate it
+      ignoreNextTranscriptCommitRef.current = true;
+
+      // Finalize: stop listening and send the message
+      try {
+        SpeechRecognition.stopListening();
+      } catch (err) {
+        console.warn('Error stopping SpeechRecognition after debounce:', err);
+      }
+      handleUserMessage(text);
+      resetTranscript();
+      setIsMicActive(false);
+      speechTimerRef.current = null;
+    }, AUTO_SEND_DELAY_MS);
+
+    return () => {
+      if (speechTimerRef.current) {
+        clearTimeout(speechTimerRef.current);
+        // don't null here; we'll null when the timer actually fires or when stopping
+      }
+    };
+  }, [transcript, listening]);
 
 
 
@@ -998,13 +1050,31 @@ const TextReader = ({
                   {/* Mic Button */}
                   <button
                     disabled={isTerminated}
-                    className={`p-2 mr-2 rounded-full ${listening ? "hover:bg-teal-300 animate-pulse" : ""
-                      }`}
+                    className={`p-2 mr-2 rounded-full ${listening ? "hover:bg-teal-300 animate-pulse" : ""}`}
                     onClick={() => {
-                      if (listening) return;
+                      if (listening) {
+                        // User intentionally stopped the mic — allow commit of any captured transcript
+                        ignoreNextTranscriptCommitRef.current = false;
+                        SpeechRecognition.stopListening();
+                        setIsMicActive(false);
+                        if (speechTimerRef.current) {
+                          clearTimeout(speechTimerRef.current);
+                          speechTimerRef.current = null;
+                        }
+                        return;
+                      }
+                      // Clear any stale transcript before starting fresh listening session
+                      try {
+                        resetTranscript();
+                      } catch (err) {
+                        console.warn('resetTranscript not available:', err);
+                      }
+                      // Ensure we don't auto-commit any previous transcript when listening toggles
+                      ignoreNextTranscriptCommitRef.current = true;
                       setIsMicActive(true);
                       SpeechRecognition.startListening({
-                        continuous: false,
+                        continuous: true,
+                        interimResults: true,
                         language: languageRef.current,
                       });
                     }}

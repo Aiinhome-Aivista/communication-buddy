@@ -146,14 +146,15 @@ function ManageUser() {
                 loadingTable={loadingTable}
 
             />
-
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                itemsPerPage={itemsPerPage}
-                onPageChange={paginate}
-                onItemsPerPageChange={handleItemsPerPageChange}
-            />
+            <div className="mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={paginate}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
+            </div>
 
             <AddUserModal
                 isOpen={showModal}
