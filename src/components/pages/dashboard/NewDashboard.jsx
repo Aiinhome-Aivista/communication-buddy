@@ -1,55 +1,101 @@
-export default function NewDashboard() {
-  const tests = [
-    { title: "Python", date: "17/10/2025", status: "Active" },
-    { title: "SQL", date: "11/10/2025", status: "Active" },
-    { title: "JAVA", date: "13/10/2025", status: "Active" },
-  ];
+import React, { useState } from 'react';
+
+const testData = [
+  { title: 'Python', date: '17/10/2025', status: 'Active' },
+  { title: 'SQL', date: '11/10/2025', status: 'Active' },
+  { title: 'JAVA', date: '13/10/2025', status: 'Active' },
+];
+
+const tabOptions = ['Upcoming', 'Ongoing', 'Expired'];
+const testTypeOptions = ['All', 'Technology', 'Communication'];
+
+export default function PracticeTestPage() {
+  const [activeTab, setActiveTab] = useState('Upcoming');
+  const [search, setSearch] = useState('');
+  const [testType, setTestType] = useState('All');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <div className="flex-1 bg-gray-50 p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Practice & Test</h2>
-
-      <div className="flex items-center gap-3 mb-4">
-        <div className="bg-white border rounded-md flex">
-          <button className="px-4 py-2 bg-gray-100 font-semibold text-sm rounded-l-md">Upcoming</button>
-          <button className="px-4 py-2 text-sm">Ongoing</button>
-          <button className="px-4 py-2 text-sm rounded-r-md">Expired</button>
+    <div className="w-screen h-screen bg-gray-50 flex flex-col">
+      <div className="flex-grow flex flex-col">
+        <div className="pt-6 px-6 ">
+          <h1 className="text-2xl font-bold text-[#2C2E42]">Practice &amp; Test</h1>
+          <div className="flex flex-row items-center mt-6 space-x-4">
+            <div className="flex border border-[#BCC7D2] rounded-xl overflow-hidden">
+              {tabOptions.map(tab => (
+                <button
+                  key={tab}
+                  className={`px-6 py-2 text-sm font-medium ${
+                    activeTab === tab
+                      ? 'bg-[#FEFEFE] text-[#2C2E42]'
+                      : 'bg-gray-100 text-[#8F96A9]'
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <input
+              type="text"
+              placeholder="Search content"
+              className="w-64 px-6 py-2 border border-[#BCC7D2] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 bg-white"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            <div className="relative">
+              <button
+                className="border border-[#BCC7D2] rounded-xl px-8 py-2 text-sm bg-white flex items-center justify-between w-44"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                {testType}
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {dropdownOpen && (
+                <ul className="absolute mt-1 left-0 w-44 bg-white border rounded-md shadow-md z-10">
+                  {testTypeOptions.map(option => (
+                    <li
+                      key={option}
+                      onClick={() => {
+                        setTestType(option)
+                        setDropdownOpen(false)
+                      }}
+                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+          <div className="bg-white mt-6 rounded-md shadow">
+            <table className="min-w-full">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3D5B81]">Test Title</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3D5B81]"></th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3D5B81]"></th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3D5B81]"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {testData.map((test, idx) => (
+                  <tr key={test.title} className="hover:bg-gray-50" >
+                    <td className="px-6 py-4 text-sm text-gray-700">{test.title}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{test.date}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-[#46BA2F]">{test.status}</span>
+                    </td>
+                    <td></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-
-        <input
-          type="text"
-          placeholder="Search content"
-          className="border px-3 py-2 rounded-md text-sm flex-1 max-w-xs"
-        />
-
-        <select className="border px-3 py-2 rounded-md text-sm">
-          <option>Test type</option>
-        </select>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm ">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-gray-100 text-gray-700">
-            <tr>
-              <th className="p-3 font-medium">Test Title</th>
-              <th className="p-3 font-medium">Session Date</th>
-              <th className="p-3 font-medium text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tests.map((test, index) => (
-              <tr key={index} className=" hover:bg-gray-50">
-                <td className="p-3 text-blue-600 cursor-pointer">{test.title}</td>
-                <td className="p-3 text-gray-700">{test.date}</td>
-                <td className="p-3 text-right">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                    {test.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );
