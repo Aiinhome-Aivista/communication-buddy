@@ -64,9 +64,9 @@ export default function Pagination({
           onChange={onItemsPerPageChange}
           className="bg-transparent border border-teal-600/30 text-teal-100 rounded px-2 py-1 text-sm"
         >
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-          <option value={20}>20</option>
+          <option className="bg-gray-900 text-teal-400" value={10}>10</option>
+          <option className="bg-gray-900 text-teal-400" value={15}>15</option>
+          <option className="bg-gray-900 text-teal-400" value={20}>20</option>
         </select>
       </div>
     </div>
