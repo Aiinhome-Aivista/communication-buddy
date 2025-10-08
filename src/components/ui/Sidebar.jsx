@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { LayoutDashboard, BarChart2, Settings } from "lucide-react";
-
 export default function Sidebar() {
   const [active, setActive] = useState("Practice & Test");
 
-  const menuItems = [
-    { name: "Practice & Test", icon: <LayoutDashboard size={18} /> },
-    { name: "Test Result", icon: <BarChart2 size={18} /> },
-    { name: "Settings", icon: <Settings size={18} /> },
+ const menuItems = [
+    {
+      name: "Practice & Test",
+      icon: <img src="public/assets/icons/assignment.svg" alt="Practice & Test" className="h-5 w-5" />,
+    },
+    {
+      name: "Test Result",
+      icon: <img src="public/assets/icons/bar_chart_4_bars.svg" alt="Test Result" className="h-5 w-5" />,
+    },
+    {
+      name: "Settings",
+      icon: <img src="public/assets/icons/settings.svg" alt="Settings" className="h-5 w-5" />,
+    },
   ];
 
   return (
