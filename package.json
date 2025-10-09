@@ -26,6 +26,7 @@
     "react-router": "^7.7.0",
     "react-speech-kit": "^3.0.1",
     "react-speech-recognition": "^4.0.1",
+    "recharts": "^3.2.1",
     "tailwindcss": "^4.1.11",
     "tts-react": "^3.0.7"
   },

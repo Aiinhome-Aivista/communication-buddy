@@ -1,6 +1,6 @@
 export default function NewHeader() {
   return (
-    <header className="flex justify-between items-center bg-white px-6 py-3 border-b shadow-sm">
+    <header className="flex justify-between items-center bg-white px-6 h-[calc(9%)] border-b border-[#BCC7D2] shadow-sm">
       {/* Left side - User info */}
 
       {/* Center - Logo */}
