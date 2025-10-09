@@ -8,8 +8,8 @@ export default function Dashboard() {
       <section className="dashboard-container h-full">
         <div className="dashboard-layout flex">
           <Sidebar />
-          {/* <NewDashboard /> */}
-          <ScheduleSessionDashboard />
+          <NewDashboard />
+          {/* <ScheduleSessionDashboard /> */}
         </div>
       </section>
     </>
