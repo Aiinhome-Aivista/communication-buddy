@@ -1,11 +1,14 @@
 import React, { useRef, useState } from "react";
-import { staticImages, staticIcons } from "../../../utils/Constant";
 import { useAuth } from "../../../provider/AuthProvider";
 import { useNavigate } from "react-router";
+import bg from "../../../../public/assets/images/background-image.png";
+import vector from '../../../../public/assets/images/login-vector.svg';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import Loader from "../../ui/Loader";
-import { Toast } from 'primereact/toast';
-
-export default function Login() {
+function Login() {
+  /*   const(new Date().getFullYear()) */
   const { login } = useAuth();
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = React.useState({
@@ -24,7 +27,6 @@ export default function Login() {
   const handleOnLogin = async () => {
     // Check if email and password are provided
     if (!userInfo.email || !userInfo.password) {
-      showWarn("Email and Password are required");
       return;
     }
 
@@ -34,134 +36,78 @@ export default function Login() {
 
       if (result?.success) {
         setLoading(false);
-        showSuccess("Successfully Logged In");
         setTimeout(() => {
           navigate("/dashboard");
         }, 1200);
       } else {
         setLoading(false);
-        showError(result?.message || "Login failed, please try again.");
       }
     } catch (err) {
       console.error(err);
       setLoading(false);
-      showError(err?.message || "Something went wrong");
     }
   };
 
-  // const handleOnLogin = async () => {
-  //   // check if email and password are not empty
-  //   if (!userInfo.email || !userInfo.password) {
-  //     return;
-  //   }
-  //   try {
-  //     // call login function from AuthProvider
-  //     const result = await login(userInfo);
-  //     if (result?.success) {
-  //       navigate("/dashboard");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  const showSuccess = (data) => {
-    toast.current.show({ severity: 'success', summary: 'Success', detail: data, life: 3000 });
-  }
-
-  const showWarn = (data) => {
-    toast.current.show({ severity: 'warn', summary: 'Warning', detail: data, life: 3000 });
-  }
-
-  const showError = (data) => {
-    toast.current.show({ severity: 'error', summary: 'Error', detail: data, life: 3000 });
-  }
   return (
-    <>
-      <div
-        className="relative flex justify-center items-start h-[100vh] bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${staticImages.loginBackground}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
-        }}
-      >
-        <Toast ref={toast} />
-
-        <div className="relative flex flex-col items-center text-white h-full w-full max-w-md bg-transparent pt-24 px-6">
-          <div className="w-full flex flex-col items-center justify-start gap-4">
-            {/* login & welcome */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="bg-gray-200  rounded-full overflow-hidden w-16 h-16 outline outline-offset-2 outline-purple-600">
-                <img
-                  src={staticImages.femaleAvater}
-                  alt="logo"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              <h3 className="text-center text-2xl font-semibold text-nowrap whitespace-nowrap">
-                Welcome to{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {/* Skill Mate */}
-                  Communication Buddy
-                </span>{" "}
-                {/* Assistant */}
-              </h3>
-            </div>
-
-            {/* Subtitle  */}
-            <p className="text-center text-lg font-light">
-              {/* Login to your account */}
-              Sign in
-            </p>
-
-            {/* <!-- Form --> */}
-            <div className="w-full">
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="username"
-                  name="email"
-                  value={userInfo.email}
-                  placeholder=" Enter your email"
-                  className="w-full bg-[#131313] text-white border border-[#424b57] px-4 py-2 rounded focus:outline-none focus:border-[#8b04f5]"
-                  onChange={(e) => handleOnChange(e)}
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={userInfo.password}
-                  placeholder="Enter your password"
-                  className="w-full bg-[#131313] text-white border border-[#424b57] px-4 py-2 rounded focus:outline-none focus:border-[#8b04f5]"
-                  onChange={(e) => handleOnChange(e)}
-                />
-              </div>
-              <button
-                onClick={() => handleOnLogin()}
-                type="button"
-                className="w-full flex justify-center items-center gap-2 bg-[#8b04f5] text-white py-2 rounded font-medium hover:bg-[#7a03d8] transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                id="login-button"
-              >
-                Login
-                <img src={staticIcons.loginArrow} alt="" className="w-4 h-4" />
-              </button>
-            </div>
+    <div className='w-screen h-screen p-5 flex flex-col items-center justify-between'
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}>
+      <p className='w-[100%] flex text-lg'>Ai<span className='text-[#DFB916]'>in</span>home<span className='px-1'>|</span><span className='font-bold'>CB</span></p>
+      <div className='bg-[#FAFAFAB2] px-5 py-10 rounded-4xl border-8 border-[#7E848945] shadow-xl shadow-[#00000040] backdrop-blur-lg w-1/2 h-4/6 flex items-center justify-between divide-x-1 divide-[#7E848945]'>
+        <div className='w-full h-full flex flex-col'>
+          <div className='flex flex-col w-full h-2/7 pl-6 pt-6'>
+            <p className='w-[100%] flex text-xl text-[#2C2E42]'>Ai<span className='text-[#DFB916]'>in</span>home<span className='px-1'>|</span><span className='font-bold'>CB</span></p>
+            <p className='text-xs text-[#2C2E42]'>Communication-Buddy V5</p>
+          </div>
+          <div className='w-full h-5/7 px-10 pt-5 flex items-center justify-center'>
+            <img src={vector} alt="Login vector" />
           </div>
         </div>
-        <Loader show={loading} />
+        <div className='w-full h-full flex flex-col items-center justify-between pl-14 pr-5 py-16'>
+          <p className='w-full text-center text-3xl font-bold'>Welcome</p>
+          <div className='input-fields flex flex-col gap-2 w-full'>
+            <div className="input-wrapper w-full py-2 px-2 border-1 border-[#BCC7D2] rounded-lg flex items-betweeen gap-3">
+              <PersonRoundedIcon sx={{ color: '#BCC7D2' }} />
+              <input className='w-[90%] focus:outline-none'
+                type="email"
+                id="username"
+                name="email"
+                value={userInfo.email}
+                onChange={(e) => handleOnChange(e)}
+                placeholder='Email'
+                style={{ color: '#6c757d' }} />
+            </div>
+            <div className="input-wrapper w-full py-2 px-2 border-1 border-[#BCC7D2] rounded-lg flex items-betweeen gap-3">
+              <PasswordRoundedIcon sx={{ color: '#BCC7D2' }} />
+              <input className='w-[80%] focus:outline-none'
+                type="password"
+                id="password"
+                name="password"
+                value={userInfo.password}
+                onChange={(e) => handleOnChange(e)}
+                placeholder='Password'
+                style={{ color: '#6c757d' }} />
+              <VisibilityRoundedIcon sx={{ color: '#BCC7D2' }} />
+            </div>
+          </div>
+          <button className='w-full text-[#7E8489] bg-[#182938] rounded-lg border-1 border-[#182938] py-2 cursor-pointer disabled:opacity-90 disabled:cursor-not-allowed'
+            onClick={() => handleOnLogin()}
+            type="button"
+            id="login-button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </div>
       </div>
-    </>
-  );
+      <p className='text-[#2C2E42] text-sm py-1'>@2020 Aiinhome Technologies Pvt. Ltd. All rights reserved</p>
+      <Loader show={loading} />
+    </div>
+  )
 }
+
+export default Login
