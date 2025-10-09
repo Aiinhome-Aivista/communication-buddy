@@ -21,7 +21,7 @@ export default function PracticeTestPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <div className="w-screen h-screen bg-gray-50 flex flex-col">
+    <div className="w-screen h-screen bg-[#ECEFF2] flex flex-col">
       <div className="flex-grow flex flex-col">
         <div className="pt-6 px-6 ">
           <h1 className="text-2xl font-bold text-[#2C2E42]">

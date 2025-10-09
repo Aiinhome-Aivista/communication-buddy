@@ -39,7 +39,7 @@ export default function Sidebar() {
     <aside
       className={`${
         collapsed ? "w-16" : "w-60"
-      } bg-white h-screen border-t border-[#BCC7D2] border-r border-b flex flex-col justify-between transition-all duration-200 overflow-hidden`}
+      } bg-[#FFFFFF] h-screen border-t border-[#BCC7D2] border-r border-b flex flex-col justify-between transition-all duration-200 overflow-hidden`}
     >
       <div>
         <div className={`flex items-center border-b border-[#BCC7D2] px-3 py-3 ${collapsed ? "justify-center" : "justify-between"}`}>
@@ -47,7 +47,7 @@ export default function Sidebar() {
             <div>
                  <img
           src="public/assets/icons/Subtract.svg"
-          alt="Aiinhome Logo"
+          alt="profile_logo"
           className="h-10 w-10"
         />
             </div>
