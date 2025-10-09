@@ -734,7 +734,7 @@ const TextReader = ({
     setIsAILoading(true);
 
     try {
-      const response = await fetch("http://122.163.121.176:3004/chat", {
+      const response = await fetch("https://aiinhome.com/communication/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

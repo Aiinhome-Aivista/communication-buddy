@@ -64,7 +64,7 @@ export default function Reports() {
 
   // Common fetch function
   const fetchReports = async () => {
-    const response = await fetch("http://122.163.121.176:3004/hr-sessions", {
+    const response = await fetch("https://aiinhome.com/communication/hr-sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
