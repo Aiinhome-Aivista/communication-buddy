@@ -80,7 +80,7 @@ export default function Login() {
       <div
         className="relative flex justify-center items-start h-[100vh] bg-cover bg-center"
         style={{
-          backgroundImage: `url(${staticImages.loginBackground}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
+          backgroundImage: `url(${staticImages.loginBackground1}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
         }}
       >
         <Toast ref={toast} />
@@ -99,15 +99,17 @@ export default function Login() {
               <h3 className="text-center text-2xl font-semibold text-nowrap whitespace-nowrap">
                 Welcome to{" "}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Skill Mate
+                  {/* Skill Mate */}
+                  Communication Buddy
                 </span>{" "}
-                Assistant
+                {/* Assistant */}
               </h3>
             </div>
 
             {/* Subtitle  */}
             <p className="text-center text-lg font-light">
-              Login to your account
+              {/* Login to your account */}
+              Sign in
             </p>
 
             {/* <!-- Form --> */}
