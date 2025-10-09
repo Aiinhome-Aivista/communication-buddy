@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-
 const testData = [
   {
     title: "Python",
-    duration: "10 mins",
     date: "17/10/2025",
     status: "Active",
   },
-  { title: "SQL", duration: "22 mins", date: "11/10/2025", status: "Active" },
-  { title: "JAVA", duration: "7 mins", date: "13/10/2025", status: "Active" },
+  { title: "SQL", date: "11/10/2025", status: "Active" },
+  { title: "JAVA", date: "13/10/2025", status: "Active" },
 ];
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 const testTypeOptions = ["All", "Technology", "Communication"];
 
-export default function PracticeTestPage() {
+export default function ScheduleSessionDashboard() {
   const [activeTab, setActiveTab] = useState("Upcoming");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
@@ -25,7 +23,7 @@ export default function PracticeTestPage() {
       <div className="flex-grow flex flex-col">
         <div className="pt-6 px-6 ">
           <h1 className="text-2xl font-bold text-[#2C2E42]">
-            Practice &amp; Test
+            Schedule Session
           </h1>
           <div className="flex flex-row items-center mt-6 space-x-8 gap-4">
             <div className="flex border border-[#BCC7D2] rounded-xl overflow-hidden">
@@ -71,15 +69,23 @@ export default function PracticeTestPage() {
                 </svg>
               </button>
               {dropdownOpen && (
-                <ul className="absolute mt-1 left-0 w-80 bg-white  rounded-xl shadow-md z-10">
-                  {testTypeOptions.map((option) => (
+                <ul className="absolute mt-1 left-0 w-80 bg-[#B8C6D6] rounded-2xl shadow-md z-10">
+                  {testTypeOptions.map((option, idx) => (
                     <li
                       key={option}
                       onClick={() => {
                         setTestType(option);
                         setDropdownOpen(false);
                       }}
-                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                      className={`px-4 py-2 text-sm cursor-pointer text-[#1A2530] rounded-xl
+        ${
+          idx === 1
+            ? "bg-[#D9D9D9] font-semibold"
+            : testType === option
+            ? "bg-[#BCC7D2] font-semibold"
+            : "hover:bg-[#A9B7C6]"
+        }
+      `}
                     >
                       {option}
                     </li>
@@ -89,21 +95,19 @@ export default function PracticeTestPage() {
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] mt-6 rounded-xl shadow">
+          {/* Table */}
+          <div className="flex-1 bg-[#FFFFFF] mt-6 rounded-xl shadow">
             <table className="w-full ">
               <thead>
                 <tr>
                   <th className="px-2 py-3 text-left text-xs font-medium text-[#3D5B81]">
                     Test Title
                   </th>
-                  <th className="px-25 py-3 text-xs font-medium text-[#3D5B81]">
-                    Session Duration
-                  </th>
-                  <th className="px-10 py-3 text-xs font-medium text-[#3D5B81]">
+                  <th className="px-2 py-3 text-left text-xs font-medium text-[#3D5B81]">
                     Session Date
                   </th>
-                  <th className="px-6 p-3 text-xs font-medium text-[#3D5B81]">
-                    Action
+                  <th className="px-2 py-3 text-left text-xs font-medium text-[#3D5B81]">
+                    Status
                   </th>
                 </tr>
               </thead>
@@ -113,18 +117,14 @@ export default function PracticeTestPage() {
                     <td className="px-2 py-4 text-sm text-[#3D5B81]">
                       {test.title}
                     </td>
-                    <td className="px-100 py-4 text-sm text-[#29324173]">
-                      {test.duration}
-                    </td>
-                    <td className="px-10 py-4 text-sm text-[#29324173]">
+                    <td className="px-2 py-4 text-sm text-[#29324173]">
                       {test.date}
                     </td>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-2 py-4 text-sm">
                       <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-[#46BA2F]">
                         {test.status}
                       </span>
                     </td>
-                    <td></td>
                   </tr>
                 ))}
               </tbody>
