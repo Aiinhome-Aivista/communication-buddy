@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import ManageSchedule from "../pages/admin/ManageSchedule";
 import ManageUser from "../pages/admin/ManageUser";
+import ScheduleSession from "../pages/scheduleSession/ScheduleSession";
 
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
@@ -11,10 +12,12 @@ const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const Default = lazy(() => import("../pages/dashboard/Default"));
 const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
+const PracticeTest = lazy(() => import("../pages/practiceTest/PracticeTest"));
 const RequestNotification = lazy(() =>
   import("../pages/dashboard/RequestNotification")
 );
 const TopicList = lazy(() => import("../pages/users/TopicList"));
+const scheduleSession = lazy(() => import("../pages/scheduleSession/ScheduleSession"));
 
 // Loader component for fallback UI
 const Loader = () => (
@@ -103,6 +106,30 @@ export const router = createBrowserRouter(
           ],
         },
       ],
+    },
+    {
+      path: "/test",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProtectedRoute>
+            <AppLayout>
+              <PracticeTest/>
+            </AppLayout>  
+          </ProtectedRoute>
+        </Suspense>
+      ),
+    },
+    {
+      path: "/schedule",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProtectedRoute>
+            <AppLayout>
+              <ScheduleSession/>
+            </AppLayout>
+          </ProtectedRoute>
+        </Suspense>
+      ),
     },
   ],
   {

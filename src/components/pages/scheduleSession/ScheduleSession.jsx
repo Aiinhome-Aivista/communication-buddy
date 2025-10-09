@@ -10,7 +10,7 @@ const testData = [
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 const testTypeOptions = ["All", "Technology", "Communication"];
 
-export default function ScheduleSessionDashboard() {
+export default function ScheduleSession() {
   const [activeTab, setActiveTab] = useState("Upcoming");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
