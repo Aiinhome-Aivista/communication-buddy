@@ -8,9 +8,9 @@ export default function Dashboard() {
     <>
       <section className="dashboard-container h-full">
         <div className="dashboard-layout flex">
-         {/*  <HrDashboard/> */}
+          <HrDashboard/>
           {/* <ScheduleSession/> */}
-          <PracticeTest/>
+          {/* <PracticeTest/> */}
         </div>
       </section>
     </>

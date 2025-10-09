@@ -1,5 +1,5 @@
 import React from 'react'
-import { Outlet } from 'react-router'
+import { Outlet } from 'react-router-dom'
 import NewHeader from '../ui/NewHeader'
 import Sidebar from '../ui/Sidebar'
 import Footer from '../ui/Footer'
