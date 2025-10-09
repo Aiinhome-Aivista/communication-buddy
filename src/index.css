@@ -6,6 +6,9 @@ body {
 /* font-family: "Ubuntu", sans-serif; */
 }
 
+.font-baloo {
+  font-family: 'Baloo Da 2', cursive;
+}
 /* .scrollbar ::-webkit-scrollbar {
   display: none;
 
