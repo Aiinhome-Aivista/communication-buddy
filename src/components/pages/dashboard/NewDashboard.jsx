@@ -71,7 +71,7 @@ export default function PracticeTestPage() {
                 </svg>
               </button>
               {dropdownOpen && (
-                <ul className="absolute mt-1 left-0 w-44 bg-white border rounded-md shadow-md z-10">
+                <ul className="absolute mt-1 left-0 w-80 bg-white  rounded-xl shadow-md z-10">
                   {testTypeOptions.map((option) => (
                     <li
                       key={option}
