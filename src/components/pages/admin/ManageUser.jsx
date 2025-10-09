@@ -104,7 +104,7 @@ function ManageUser() {
             <div className="flex justify-between items-center mb-6">
                 {/* Left side: Title + Sync */}
                 <div className="flex items-center">
-                    <h1 className="text-2xl font-bold text-teal-300">Manage User</h1>
+                    <h1 className="text-2xl font-bold text-white">Manage User</h1>
                     <span className="inline-block w-4"></span>
                     <CustomTooltip content="Sync Data" type="reload">
                         <span

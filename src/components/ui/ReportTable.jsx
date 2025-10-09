@@ -27,14 +27,14 @@ export default function ReportTable({
               {headers.map((heading) => (
                 <th
                   key={heading}
-                  className="px-6 py-3 text-left text-xs font-medium text-teal-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                 >
                   {heading}
                 </th>
               ))}
 
               {(isShowAction || isRaiseRequest) && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-teal-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Actions
                 </th>
               )}

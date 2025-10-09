@@ -80,7 +80,7 @@ export default function Login() {
       <div
         className="relative flex justify-center items-start h-[100vh] bg-cover bg-center"
         style={{
-          backgroundImage: `url(${staticImages.loginBackground1}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
+          backgroundImage: `url(${staticImages.loginBackground}),linear-gradient(117.21deg, #141414 80.75%, #484848 149.51%)`,
         }}
       >
         <Toast ref={toast} />

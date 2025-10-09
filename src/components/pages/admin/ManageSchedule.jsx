@@ -235,7 +235,7 @@ function ManageSchedule() {
             <div className="flex justify-between items-center mb-6">
                 {/* Left side: Title + Sync */}
                 <div className="flex items-center">
-                    <h1 className="text-2xl font-bold text-teal-300">Manage Schedule</h1>
+                    <h1 className="text-2xl font-bold text-white">Manage Schedule</h1>
                     <span className="inline-block w-4"></span>
                     <CustomTooltip content="Sync Data" type="reload">
                         <span
@@ -266,7 +266,7 @@ function ManageSchedule() {
 
                     <button
                         onClick={handleNewSchedule}
-                        className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
+                        className="flex items-center bg-teal-700 hover:bg-teal-600 text-white py-2 px-4 rounded-lg transition-colors"
                     >
                         <Plus className="mr-2" />
                         Add New Schedule

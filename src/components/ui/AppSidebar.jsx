@@ -195,7 +195,7 @@ export default function AppSidebar() {
         className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"}`}
       >
         {!collapsed && (
-          <h2 className="text-teal-200 block">
+          <h2 className="text-white block">
             <span className="text-lg font-medium">
               <NavLink to="/dashboard" className="flex items-center gap-2">
                 Skill Enhancement
@@ -205,7 +205,7 @@ export default function AppSidebar() {
         )}
 
         <span
-          className={`text-teal-400 cursor-pointer transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
+          className={`text-white cursor-pointer transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
           onClick={() => setCollapsed((prev) => !prev)}
         >
           ▶
@@ -258,7 +258,7 @@ export default function AppSidebar() {
                     <div className="ml-6 mt-1 space-y-2 p-2">
                       {Object.keys(practiceSubmenu).map((category, catIndex) => (
                         <div key={catIndex}>
-                          <h4 className="text-teal-400 font-semibold mb-1">{category}</h4>
+                          <h4 className="text-white font-semibold mb-1">{category}</h4>
                           {practiceSubmenu[category].map((subItem, subIndex) => (
                             <NavLink
                               key={subIndex}
@@ -267,7 +267,7 @@ export default function AppSidebar() {
                               className={
                                 selectedTopic === subItem.topic_name
                                   ? "bg-teal-600 text-white block px-3 py-1 text-sm rounded truncate"
-                                  : "text-teal-300 hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
+                                  : "text-white hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
                               }                            >
                               {`${subIndex + 1}. ${subItem.topic_name}`}
                             </NavLink>
@@ -285,13 +285,13 @@ export default function AppSidebar() {
               <NavLink
                 to={item.path}
                 key={index}
-                className="flex items-center gap-2 text-teal-200 hover:text-teal-100"
+                className="flex items-center gap-2 text-white hover:text-white"
               >
                 <li
                   className={`flex items-center px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md w-full ${collapsed ? "justify-center gap-0" : "gap-4"
                     }`}
                 >
-                  <span className="text-teal-200">{item.icon}</span>
+                  <span className="text-white">{item.icon}</span>
                   {!collapsed && <span>{item.title}</span>}
                 </li>
               </NavLink>
