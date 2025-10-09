@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router'
-import Header from '../ui/Header'
+// import Header from '../ui/Header'
+// import NewHeader from '../ui/NewHeader'
 import Footer from '../ui/Footer'
 
 export default function AppLayout() {
@@ -12,7 +13,8 @@ export default function AppLayout() {
     </main>
    <Footer /> */}
       <div className="flex flex-col min-h-screen bg-slate-900">
-        <Header />
+        {/* <Header /> */}
+        {/* <NewHeader /> */}
         <main className="flex-1 overflow-hidden">
           <Outlet />
         </main>
