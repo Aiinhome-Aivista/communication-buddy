@@ -1006,7 +1006,7 @@ const TextReader = ({
           {userData.status === "ongoing" && <div className="flex flex-col h-[calc(90vh-100px)] px-4 pt-4"> {!chatStarted ? (
             <div className="flex-1 flex items-center justify-center h-full">
               <button
-                className="bg-teal-600/40 px-6 py-3 rounded-xl text-white cursor-pointer hover:bg-teal-700/50"
+                className="bg-gray-200 px-6 py-3 rounded-xl text-black cursor-pointer hover:bg-gray-500"
                 onClick={() => {
                   setChatStarted(true);
                   generateRandomID();
@@ -1221,7 +1221,7 @@ const TextReader = ({
               </div>
             )} </div>}
           {userData.status === "expired" && <div className="flex flex-1 items-center justify-center">
-            <div className="text-4xl font-bold text-teal-500">Expired!</div>
+            <div className="text-4xl font-bold text-black">Expired!</div>
           </div>}
         </>
       )}

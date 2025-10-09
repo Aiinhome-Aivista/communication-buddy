@@ -26,8 +26,8 @@ export default function Pagination({
   const outlinedBtn = (content, key, opts = {}) => {
     const { active = false, disabled = false, onClick } = opts;
     const base = "px-3 py-1 rounded-md border text-sm font-medium";
-    const activeCls = "bg-white border-teal-600 text-teal-700";
-    const inactiveCls = "bg-transparent border-teal-600/30 text-teal-100 hover:bg-teal-600/10";
+    const activeCls = "bg-white border-gray-500 text-black";
+    const inactiveCls = "bg-transparent border-gray-500 text-black hover:bg-gray-400";
     const disabledCls = "opacity-50 cursor-not-allowed";
 
     return (
@@ -50,7 +50,7 @@ export default function Pagination({
         {pages.map((p, idx) =>
           p === "..."
             ? (
-              <span key={`ell-${idx}`} className="px-3 py-1 text-teal-200">...</span>
+              <span key={`ell-${idx}`} className="px-3 py-1 text-black">...</span>
             )
             : outlinedBtn(p, `p-${p}`, { active: p === current, onClick: () => onPageChange(p) })
         )}
@@ -62,11 +62,11 @@ export default function Pagination({
         <select
           value={itemsPerPage}
           onChange={onItemsPerPageChange}
-          className="bg-transparent border border-teal-600/30 text-teal-100 rounded px-2 py-1 text-sm"
+          className="bg-transparent border border-gray-500 text-black rounded px-2 py-1 text-sm"
         >
-          <option className="bg-gray-900 text-teal-400" value={10}>10</option>
-          <option className="bg-gray-900 text-teal-400" value={15}>15</option>
-          <option className="bg-gray-900 text-teal-400" value={20}>20</option>
+          <option className="bg-gray-900 text-gray-400" value={10}>10</option>
+          <option className="bg-gray-900 text-gray-400" value={15}>15</option>
+          <option className="bg-gray-900 text-gray-400" value={20}>20</option>
         </select>
       </div>
     </div>

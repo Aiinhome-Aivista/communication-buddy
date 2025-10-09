@@ -14,8 +14,8 @@ export default function ReportRow({
     <tr
       className={
         index % 2 === 0
-          ? "bg-teal-900/10"
-          : "bg-teal-900/20 hover:bg-teal-800/30"
+          ? "bg-gray-300"
+          : "bg-gray-300 hover:bg-gray-500"
       }
     >
       {keys.map((key) => {
@@ -29,7 +29,7 @@ export default function ReportRow({
         return (
           <td
             key={key}
-            className={`px-6 py-4 whitespace-nowrap text-sm text-teal-100 max-w-[200px] truncate 
+            className={`px-6 py-4 whitespace-nowrap text-sm text-black max-w-[200px] truncate 
               ${showTooltip ? "cursor-pointer" : ""}`} // ✅ pointer on hover for Topic & Insights
             title={showTooltip ? value : ""} // ✅ tooltip for both
           >
@@ -57,14 +57,14 @@ export default function ReportRow({
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
           <div className="flex space-x-3">
             <button
-              className="text-amber-300 hover:text-amber-100 transition-colors"
+              className="text-amber-400 hover:text-amber-100 transition-colors"
               title="Edit"
               onClick={() => onEdit && onEdit(row)}
             >
               <FaEdit />
             </button>
             <button
-              className="text-red-300 hover:text-red-100 transition-colors"
+              className="text-red-400 hover:text-red-100 transition-colors"
               title="Delete"
               onClick={() => onDelete && onDelete(row)}
             >
@@ -78,7 +78,7 @@ export default function ReportRow({
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
           <div className="flex space-x-3">
             <button
-              className="text-teal-100 bg-teal-600/30 px-2 py-1 outline-2 outline-teal-500 rounded-sm outline-offset-2 hover:text-teal-400 cursor-pointer transition-colors"
+              className="text-teal-100 bg-teal-600/30 px-2 py-1 outline-2 outline-teal-500 rounded-sm outline-offset-2 hover:text-gray-400 cursor-pointer transition-colors"
               onClick={() => raiseRequest(row)}
             >
               Request

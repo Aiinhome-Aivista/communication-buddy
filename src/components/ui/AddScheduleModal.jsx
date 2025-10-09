@@ -140,19 +140,19 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#1b6a65] rounded-lg shadow-lg w-full max-w-2xl max-h-[98vh] p-8 relative border border-gray-200 ">
+            <div className="bg-gray-400 rounded-lg shadow-lg w-full max-w-2xl max-h-[98vh] p-8 relative border border-gray-200 ">
 
                 {/* Title */}
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-white">{title}</h2>
-                    <X onClick={onClose} className="cursor-pointer text-white" size={24} />
+                    <h2 className="text-xl font-bold text-black">{title}</h2>
+                    <X onClick={onClose} className="cursor-pointer text-black" size={24} />
                 </div>
 
                 {/* ✅ Candidate Custom Dropdown */}
-                <label className="text-white text-sm">Candidate Name</label>
+                <label className="text-black text-sm">Candidate Name</label>
                 <div ref={userDropdownRef} className="relative mb-3">
                     <div
-                        className="w-full px-3 py-2 border rounded-lg text-white cursor-pointer relative flex justify-between items-center"
+                        className="w-full px-3 py-2 border rounded-lg text-black cursor-pointer relative flex justify-between items-center"
                         onClick={() => setShowUserDropdown(prev => !prev)}
                     >
                         <span>{selectedUser?.name_email || "Select Candidate"}</span>
@@ -160,12 +160,12 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                     </div>
 
                     {showUserDropdown && (
-                        <div className="absolute top-full left-0 w-full bg-teal-700 text-white border rounded shadow-lg max-h-[150px] overflow-y-auto z-10">
+                        <div className="absolute top-full left-0 w-full bg-gray-500 text-black border rounded shadow-lg max-h-[150px] overflow-y-auto z-10">
                             {userData.map((user) => (
                                 <div
                                     key={user.id}
                                     onMouseDown={() => handleSelectUser(user)}
-                                    className="p-2 hover:bg-teal-800 cursor-pointer"
+                                    className="p-2 hover:bg-gray-400 cursor-pointer"
 
                                 >
                                     {user.name_email}
@@ -178,16 +178,16 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                 {/* Date & Time */}
                 <div className="flex gap-3">
                     <div className="w-1/2">
-                        <label className="block text-sm font-medium text-white mb-1">Session Date & Time</label>
+                        <label className="block text-sm font-medium text-black mb-1">Session Date & Time</label>
                         <input
                             type="datetime-local"
                             value={sessionDate}
                             onChange={(e) => setSessionDate(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                         />
                     </div>
                     <div className="w-1/2">
-                        <label className="block text-sm font-medium text-white mb-1">Session Duration</label>
+                        <label className="block text-sm font-medium text-black mb-1">Session Duration</label>
                         <input
                             type="number"
                             min="1"
@@ -201,14 +201,14 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                                     setSessionTime(value);
                                 }
                             }}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                         />
                     </div>
                 </div>
-                <label className="text-white text-sm mt-3 mb-1 block">Session Category</label>
+                <label className="text-black text-sm mt-3 mb-1 block">Session Category</label>
                 <div ref={categoryDropdownRef} className="relative mb-3">
                     <div
-                        className="w-full px-3 py-2 border rounded-lg text-white cursor-pointer relative flex justify-between items-center"
+                        className="w-full px-3 py-2 border rounded-lg text-black cursor-pointer relative flex justify-between items-center"
                         onClick={() => setShowCategoryDropdown(prev => !prev)}
                     >
                         <span>{sessionCategory || "Select Category"}</span>
@@ -216,12 +216,12 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                     </div>
 
                     {showCategoryDropdown && (
-                        <div className="absolute top-full left-0 w-full bg-teal-700 text-white border rounded shadow-lg max-h-[150px] overflow-y-auto z-10">
+                        <div className="absolute top-full left-0 w-full bg-gray-500 text-black border rounded shadow-lg max-h-[150px] overflow-y-auto z-10">
                             {categories.map((catObj, i) => (
                                 <div
                                     key={i}
                                     onMouseDown={() => handleSelectCategory(catObj.topic_category)}
-                                    className="p-2 hover:bg-teal-800 cursor-pointer"
+                                    className="p-2 hover:bg-gray-400 cursor-pointer"
                                 >
                                     {catObj.topic_category}
                                 </div>
@@ -233,7 +233,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
 
 
                 {/* ✅ Topic Search with Scrollable Dropdown */}
-                <label className="text-white text-sm">Session Topic</label>
+                <label className="text-black text-sm">Session Topic</label>
                 <div ref={suggestionRef} className="relative w-full">
                     <div className="relative w-full">
                         <input
@@ -246,7 +246,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                                     ? "Search or add topic..."
                                     : "Select category first"
                             }
-                            className="w-full px-3 py-2 border rounded-lg mb-1 pr-8 cursor-pointer placeholder:text-white focus:placeholder:text-white text-white bg-transparent disabled:cursor-not-allowed"
+                            className="w-full px-3 py-2 border rounded-lg mb-1 pr-8 cursor-pointer placeholder:text-black focus:placeholder:text-black text-black bg-transparent disabled:cursor-not-allowed"
                             onFocus={() => sessionCategory && setShowSuggestions(true)}
                             disabled={!sessionCategory} // 🔹 Disabled until category is selected
                         />
@@ -262,10 +262,10 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                     </div>
 
                     {showSuggestions && sessionCategory && (
-                        <div className="absolute top-full left-0 bg-teal-700 text-white border rounded w-full max-h-[150px] overflow-y-auto shadow-lg z-50">
+                        <div className="absolute top-full left-0 bg-gray-500 text-black border rounded w-full max-h-[150px] overflow-y-auto shadow-lg z-50">
                             {filteredTopics.map((t, i) => (
                                 <div key={i} onMouseDown={() => handleSelectTopic(t)}
-                                    className="p-2 cursor-pointer hover:bg-teal-800">{t}</div>
+                                    className="p-2 cursor-pointer hover:bg-gray-600">{t}</div>
                             ))}
 
                             {searchTopic && (
@@ -276,7 +276,7 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
                                         }
                                         handleSelectTopic(searchTopic);
                                     }}
-                                    className="p-2 cursor-pointer bg-teal-600 hover:bg-teal-800 text-white font-semibold">
+                                    className="p-2 cursor-pointer bg-teal-600 hover:bg-teal-800 text-black font-semibold">
                                     ➕ Use "{searchTopic}"
                                 </div>
                             )}
@@ -286,8 +286,8 @@ export default function AddScheduleModal({ isOpen, title, onClose, userData, top
 
                 {/* Buttons */}
                 <div className="flex justify-between mt-6">
-                    <button onClick={onClose} className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Cancel</button>
-                    <button onClick={handleInitiate} className="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800">{isEdit ? 'Update' : 'Initiate'}</button>
+                    <button onClick={onClose} className="bg-gray-400 text-black px-4 py-2 rounded hover:bg-gray-500">Cancel</button>
+                    <button onClick={handleInitiate} className="bg-gray-500 text-black px-4 py-2 rounded hover:bg-gray-600">{isEdit ? 'Update' : 'Initiate'}</button>
                 </div>
             </div>
         </div>

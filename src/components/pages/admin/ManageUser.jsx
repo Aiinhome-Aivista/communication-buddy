@@ -100,17 +100,17 @@ function ManageUser() {
     };
 
     return (
-        <div className="text-teal-100 p-2">
+        <div className="text-black p-2">
             <div className="flex justify-between items-center mb-6">
                 {/* Left side: Title + Sync */}
                 <div className="flex items-center">
-                    <h1 className="text-2xl font-bold text-white">Manage User</h1>
+                    <h1 className="text-2xl font-bold text-black">Manage User</h1>
                     <span className="inline-block w-4"></span>
                     <CustomTooltip content="Sync Data" type="reload">
                         <span
                             onClick={ReloadGridData}
                             className="sync-icon cursor-pointer align-middle"
-                            style={{ position: "relative", top: "2px" }}
+                            style={{ position: "relative", top: "2px",color:'black' }}
                         >
                             <FaRotate className={`${rotation ? "rotate" : ""}`} />
                         </span>
@@ -120,17 +120,17 @@ function ManageUser() {
                 {/* Right side: Search + Add Button */}
                 <div className="flex items-center space-x-3">
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-300" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-" />
                         <input
                             type="text"
                             placeholder="Search User"
-                            className="pl-10 pr-3 py-2 rounded-lg bg-teal-700 text-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            className="pl-10 pr-3 py-2 rounded-lg bg-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-gray-500"
                         />
                     </div>
 
                     <button
                         onClick={handleNewHR}
-                        className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
+                        className="flex items-center  bg-gray-400 hover:bg-gray-500 text-black py-2 px-4 rounded-lg transition-colors"
                     >
                         <Plus className="mr-2" />
                         Add New User

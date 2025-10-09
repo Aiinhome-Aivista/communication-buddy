@@ -11,7 +11,7 @@ export default function AppLayout() {
         <Outlet />
     </main>
    <Footer /> */}
-      <div className="flex flex-col min-h-screen bg-slate-900">
+      <div className="flex flex-col min-h-screen bg-gray-200">
         <Header />
         <main className="flex-1 overflow-hidden">
           <Outlet />

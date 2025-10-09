@@ -174,25 +174,25 @@ export default function AppSidebar() {
 
   return (
     <div
-      className={`sidebar bg-slate-800 text-white border-r-4 border-teal-500 p-3 relative flex flex-col transition-[width] duration-200 ease-linear`}
+      className={`sidebar bg-gray-200 text-black border-r-2 border-black p-3 relative flex flex-col transition-[width] duration-200 ease-linear`}
       style={{ width: `${collapsed ? 80 : width}px`, height: "calc(100vh - 8rem)" }}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
       {/* Drag handle */}
       <div
-        className={`absolute top-0 right-0 h-full w-2 ${hovering ? "bg-teal-500/30" : "bg-transparent"} cursor-col-resize flex items-center justify-end pr-1 transition-all duration-200`}
+        className={`absolute top-0 right-0 h-full w-2 ${hovering ? "bg-white" : "bg-transparent"} cursor-col-resize flex items-center justify-end pr-1 transition-all duration-200`}
         onMouseDown={startResizing}
         style={{ zIndex: 10 }}
       >
         {hovering && (
-          collapsed ? <span className="text-white"></span> : <span className="text-white"></span>
+          collapsed ? <span className="text-black"></span> : <span className="text-black"></span>
         )}
       </div>
 
       {/* Header */}
       <div
-        className={`sidebar-header flex items-center mb-4 p-2 bg-teal-500/20 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"}`}
+        className={`sidebar-header flex items-center mb-4 p-2 bg-gray-700 rounded-md transition-all duration-300 ${collapsed ? "justify-center w-full" : "justify-between"}`}
       >
         {!collapsed && (
           <h2 className="text-white block">
@@ -222,18 +222,18 @@ export default function AppSidebar() {
                 <div key={index}>
                   <button
                     onClick={() => setSubMenuOpen(!subMenuOpen)}
-                    className={`flex items-center w-full px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md ${collapsed ? "justify-center gap-0" : "gap-4"
+                    className={`flex items-center w-full px-3 py-2 bg-gray-700 hover:bg-gray-500 rounded-md cursor-pointer text-md ${collapsed ? "justify-center gap-0" : "gap-4"
                       }`}
                   >
-                    <span>{item.icon}</span>
+                    <span className="text-white">{item.icon}</span>
                     {!collapsed && (
                       <>
-                        <span>{item.title}</span>
+                        <span className="text-white">{item.title}</span>
                         <span className="ml-auto">
                           {subMenuOpen ? (
-                            <ChevronUp size={16} />
+                            <ChevronUp size={16} className="text-white"/>
                           ) : (
-                            <ChevronDown size={16} />
+                            <ChevronDown size={16} className="text-white" />
                           )}
                         </span>
                       </>
@@ -247,7 +247,7 @@ export default function AppSidebar() {
                         <NavLink
                           key={subIndex}
                           to={`/dashboard/test/${subItem.topic_name}`} // adjust route as needed
-                          className="block px-3 py-2 text-sm text-teal-300 hover:text-white hover:bg-teal-600/10 rounded truncate"
+                          className="block px-3 py-2 text-sm text-teal-300 hover:text-black hover:bg-teal-600/10 rounded truncate"
                         >
                           {`${subIndex + 1}. ${subItem.topic_name}`}
                         </NavLink>
@@ -258,7 +258,7 @@ export default function AppSidebar() {
                     <div className="ml-6 mt-1 space-y-2 p-2">
                       {Object.keys(practiceSubmenu).map((category, catIndex) => (
                         <div key={catIndex}>
-                          <h4 className="text-white font-semibold mb-1">{category}</h4>
+                          <h4 className="text-black font-semibold mb-1">{category}</h4>
                           {practiceSubmenu[category].map((subItem, subIndex) => (
                             <NavLink
                               key={subIndex}
@@ -266,8 +266,8 @@ export default function AppSidebar() {
                               onClick={() => { getTopicDetails(subItem); setSelectedTopic(subItem.topic_name); }}
                               className={
                                 selectedTopic === subItem.topic_name
-                                  ? "bg-teal-600 text-white block px-3 py-1 text-sm rounded truncate"
-                                  : "text-white hover:text-white hover:bg-teal-600/10 block px-3 py-1 text-sm rounded truncate"
+                                  ? "bg-gray-400 text-black block px-3 py-1 text-sm rounded truncate"
+                                  : "text-black hover:text-black hover:bg-gray-600/10 block px-3 py-1 text-sm rounded truncate"
                               }                            >
                               {`${subIndex + 1}. ${subItem.topic_name}`}
                             </NavLink>
@@ -285,10 +285,10 @@ export default function AppSidebar() {
               <NavLink
                 to={item.path}
                 key={index}
-                className="flex items-center gap-2 text-white hover:text-white"
+                className="flex items-center gap-2 text-white hover:text-black"
               >
                 <li
-                  className={`flex items-center px-3 py-2 bg-teal-500/25 hover:bg-teal-700 rounded-md cursor-pointer text-md w-full ${collapsed ? "justify-center gap-0" : "gap-4"
+                  className={`flex items-center px-3 py-2 bg-gray-700 hover:bg-gray-500 rounded-md cursor-pointer text-md w-full ${collapsed ? "justify-center gap-0" : "gap-4"
                     }`}
                 >
                   <span className="text-white">{item.icon}</span>
@@ -302,7 +302,7 @@ export default function AppSidebar() {
         {/* Logout */}
         <div className="sidebar-footer flex items-center justify-center mt-4">
           <button
-            className="border-1 border-rose-400 bg-rose-500/20 text-md flex-1 h-10 rounded-md shadow-sm hover:bg-rose-700/50 flex items-center justify-center gap-4 text-rose-100 cursor-pointer transition-colors duration-300"
+            className="border-1 border-black-400 bg-gray-500/20 text-md flex-1 h-10 rounded-md shadow-sm hover:bg-gray-700/50 flex items-center justify-center gap-4 text-black-100 cursor-pointer transition-colors duration-300"
             onClick={handleLogout}
           >
             {!collapsed && "Logout"} <LogOut size={18} />

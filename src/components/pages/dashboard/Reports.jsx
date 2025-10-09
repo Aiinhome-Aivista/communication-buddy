@@ -119,16 +119,16 @@ export default function Reports() {
   };
 
   return (
-    <div className="text-teal-100 p-2">
+    <div className="text-black p-2">
       <div className="flex items-center mb-6">
-        <h1 className="text-2xl font-bold text-white flex items-center">
+        <h1 className="text-2xl font-bold text-black flex items-center">
           Reports Management </h1>
         <span className="inline-block w-4"></span> {/* Adds space between text and icon */}
         <CustomTooltip content="Sync Data" type="reload">
           <span
             onClick={ReloadGridData}
             className="sync-icon cursor-pointer align-middle"
-            style={{ position: "relative", top: "2px" }}
+            style={{ position: "relative", top: "2px"  ,color:'black'}}
           >
             <FaRotate className={`${rotation ? "rotate" : ""}`} />
           </span>

@@ -81,22 +81,22 @@ export default function Header() {
   };
 
   return (
-    <header className="header-app-container h-16 bg-slate-700 flex items-center justify-between shadow border-b-2 border-teal-600">
+    <header className="header-app-container h-16 bg-gray-200 flex items-center justify-between shadow border-b-2 border-black">
       <Container width="w-[90%]">
         <div className="flex items-center justify-between w-full relative">
           {/* Logo */}
           <div className="company-logo py-3">
-            <img src={staticImages.companyLogo2} alt="Company Logo" className="w-14 object-cover" />
+            <img src={staticImages.companyLogo2} alt="Company Logo" className="w-14 object-cover  invert-0 brightness-0" />
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4 text-white">
+          <div className="flex items-center gap-4 text-black">
             {/* User Info */}
-            <div className="flex items-center gap-2 bg-teal-400/20 rounded-full min-w-24 px-2 py-1 cursor-pointer shadow-sm">
-              <div className="bg-teal-600 p-1 rounded-full">
+            <div className="flex items-center gap-2 bg-gray-400/20 rounded-full min-w-24 px-2 py-1 cursor-pointer shadow-sm">
+              <div className="bg-black p-1 rounded-full">
                 <FiUser className="w-5 h-5 text-teal-100" />
               </div>
-              <span className="text-sm font-medium text-teal-100">{userName}</span>
+              <span className="text-sm font-medium text-black">{userName}</span>
             </div>
 
             {/* Voice Gender Dropdown */}

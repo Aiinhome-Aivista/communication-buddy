@@ -42,8 +42,8 @@ export default function Default() {
   };
   return (
     <>
-      <h1 className="text-2xl text-gray-400">Dashboard</h1>
-      <p className="mt-2 text-teal-200">Welcome, {userName ? userName : 'User'} to your dashboard!</p>
+      <h1 className="text-2xl text-black text-bold">Dashboard</h1>
+      <p className="mt-2 text-black">Welcome, {userName ? userName : 'User'} to your dashboard!</p>
       <br />
 
       {userRole === 'hr' && (
