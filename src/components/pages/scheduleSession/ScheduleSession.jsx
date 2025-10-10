@@ -43,7 +43,7 @@ export default function ScheduleSession() {
 
   return (
     <div className="w-[100%] h-[100%] bg-[#ECEFF2] flex flex-col relative">
-      <div className="flex-grow flex flex-col pt-4 px-6">
+      <div className="flex-grow flex flex-col pt-6 px-6">
         {/* Header section with button on right */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-[#2C2E42]">
@@ -74,32 +74,38 @@ export default function ScheduleSession() {
                 className={`px-6 py-2 text-sm  text-semibold rounded-xl font-medium ${activeTab === tab
                     ? "bg-[#FEFEFE] text-[#2C2E42]"
                     : "bg-[#ECEFF2] text-[#8F96A9]"
-                  }`}
+                }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
               </button>
             ))}
           </div>
-
+          {/* <input
+            type="text"
+            placeholder="Search content"
+            className="flex-1 px-6 py-2 border border-[#BCC7D2] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 bg-white"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          /> */}
 
           <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Search content"
-              className="w-full h-[45px] px-6 py-2 border border-[#BCC7D2] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2] pr-12"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <img
-              src="public/assets/icons/search.svg"
-              alt="Search"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none"
-            />
-          </div>
+              <input
+                type="text"
+                placeholder="Search content"
+                className="w-full px-6 py-2 border border-[#BCC7D2] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 bg-[#ECEFF2] pr-12"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <img
+                src="public/assets/icons/search.svg"
+                alt="Search"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none"
+              />
+            </div>
           <div className="relative ml-auto">
             <button
-              className="border border-[#BCC7D2] rounded-xl px-8 py-2 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-[45px]"
+              className="border border-[#BCC7D2] rounded-xl px-8 py-2 text-sm bg-[#ECEFF2] flex items-center justify-between w-80"
               onClick={() => setDropdownOpen(!dropdownOpen)}
                style={{ color: "#8F96A9" }} 
             >
@@ -114,23 +120,24 @@ export default function ScheduleSession() {
             </button>
             {dropdownOpen && (
               <ul className="absolute mt-1 left-0 w-80 bg-[#BCC7D2] rounded-2xl shadow-md z-10">
-                {testTypeOptions.map((option) => (
-                  <li
-                    key={option}
-                    onClick={() => {
-                      setTestType(option);
-                      setDropdownOpen(false);
-                    }}
-                    className={`px-4 py-2 text-base font-medium cursor-pointer text-[#1A2530]
-      ${testType === option
-                        ? "bg-[#BCC7D2] font-semibold"
-                        : "hover:bg-[#D9D9D9]"
-                      }
+            {testTypeOptions.map((option) => (
+  <li
+    key={option}
+    onClick={() => {
+      setTestType(option);
+      setDropdownOpen(false);
+    }}
+    className={`px-4 py-2 text-sm cursor-pointer text-[#1A2530] rounded-xl
+      ${
+        testType === option
+          ? "bg-[#BCC7D2] font-semibold"
+          : "hover:bg-[#D9D9D9]"
+      }
     `}
-                  >
-                    {option}
-                  </li>
-                ))}
+  >
+    {option}
+  </li>
+))}
 
               </ul>
             )}
