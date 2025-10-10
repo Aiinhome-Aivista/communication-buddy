@@ -4,6 +4,7 @@ import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import ManageSchedule from "../pages/admin/ManageSchedule";
 import ManageUser from "../pages/admin/ManageUser";
 import ScheduleSession from "../pages/scheduleSession/ScheduleSession";
+import Settings from "../pages/setting/Settings";
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
@@ -140,6 +141,26 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={<Loader />}>
               <ScheduleSession />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/settings",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        </Suspense>
+      ),
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={<Loader />}>
+              <Settings />
             </Suspense>
           ),
         },

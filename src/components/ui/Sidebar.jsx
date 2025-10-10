@@ -1,9 +1,34 @@
 import { useState } from "react";
 import { Info } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 export default function Sidebar() {
-  const [active, setActive] = useState("Practice & Test");
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
   const menuItems = [
+    {
+      name: "Dashboard",
+      icon: (
+        <img
+          src="public/assets/icons/assignment.svg"
+          alt="Dashboard"
+          className="h-7 w-7"
+        />
+      ),
+      path: "/dashboard"
+    },
+    {
+      name: "Schedule Session",
+      icon: (
+        <img
+          src="public/assets/icons/assignment.svg"
+          alt="Schedule Session"
+          className="h-7 w-7"
+        />
+
+      ),
+      path: "/schedule"
+    },
     {
       name: "Practice & Test",
       icon: (
@@ -12,7 +37,9 @@ export default function Sidebar() {
           alt="Practice & Test"
           className="h-7 w-7"
         />
+
       ),
+      path: "/test"
     },
     {
       name: "Test Result",
@@ -22,6 +49,7 @@ export default function Sidebar() {
           alt="Test Result"
           className="h-7 w-7"
         />
+
       ),
     },
     {
@@ -32,6 +60,7 @@ export default function Sidebar() {
           alt="Settings"
           className="h-7 w-7"
         />
+
       ),
     },
   ];
@@ -72,19 +101,19 @@ export default function Sidebar() {
         {/* Menu */}
         <nav className="mt-2 p-3">
           {menuItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => setActive(item.name)}
-              className={`flex items-center gap-2 w-full h-[50px] rounded-2xl  px-3 py-0 text-sm font-medium transition-colors ${active === item.name
+            <Link to={item.path ? item.path : item.name.toLowerCase().replace(/ /g, "-")} key={item.name}>
+              <button className={`flex items-center gap-2 w-full h-[50px] rounded-2xl px-3 py-0 text-sm font-medium transition-colors ${location.pathname === (item.path || item.name.toLowerCase().replace(/ /g, "-"))
                   ? "bg-[#1E293B] text-white"
                   : "text-gray-700 hover:bg-gray-100"
                 } ${collapsed ? "justify-center px-0" : ""}`}
-            >
-              {item.icon}
-              {!collapsed && item.name}
-            </button>
+              >
+                {item.icon}
+                {!collapsed && item.name}
+              </button>
+            </Link>
           ))}
         </nav>
+
       </div>
       <div className={`flex items-center border-t border-[#BCC7D2] px-3 h-[calc(10%)] ${collapsed ? "justify-center" : "justify-between"}`}>
         <div className="flex items-center space-x-3">
