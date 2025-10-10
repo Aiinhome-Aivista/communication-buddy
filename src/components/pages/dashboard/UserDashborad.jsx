@@ -25,23 +25,7 @@ import {
 
 
 
-export async function getCandidateDashboard(userId) {
-  
-  try {
-    const body = { user_id: userId };
-    const response = await fatchedPostRequest(postURL.dashboard, body);
 
-    if (response?.success) {
-      return response.data; 
-    } else {
-      console.error("API Error:", response?.message);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching dashboard:", error.message);
-    return null;
-  }
-}
 
 const UserDashboard = () => {
   const COLORS = ["#0f172a", " #DFB916"];
