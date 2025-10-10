@@ -19,6 +19,8 @@ export const postURL = {
   getUserTopicById: `${BASE_URL}/get-user-topic-by-id`,
   updateUserTopic: `${BASE_URL}/update-user-topic`,
   deleteUserTopic: `${BASE_URL}/delete-user-topic`,
+  // candidate dashboard endpoint
+  dashboard:`${BASE_URL}/candidate/dashboard`,
 };
 
 
