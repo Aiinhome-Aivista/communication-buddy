@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SessionModal from "../../modal/SessionModal";
+import SuccessModal from "./SuccessModal";
 
 const testData = [
   { title: "Python", date: "17/10/2025", status: "Active" },
@@ -16,7 +17,9 @@ export default function ScheduleSession() {
   const [testType, setTestType] = useState("Test Type");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [sessionDuration, setSessionDuration] = useState(15);
+  const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+  const [successOpen, setSuccessOpen] = useState(false);
+  // const [candidateName, setCandidateName] = useState("");
 
   return (
     <div className="w-screen h-screen bg-gray-50 flex flex-col relative">
@@ -48,11 +51,10 @@ export default function ScheduleSession() {
             {tabOptions.map((tab) => (
               <button
                 key={tab}
-                className={`px-6 py-2 text-sm font-medium ${
-                  activeTab === tab
-                    ? "bg-[#FEFEFE] text-[#2C2E42]"
-                    : "bg-gray-100 text-[#8F96A9]"
-                }`}
+                className={`px-6 py-2 text-sm font-medium ${activeTab === tab
+                  ? "bg-[#FEFEFE] text-[#2C2E42]"
+                  : "bg-gray-100 text-[#8F96A9]"
+                  }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -96,14 +98,13 @@ export default function ScheduleSession() {
                       setDropdownOpen(false);
                     }}
                     className={`px-4 py-2 text-sm cursor-pointer text-[#1A2530] rounded-xl
-      ${
-        idx === 1
-          ? "bg-[#D9D9D9] font-semibold"
-          : testType === option
-          ? "bg-[#BCC7D2] font-semibold"
-          : "hover:bg-[#A9B7C6]"
-      }
-    `}
+                       ${idx === 1
+                        ? "bg-[#D9D9D9] font-semibold"
+                        : testType === option
+                          ? "bg-[#BCC7D2] font-semibold"
+                          : "hover:bg-[#A9B7C6]"
+                      }
+                       `}
                   >
                     {option}
                   </li>
@@ -154,6 +155,18 @@ export default function ScheduleSession() {
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
         setSessionDuration={setSessionDuration}
+        onSave={({ date, sessionTopic, duration }) => {
+          // Here you would normally call an API to save
+          // For now, close the form and show success
+          setModalOpen(false);
+          // setCandidateName("Aiinhome");
+          setSuccessOpen(true);
+        }}
+      />
+      <SuccessModal
+        open={successOpen}
+        onClose={() => setSuccessOpen(false)}
+        // candidateName={candidateName}
       />
     </div>
   );

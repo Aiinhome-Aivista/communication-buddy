@@ -29,6 +29,7 @@ export default function SessionModal({
   onClose,
   sessionDuration,
   setSessionDuration,
+  onSave,
 }) {
   if (!open) return null;
   const [Date, setDate] = useState(null);
@@ -147,9 +148,17 @@ export default function SessionModal({
           >
             Cancel
           </button>
+
           <button
             type="button"
             className="bg-[#E5B800] hover:bg-yellow-500 text-[#272727] font-semibold px-8 py-2 rounded-xl"
+            onClick={() => {
+              if (onSave) onSave({
+                date: Date,
+                sessionTopic,
+                duration: sessionDuration?.value ?? sessionDuration,
+              });
+            }}
           >
             Save
           </button>
