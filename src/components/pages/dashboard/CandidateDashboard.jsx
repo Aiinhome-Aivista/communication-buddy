@@ -7,6 +7,7 @@ import phpLogo from "../../../assets/logo/php.svg";
 import javaLogo from "../../../assets/logo/java.svg";
 import mysqlLogo from "../../../assets/logo/mysql.svg";
 import oracleLogo from "../../../assets/logo/oracle.svg";
+import { KeyboardArrowDown } from "@mui/icons-material";
 
 
 import {
@@ -66,35 +67,40 @@ const CandidateDashboard = () => {
   ];
 
   const topScores = [
-  {
-    name: "Debasish Sahoo",
-    topic: "Discuss about current impact of AI...",
-    score: 78,
-  },
-  {
-    name: "Sanchari Karmakar",
-    topic: "Discuss about Datascience",
-    score: 75,
-  },
-  {
-    name: "Sayan Mitra",
-    topic: "Discuss about Neural Networking...",
-    score: 65,
-  },
-  {
-    name: "Debasish Sahoo",
-    topic: "Discuss about ML",
-    score: 63,
-  },
-  {
-    name: "Priya Das",
-    topic: "Deep Learning Trends",
-    score: 60,
-  },
+    {
+      name: "Debasish Sahoo",
+      assignedBy: "Admin",
+      topic: "Discuss about current impact of AI ...",
+      score: 78,
+    },
+    {
+      name: "Sanchari Karmakar",
+      assignedBy: "Admin",
+      topic: "Discuss about Datasince",
+      score: 75,
+    },
+    {
+      name: "Sayan Mitra",
+      assignedBy: "Admin",
+      topic: "Discuss about Neural Networking ...",
+      score: 65,
+    },
+    {
+      name: "Debasish Sahoo",
+      assignedBy: "Admin",
+      topic: "Discuss about Cloud Infrastructure ...",
+      score: 63,
+    },
+    {
+      name: "Priya Ghosh",
+      assignedBy: "Admin",
+      topic: "Discuss about Machine Learning ...",
+      score: 61,
+    },
 ];
 
   return (
-    <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
+    <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -418,32 +424,50 @@ const CandidateDashboard = () => {
 
 
 
-<div className="bg-white p-5 rounded-xl shadow-sm h-[200px] flex flex-col justify-start">
-  <h2 className="font-semibold text-slate-800 text-[15px] mb-4">
+<div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-sm">
+  <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
     Top Five Test Score
   </h2>
+  <div className="space-y-3 h-72 overflow-y-auto">
+    {topScores.map((item, index) => (
+      <div
+        key={index}
+        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all"
+      >
+            {/* Left content */}
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                <span className="material-icons text-gray-400 text-[18px]">
+                </span>
+              </div>
 
-  {/* Single score card - styled exactly like your screenshot */}
-  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-200 w-full">
-    {/* Left Content */}
-    <div className="flex flex-col">
-      <span className="font-medium text-[13px] text-slate-800 leading-tight">
-        {topScores[0].name}
-      </span>
-      <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-        Assigned by
-      </span>
-      <span className="text-[11px] text-gray-600 truncate max-w-[160px] mt-[4px]">
-        Topic: {topScores[0].topic}
-      </span>
-    </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
+                  {item.name}
+                </span>
+                <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+                  Assigned by
+                </span>
+                <span className="text-[11px] text-gray-600 truncate max-w-[160px] mt-[4px]">
+                  Topic: {item.topic}
+                </span>
+              </div>
+            </div>
 
-    {/* Right Score */}
-    <div className="text-[15px] font-semibold text-slate-800">
-      {topScores[0].score}
+            {/* Right side */}
+            <div className="flex flex-col items-end">
+              <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
+                {item.score}
+              </span>
+              <span className="text-[10px] text-gray-400">Score</span>
+              <KeyboardArrowDown
+                style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>        
-  </div>
   </div>
 
           </div>
