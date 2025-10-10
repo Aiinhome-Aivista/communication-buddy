@@ -19,52 +19,74 @@ export default function PracticeTest() {
 
   const [inputValue, setInputValue] = useState("");
 
+  // Send message function
+  const handleSend = () => {
+    if (inputValue.trim() === "") return;
+    setMessages([
+      ...messages,
+      { id: Date.now(), text: inputValue, sender: "user" },
+    ]);
+    setInputValue("");
+  };
+
+  // Handle Enter key
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="w-full h-full bg-[#ECEFF2] flex flex-col p-4 px-10">
-      <h1 className="text-2xl font-bold items-start text-[#2C2E42] mb-4">Practice & Test</h1>
+      <h1 className="text-2xl font-bold text-[#2C2E42] mb-4 text-left self-start">
+        Practice & Test
+      </h1>
 
       <div className="w-[100%] max-w-[100%] h-[717px] bg-white rounded-2xl shadow-sm flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex justify-between items-center px-16 py-4 gap-0.5 border-b border-gray-100">
-          <div className="flex items-center gap-8">
-            {/* Move icon to far left */}
-            <button className="p-4 rounded-xl px-0 transition">
+        {/* Header */}
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+
+          {/* Left cluster: icon + texts */}
+          <div className="flex items-center flex-1 gap-6">
+            {/* Arrow Icon */}
+            <button className="p-2 rounded-xl transition">
               <img
                 src="public/assets/icons/stat_minus_1.svg"
-                alt="Stat Minus Icon"
-                className="w-10 h-10 object-contain"
+                alt="Back Icon"
+                className="w-8 h-8 object-contain"
               />
             </button>
-            {/* Each h2 section with equal gap */}
-            <div className="flex items-center gap-8">
-              <div>
-                <h2 className="text-sm font-semibold text-[#182938]">Python</h2>
+
+            {/* 4 Text Blocks evenly spaced */}
+            <div className="flex justify-between flex-1">
+              <div className="leading-tight">
+                <h2 className="text-sm font-semibold text-[#8F96A9]">Python</h2>
                 <p className="text-xs text-[#7E8489]">Technology</p>
               </div>
-              <div>
-                <h2 className="text-sm font-bold text-[#8F96A9]">
-                  Debasish Sahoo
-                </h2>
+              <div className="leading-tight">
+                <h2 className="text-sm font-semibold text-[#8F96A9]">Debasish Sahoo</h2>
                 <p className="text-xs text-[#7E8489]">Hiring manager</p>
               </div>
+              <div className="leading-tight">
+                <h3 className="text-sm font-semibold text-[#8F96A9]">10 mins</h3>
+                <p className="text-xs text-[#7E8489]">Allocated duration</p>
+              </div>
+              <div className="leading-tight">
+                <h3 className="text-sm font-semibold text-[#8F96A9]">09:56</h3>
+                <p className="text-xs text-[#7E8489]">Remaining time</p>
+              </div>
+              {/* End button */}
+              <button className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition">
+                End
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-10">
-            <div className="text-left">
-              <h3 className="text-sm font-semibold text-[#8F96A9]">10 mins</h3>
-              <p className="text-xs text-[#7E8489]">Allocated duration</p>
-            </div>
-            <div className="text-left">
-              <h3 className="text-sm font-semibold text-[#8F96A9]">09:56</h3>
-              <p className="text-xs text-[#7E8489]">Remaining time</p>
-            </div>
-            <button className="w-15 h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 py-1 rounded-lg hover:bg-[#DFB916] hover:text-white transition">
-              End
-            </button>
-          </div>
+          
         </div>
-
         {/* Chat Messages */}
         <div
           className="flex-1 overflow-y-auto px-8 py-6 bg-white space-y-4
@@ -73,17 +95,13 @@ export default function PracticeTest() {
           {messages.map((msg) =>
             msg.sender === "bot" ? (
               <div key={msg.id} className="flex">
-                <div
-                  className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words"
-                >
+                <div className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words">
                   {msg.text}
                 </div>
               </div>
             ) : (
               <div key={msg.id} className="flex justify-end">
-                <div
-                  className="bg-[#ECEFF2] text-[#7E8489] px-4 py-2 rounded-lg inline-block max-w-[70%] w-auto break-words"
-                >
+                <div className="bg-[#ECEFF2] text-[#7E8489] px-4 py-2 rounded-lg inline-block max-w-[70%] w-auto break-words">
                   {msg.text}
                 </div>
               </div>
@@ -99,6 +117,7 @@ export default function PracticeTest() {
             className="flex-1 border-none bg-[#F8F9FB] px-4 py-3 rounded-xl text-sm text-[#7E848945] focus:outline-none focus:ring-1 focus:ring-[#F4E48A]"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition">
             <img
@@ -108,7 +127,11 @@ export default function PracticeTest() {
             />
           </button>
 
-          <button className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#d6a600] transition">
+          <button
+            className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#d6a600] transition"
+            onClick={handleSend}
+            type="button"
+          >
             <img
               src="public/assets/icons/arrow_forward.svg"
               alt="Send Icon"
