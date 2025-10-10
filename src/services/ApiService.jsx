@@ -12,6 +12,8 @@ export const postURL = {
   getQuestions: `${BASE_URL}/get-questions`,
   requestTopic: `${BASE_URL}/insert-user-topic`,
   hrDashboard: `${BASE_URL}/hr-dashboard`,
+  // Corrected HR dashboard endpoint
+  hrDashboardUnderscore: `${BASE_URL}/hr_dashboard`,
   insertUserTopic: `${BASE_URL}/insert-user-topic`,
   hrTopicCandidate: `${BASE_URL}/hr-topics-candidates`,
   getScheduleDataHrWise: `${BASE_URL}/get-schedule-data-hr-wise`,
@@ -20,7 +22,12 @@ export const postURL = {
   updateUserTopic: `${BASE_URL}/update-user-topic`,
   deleteUserTopic: `${BASE_URL}/delete-user-topic`,
   // candidate dashboard endpoint
-  dashboard:`${BASE_URL}/candidate_dashboard`,
+  dashboard: `${BASE_URL}/candidate_dashboard`,
+};
+
+// Convenience helper: fetch HR dashboard with { hr_id }
+export const fetchHrDashboard = async (hr_id) => {
+  return fatchedPostRequest(postURL.hrDashboardUnderscore, { hr_id });
 };
 
 

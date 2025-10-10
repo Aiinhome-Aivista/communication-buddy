@@ -7,8 +7,7 @@ export default function Dashboard() {
     <>
       <section className="dashboard-container h-full">
         <div className="dashboard-layout flex">
-          {/* <CandidateDashboard/> */}
-            {role === 'hr' ? <HrDashboard /> : <CandidateDashboard />}
+          {role === 'hr' ? <HrDashboard /> : <CandidateDashboard />}
           {/* <ScheduleSession/> */}
           {/* <PracticeTest/> */}
         </div>
