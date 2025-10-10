@@ -236,36 +236,37 @@ body,
   border-bottom: 1px solid rgba(41, 50, 65, 0.05) !important;
 }
 
-/* ====== TABLE COLUMN WIDTHS & SPACING ====== */
+.custom-width-table .p-datatable-tbody > tr:not(.p-highlight):hover {
+  background-color: rgba(250, 250, 250, 0.7);
+}
+
+/* ====== TABLE COLUMN WIDTHS & SPACING - Adjust for responsiveness ====== */
 
 
 .custom-width-table .p-datatable-thead > tr > th:nth-child(1),
 .p-datatable-tbody > tr > td:nth-child(1) {
-  width: 280px;
+  width: 30%; /* Adjust as needed, use percentages for responsiveness */
   
 }
 .custom-width-table .p-datatable-thead > tr > th:nth-child(2),
 .p-datatable-tbody > tr > td:nth-child(2) {
-  width: 150px;
+  width: 20%; /* Adjust as needed */
 }
 
 .custom-width-table .p-datatable-thead > tr > th:nth-child(3),
 .p-datatable-tbody > tr > td:nth-child(3) {
-  width: 50px;
+  width: 15%; /* Adjust as needed */
 }
 
 .custom-width-table .p-datatable-thead > tr > th:nth-child(4),
 .p-datatable-tbody > tr > td:nth-child(4) {
-  width: 5px;
+  width: 15%; /* Adjust as needed */
  
 }
 
+/* Add a scrollbar for overflow on smaller screens */
+.table-body {
+  overflow-x: auto;
+}
 
-
-
-
-
-
-
-
-
+/* Optional: Adjust font size for smaller screens */
