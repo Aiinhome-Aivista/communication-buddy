@@ -9,6 +9,7 @@ import mysqlLogo from "../../../assets/logo/mysql.svg";
 import oracleLogo from "../../../assets/logo/oracle.svg";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
+import Loader from '../../ui/Loader';
 
 
 
@@ -32,20 +33,38 @@ const CandidateDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    // Some parts of the app store user_id directly (see AuthProvider), so prefer that.
+    let user_id = null;
+    try {
+      const directId = sessionStorage.getItem("user_id");
+      if (directId) {
+        user_id = Number(directId);
+      } else {
+        const storedUser = JSON.parse(sessionStorage.getItem("user"));
+        user_id = storedUser?.user_id ? Number(storedUser.user_id) : null;
+      }
+    } catch (err) {
+      console.warn("Error reading user from sessionStorage", err);
+      user_id = null;
+    }
 
-    const user_id = storedUser?.user_id;
+    // debug
     console.log("User ID from sessionStorage:", user_id);
 
     const fetchDashboardData = async () => {
+      if (!user_id) {
+        console.warn('No user_id found in sessionStorage. Skipping dashboard API call.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const result = await fatchedPostRequest(postURL.dashboard, { user_id });
 
-        if (result.status === "success") {
-
+        if (result?.status === "success") {
           setDashboardData(result.data);
         } else {
-          console.error("Dashboard fetch failed:", result.message);
+          console.error("Dashboard fetch failed:", result?.message || result);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -103,7 +122,8 @@ const CandidateDashboard = () => {
     oracleLogo,
   ];
 
-  const topScores = [
+  // fallback topScores (kept for UI when API doesn't return top_five_test_scores)
+  const fallbackTopScores = [
     {
       name: "Debasish Sahoo",
       assignedBy: "Admin",
@@ -136,8 +156,29 @@ const CandidateDashboard = () => {
     },
   ];
 
+  const topScores = dashboardData?.top_five_test_scores
+    ? dashboardData.top_five_test_scores.map((s) => ({
+      name: s.hr_name || "-",
+      topic: s.topic || "-",
+      score: s.score || "-",
+    }))
+    : fallbackTopScores;
+
+  // derive values from API with fallbacks
+  const sessionReport = dashboardData?.session_report || {};
+  const lastTwelveScores = dashboardData?.last_twelve_test_scores || [];
+  const sessionType = sessionReport.session_type || { communication: 0, technology: 0 };
+
+  // compute percentages for session_type bars (avoid division by zero)
+  const commCount = Number(sessionType.communication) || 0;
+  const techCount = Number(sessionType.technology) || 0;
+  const totalType = commCount + techCount || 1;
+  const commWidth = Math.round((commCount / totalType) * 100);
+  const techWidth = Math.round((techCount / totalType) * 100);
+
   return (
     <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
+      <Loader show={loading} />
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -272,7 +313,7 @@ const CandidateDashboard = () => {
               <div className="flex items-center space-x-2">
                 <img src="/icons/group.svg" alt="group" className="w-5 h-5" />
                 <div className="flex flex-col items-center -ml-2 leading-tight">
-                  <span className="font-inter font-bold text-[20px] leading-none align-middle text-gray-700">562</span>
+                  <span className="font-inter font-bold text-[20px] leading-none align-middle text-gray-700">{sessionReport.assigned_test ?? '562'}</span>
                   <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-right align-middle text-gray-500 -mt-0.5">Active participant</span>
 
                 </div>
@@ -292,18 +333,18 @@ const CandidateDashboard = () => {
               <div className="flex items-center gap-3">
                 <span className="text-xs text-gray-600 w-24">Communication</span>
                 <div className="bg-slate-200 w-full h-5 rounded-md relative">
-                  <div className="bg-slate-900 h-5 rounded-md w-3/5"></div>
+                  <div className="bg-slate-900 h-5 rounded-md" style={{ width: `${commWidth}%` }}></div>
                 </div>
-                <span className="text-xs text-gray-700 font-medium ml-2">200</span>
+                <span className="text-xs text-gray-700 font-medium ml-2">{commCount}</span>
               </div>
 
               {/* Technology Bar */}
               <div className="flex items-center gap-3">
                 <span className="text-xs text-gray-600 w-24">Technology</span>
                 <div className="bg-slate-200 w-full h-5 rounded-md relative">
-                  <div className="bg-[#DFB916] h-5 rounded-md w-3/4"></div>
+                  <div className="bg-[#DFB916] h-5 rounded-md" style={{ width: `${techWidth}%` }}></div>
                 </div>
-                <span className="text-xs text-gray-700 font-medium ml-2">300</span>
+                <span className="text-xs text-gray-700 font-medium ml-2">{techCount}</span>
               </div>
             </div>
 
@@ -318,7 +359,7 @@ const CandidateDashboard = () => {
                     fontSize: '20px',
 
                   }}
-                >15 minutes</div>
+                >{sessionReport.average_session_duration ?? '15 minutes'}</div>
                 <div
                   style={{
                     fontFamily: 'Inter, sans-serif',
@@ -341,7 +382,7 @@ const CandidateDashboard = () => {
                     fontSize: '20px',
 
                   }}
-                >1,256</div>
+                >{sessionReport.test_attempted ?? 1256}</div>
                 <div
                   style={{
                     fontFamily: 'Inter, sans-serif',
@@ -362,7 +403,7 @@ const CandidateDashboard = () => {
                       fontSize: '20px',
 
                     }}
-                  >245</div>
+                  >{Math.round(sessionReport.average_score) ?? 245}</div>
                   <img src="/icons/trending_up.svg" alt="trend" className="w-4 h-4" />
                 </div>
                 <div
@@ -384,7 +425,7 @@ const CandidateDashboard = () => {
                     fontSize: '20px',
 
                   }}
-                >64</div>
+                >{Math.round(sessionReport.average_score) ?? 64}</div>
                 <div
                   style={{
                     fontFamily: 'Inter, sans-serif',
