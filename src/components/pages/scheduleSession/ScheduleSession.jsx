@@ -166,7 +166,7 @@ export default function ScheduleSession() {
       <SuccessModal
         open={successOpen}
         onClose={() => setSuccessOpen(false)}
-        // candidateName={candidateName}
+      // candidateName={candidateName}
       />
     </div>
   );
