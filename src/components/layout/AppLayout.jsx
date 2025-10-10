@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import NewHeader from '../ui/NewHeader'
+import Header from '../ui/Header'
 import Sidebar from '../ui/Sidebar'
 import Footer from '../ui/Footer'
 
@@ -10,7 +10,7 @@ export default function AppLayout() {
       <div className="flex h-screen bg-slate-900">
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
-          <NewHeader />
+          <Header />
           <main className="flex-1 overflow-y-auto">
             <Outlet />
           </main>

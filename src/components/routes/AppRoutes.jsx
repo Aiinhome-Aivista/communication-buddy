@@ -4,6 +4,7 @@ import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import ManageSchedule from "../pages/admin/ManageSchedule";
 import ManageUser from "../pages/admin/ManageUser";
 import ScheduleSession from "../pages/scheduleSession/ScheduleSession";
+import Settings from "../pages/setting/Settings";
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
@@ -12,6 +13,7 @@ const Default = lazy(() => import("../pages/dashboard/Default"));
 const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
 const PracticeTest = lazy(() => import("../pages/practiceTest/PracticeTest"));
+const TestResult = lazy(() => import("../pages/practiceTest/TestResult"));
 const RequestNotification = lazy(() =>
   import("../pages/dashboard/RequestNotification")
 );
@@ -123,6 +125,14 @@ export const router = createBrowserRouter(
             </Suspense>
           ),
         },
+        {
+          path: "result", // This will match /test/childpath
+          element: (
+            <Suspense fallback={<Loader />}>
+              <TestResult />
+            </Suspense>
+          ),
+        },
       ],
     },
     {
@@ -140,6 +150,26 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={<Loader />}>
               <ScheduleSession />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/settings",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        </Suspense>
+      ),
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={<Loader />}>
+              <Settings />
             </Suspense>
           ),
         },
