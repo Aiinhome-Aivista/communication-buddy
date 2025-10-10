@@ -70,7 +70,7 @@ const HrDashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
-        <button className="bg-yellow-400 hover:bg-yellow-500 px-5 py-2 rounded-md font-semibold text-gray-900">
+        <button className="bg-[#DFB916] hover:bg-[#c8a514] px-5 py-2 rounded-md font-semibold text-gray-900">
           + Create Session
         </button>
       </div>
@@ -143,10 +143,7 @@ const HrDashboard = () => {
       fontFamily: 'Inter, sans-serif',
       fontWeight: 700,
       fontSize: '20px',
-      lineHeight: '100%',
-      letterSpacing: '0%',
-      textAlign: 'center',
-      verticalAlign: 'middle',
+
       color: ' #DFB916', // Tailwind's yellow-500
     }}
   >
@@ -158,11 +155,8 @@ const HrDashboard = () => {
       fontFamily: 'Inter, sans-serif',
       fontWeight: 400,
       fontSize: '12px',
-      lineHeight: '100%',
-      letterSpacing: '0%',
-      textAlign: 'center',
-      verticalAlign: 'middle',
-      color: 'black', // Tailwind's yellow-500
+
+      color: 'black', 
     }}
   >
     Pending
@@ -234,7 +228,7 @@ const HrDashboard = () => {
     <div className="flex items-center gap-3">
       <span className="text-xs text-gray-600 w-24">Technology</span>
       <div className="bg-slate-200 w-full h-5 rounded-md relative">
-        <div className="bg-yellow-400 h-5 rounded-md w-3/4"></div>
+        <div className="bg-[#DFB916] h-5 rounded-md w-3/4"></div>
       </div>
       <span className="text-xs text-gray-700 font-medium ml-2">300</span>
     </div>
@@ -339,8 +333,8 @@ const HrDashboard = () => {
             {/* Charts Column */}
             <div className="flex flex-col gap-6 w-full md:w-2/3">
               {/* Annually Hiring Process */}
-<div className="bg-yellow-400 rounded-[10px] shadow-sm p-5 w-full h-[198px] flex flex-col">
-  <h2 className="font-semibold text-white mb-3">
+<div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 w-full h-[198px] flex flex-col">
+<h2 className="font-semibold mb-3" style={{ color: "#182938" }}>
     Annually Hiring Process
   </h2>
   <div className="flex-1">
@@ -348,15 +342,15 @@ const HrDashboard = () => {
       <BarChart data={barData}>
         <XAxis dataKey="name" hide />
         <YAxis
-          stroke="#fff"
+          stroke="#182938"
           axisLine={true}
           tickLine={false}
-          tick={{ fill: "#fff", fontSize: 12 }}
+          tick={{ fill: "#182938", fontSize: 12 }}
         />
         <Tooltip />
         <Bar
           dataKey="uv"
-          fill="#0f172a"
+          fill="#182938"
           barSize={25}
           radius={[6, 6, 0, 0]}
         />
@@ -399,7 +393,7 @@ const HrDashboard = () => {
               <h2 className="font-semibold text-gray-700 mb-6 text-left">
                 Mostly Asked Technical Skill
               </h2>
-              <div className="grid grid-cols-2 gap-4 justify-items-center mt-4">
+            <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-center text-[12px] font-medium leading-[100%] tracking-[0%]">
                 {[
                   "Artificial Intelligence",
                   "Machine Learning",
