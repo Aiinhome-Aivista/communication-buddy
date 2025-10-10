@@ -100,7 +100,7 @@ const CandidateDashboard = () => {
 ];
 
   return (
-    <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
+  <div className="w-full h-screen bg-gray-50 p-6 overflow-hidden">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -114,7 +114,7 @@ const CandidateDashboard = () => {
         {/* LEFT COLUMN */}
         <div className="col-span-12 md:col-span-3 flex flex-col space-y-6">
           {/* Session Completion */}
-          <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-[220px]">
+          <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-50">
 <h2
   className="text-gray-700 mb-2"
   style={{
@@ -201,7 +201,7 @@ const CandidateDashboard = () => {
           </div>
 
           {/* Technologies */}
-          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
+          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[30%]">
             <h2 className="font-semibold text-gray-700 mb-6 text-left">
               Mostly Asked Technology
             </h2>
@@ -222,7 +222,7 @@ const CandidateDashboard = () => {
         {/* CENTER + RIGHT SECTION */}
         <div className="col-span-12 md:col-span-9 flex flex-col space-y-6">
           {/* Session Report */}
-<div className="bg-white rounded-2xl shadow-sm p-5 w-full h-[220px]">
+<div className="bg-white rounded-2xl shadow-sm p-5 w-full h-60">
   {/* Header */}
   <div className="flex justify-between items-center mb-4">
    <h2 className="font-inter font-normal text-[15px] leading-none tracking-normal align-middle text-gray-700">
@@ -367,7 +367,7 @@ const CandidateDashboard = () => {
             {/* Charts Column */}
             <div className="flex flex-col gap-6 w-full md:w-2/3">
               {/* Annually Hiring Process */}
-<div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 w-full h-[198px] flex flex-col">
+<div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 w-full h-40 flex flex-col">
 <h2 className="font-semibold mb-3" style={{ color: "#182938" }}>
     Annually Hiring Process
   </h2>
@@ -395,7 +395,7 @@ const CandidateDashboard = () => {
 
 
               {/* Language Usage */}
-              <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[150px]">
+              <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-40">
                 <h2 className="font-semibold text-gray-700 mb-3">
                   Language Usage
                 </h2>
@@ -424,17 +424,17 @@ const CandidateDashboard = () => {
 
 
 
-<div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-sm">
+<div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm h-80 flex flex-col">
   <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
     Top Five Test Score
   </h2>
-  <div className="space-y-3 h-72 overflow-y-auto">
+  <div className="space-y-3 overflow-y-auto flex-1">
     {topScores.map((item, index) => (
       <div
         key={index}
         className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all"
       >
-            {/* Left content */}
+        
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
                 <span className="material-icons text-gray-400 text-[18px]">
