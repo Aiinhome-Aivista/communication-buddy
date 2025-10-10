@@ -1,4 +1,7 @@
 import { useState } from "react";
+import MicIcon from '@mui/icons-material/Mic';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 
 export default function PracticeTest() {
   const [messages, setMessages] = useState([
@@ -53,13 +56,8 @@ export default function PracticeTest() {
           <div className="flex items-center flex-1 gap-6">
             {/* Arrow Icon */}
             <button className="p-2 rounded-xl transition">
-              <img
-                src="public/assets/icons/stat_minus_1.svg"
-                alt="Back Icon"
-                className="w-8 h-8 object-contain"
-              />
+           <ArrowBackIosNewRoundedIcon style={{ color: "#BCC7D2" }} />
             </button>
-
             {/* 4 Text Blocks evenly spaced */}
             <div className="flex justify-between flex-1">
               <div className="leading-tight">
@@ -120,11 +118,9 @@ export default function PracticeTest() {
             onKeyDown={handleKeyDown}
           />
           <button className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition">
-            <img
-              src="public/assets/icons/mic.svg"
-              alt="Mic Icon"
-              className="w-5 h-5 object-contain transition group-hover:invert"
-            />
+       
+                    <MicIcon style={{ color: "#DFB916" }} />
+
           </button>
 
           <button
@@ -132,11 +128,8 @@ export default function PracticeTest() {
             onClick={handleSend}
             type="button"
           >
-            <img
-              src="public/assets/icons/arrow_forward.svg"
-              alt="Send Icon"
-              className="w-5 h-5 object-contain"
-            />
+             
+                <ArrowForwardIcon style={{ color: "white" }} />
           </button>
         </div>
       </div>
