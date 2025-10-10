@@ -1,0 +1,7 @@
+.input-field {
+    color: #BCC7D2 !important;
+}
+
+.input-field::placeholder {
+    color: #BCC7D2 !important;
+}

@@ -8,6 +8,7 @@ import PasswordRoundedIcon from "@mui/icons-material/PasswordRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import Loader from "../../ui/Loader";
+import "../../style/login.css";
 
 function Login() {
   const { login } = useAuth();
@@ -104,7 +105,7 @@ function Login() {
 
         {/* Right Side */}
         <div className="w-full md:w-1/2 flex flex-col items-center justify-between pl-0 md:pl-10 pr-0 md:pr-5 py-8 md:py-16">
-          <p className="w-full text-center text-2xl md:text-3xl font-bold">
+          <p className="w-full text-[#2C2E42] text-center text-2xl md:text-3xl font-bold">
             Welcome
           </p>
 
@@ -113,28 +114,26 @@ function Login() {
             <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50">
               <PersonRoundedIcon sx={{ color: "#BCC7D2" }} />
               <input
-                className="w-full focus:outline-none bg-transparent text-sm md:text-base"
+                className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type="email"
                 id="username"
                 name="email"
                 value={userInfo.email}
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Email"
-                style={{ color: "#6c757d" }}
               />
             </div>
 
             <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50">
               <PasswordRoundedIcon sx={{ color: "#BCC7D2" }} />
               <input
-                className="w-full focus:outline-none bg-transparent text-sm md:text-base"
+                className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={userInfo.password}
                 onChange={(e) => handleOnChange(e)}
                 placeholder="Password"
-                style={{ color: "#6c757d" }}
               />
               <button
                 type="button"
