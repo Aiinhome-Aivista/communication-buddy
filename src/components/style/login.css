@@ -1,7 +1,7 @@
 .input-field {
-    color: #BCC7D2 !important;
+    color: rgb(175, 195, 215) !important; /* Darker color for input text */
 }
 
 .input-field::placeholder {
-    color: #BCC7D2 !important;
+    color: rgba(188, 199, 210, 1) !important;
 }
