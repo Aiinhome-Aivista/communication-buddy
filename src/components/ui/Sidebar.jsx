@@ -10,7 +10,7 @@ export default function Sidebar() {
         <img
           src="public/assets/icons/assignment.svg"
           alt="Practice & Test"
-          className="h-10 w-10"
+          className="h-7 w-7"
         />
       ),
     },
@@ -20,7 +20,7 @@ export default function Sidebar() {
         <img
           src="public/assets/icons/bar_chart_4_bars.svg"
           alt="Test Result"
-          className="h-10 w-10"
+          className="h-7 w-7"
         />
       ),
     },
@@ -30,7 +30,7 @@ export default function Sidebar() {
         <img
           src="public/assets/icons/settings.svg"
           alt="Settings"
-          className="h-10 w-10"
+          className="h-7 w-7"
         />
       ),
     },
@@ -70,12 +70,12 @@ export default function Sidebar() {
       </div>
       <div className="h-[calc(81%)]">
         {/* Menu */}
-        <nav className="mt-2">
+        <nav className="mt-2 p-3">
           {menuItems.map((item) => (
             <button
               key={item.name}
               onClick={() => setActive(item.name)}
-              className={`flex items-center gap-3 w-full text-left px-6 py-2 text-sm font-medium transition-colors ${active === item.name
+              className={`flex items-center gap-2 w-full h-[50px] rounded-2xl  px-3 py-0 text-sm font-medium transition-colors ${active === item.name
                   ? "bg-[#1E293B] text-white"
                   : "text-gray-700 hover:bg-gray-100"
                 } ${collapsed ? "justify-center px-0" : ""}`}
