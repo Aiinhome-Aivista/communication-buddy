@@ -1,7 +1,4 @@
-import React from 'react'
 import HrDashboard from './HrDashboard';
-import ScheduleSession from '../scheduleSession/ScheduleSession';
-import PracticeTest from '../practiceTest/PracticeTest';
 
 export default function Dashboard() {
   return (

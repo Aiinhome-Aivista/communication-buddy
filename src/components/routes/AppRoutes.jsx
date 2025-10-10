@@ -9,6 +9,7 @@ import Settings from "../pages/setting/Settings";
 const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
+const UserDashboard = lazy(() => import("../pages/dashboard/UserDashboardMain"));
 const Default = lazy(() => import("../pages/dashboard/Default"));
 const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
@@ -97,7 +98,7 @@ export const router = createBrowserRouter(
             },
             {
               path: "/dashboard/user",
-              element: <ManageUser />,
+              element: <UserDashboard />,
             },
             {
               path: "/dashboard/schedule",
