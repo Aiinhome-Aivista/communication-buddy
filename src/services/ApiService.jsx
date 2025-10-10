@@ -20,7 +20,7 @@ export const postURL = {
   updateUserTopic: `${BASE_URL}/update-user-topic`,
   deleteUserTopic: `${BASE_URL}/delete-user-topic`,
   // candidate dashboard endpoint
-  dashboard:`${BASE_URL}/candidate/dashboard`,
+  dashboard:`${BASE_URL}/candidate_dashboard`,
 };
 
 

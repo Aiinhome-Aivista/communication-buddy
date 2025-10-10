@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 
 export default function Default() {
