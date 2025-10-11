@@ -19,14 +19,15 @@ export default function Sidebar() {
   const candidateMenu = [
     { name: "Dashboard", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/dashboard", end: true },
     { name: "Practice & Test", icon: (color) => <AssignmentRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test", end: true },
-    { name: "Test Result", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
+    { name: "Test Results", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
     { name: "Settings", icon: (color) => <SettingsRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/settings" },
   ];
 
   const hrMenu = [
     { name: "Dashboard", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/dashboard", end: true },
+    { name: "Manage Users", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/manage-users", end: true },
     { name: "Schedule Session", icon: (color) => <HourglassBottomRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/schedule" },
-    { name: "Test Result", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
+    { name: "Test Results", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
     { name: "Settings", icon: (color) => <SettingsRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/settings" },
   ];
 
