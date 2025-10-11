@@ -67,14 +67,16 @@ export default function Header() {
   return (
     <header className="flex justify-between items-center bg-white px-6 h-[calc(9%)] border-b border-[#BCC7D2] shadow-sm">
       <div className="items-center flex justify-between items-center w-full">
-        <img
-          src="public/assets/icons/Aiinhome _ CB.svg"
-          alt="Aiinhome Logo"
-          className="h-5"
-        />
+        <div className="flex">
+            <p className="w-full flex text-xl md:text-xl text-[#2C2E42]">
+              A<span className="text-[#DFB916]">ii</span>nhome
+              <span className="px-1">|</span>
+              <span className="font-bold">CB</span>
+            </p>
+          </div>
         <div className='flex items-center justify-end w-full gap-6'>
           <div className="flex flex-col text-end font-medium">
-            <p className='p-0 m-0 text-[#000000] text-sm'>{formattedDate}</p>
+            <p className='p-0 m-0 text-[#2C2E42] text-sm'>{formattedDate}</p>
             <p className='p-0 m-0 text-[#7E8489] text-xs'>{formattedTime}</p>
           </div>
           <LogoutRoundedIcon sx={{ color: "#7E8489" }} className='cursor-pointer' onClick={handleLogout} />
