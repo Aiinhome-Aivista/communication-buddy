@@ -20,6 +20,7 @@ export default function PracticeTest() {
   const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   // setUserData is not defined in this component, so I'm assuming it comes from a context.
   // If not, you might need to import and use the correct context provider.
   // const { setUserData } = useContext(UserContext); 
@@ -28,7 +29,7 @@ export default function PracticeTest() {
   useEffect(() => {
     const fetchAllTopics = async () => {
       try {
-        const payload = { "user_id": 18 }; // Specific payload as requested
+        const payload = { "user_id": userId }; // Specific payload as requested
         console.log("Fetching all topics with payload:", payload);
         const response = await fatchedPostRequest(postURL.getAllTopics, payload);
         console.log("getAllTopics response:", response);
