@@ -21,6 +21,7 @@ export default function PracticeTest() {
   const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
 
   const navigate = useNavigate();
   // setUserData is not defined in this component, so I'm assuming it comes from a context.
@@ -31,7 +32,7 @@ export default function PracticeTest() {
   useEffect(() => {
     const fetchAllTopics = async () => {
       try {
-        const payload = { user_id: 18 }; // Specific payload as requested
+        const payload = { user_id: userId }; // Specific payload as requested
         console.log("Fetching all topics with payload:", payload);
         const response = await fatchedPostRequest(
           postURL.getAllTopics,
@@ -274,13 +275,17 @@ export default function PracticeTest() {
                   )}
                 ></Column>
                 <Column
-                  field="total_time"
-                  header="Session Duration"
-                  body={(rowData) => `${rowData.total_time} mins`}
+                  field="session_date"
+                  header="Session Date"
+                  body={(rowData) => {
+                    if (!rowData.session_time) return "";
+                    const date = new Date(rowData.session_time);
+                    return date.toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
+                  }}
                 ></Column>
                 <Column
                   field="session_time"
-                  header="Session Date"
+                  header="Session Time"
                   body={(rowData) => {
                     if (!rowData.session_time) return "";
                     const date = new Date(rowData.session_time);
@@ -289,6 +294,11 @@ export default function PracticeTest() {
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                   }}
+                ></Column>
+                <Column
+                  field="total_time"
+                  header="Session Duration"
+                  body={(rowData) => `${rowData.total_time} mins`}
                 ></Column>
                 <Column
                   field="topic_attend_status"

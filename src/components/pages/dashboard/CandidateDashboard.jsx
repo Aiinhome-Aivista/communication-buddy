@@ -10,6 +10,7 @@ import oracleLogo from "../../../assets/logo/oracle.svg";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import Loader from '../../ui/Loader';
+import assignmentIcon from '../../../../public/assets/images/assignment.png';
 
 
 
@@ -182,9 +183,14 @@ const CandidateDashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
-        <button className="bg-[#DFB916] hover:bg-[#c8a514] px-5 py-2 rounded-md font-semibold text-gray-900">
-          + Create Session
-        </button>
+        <div className="flex items-center gap-3">
+         {/* Main action button */}
+          <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
+            <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
+            <span>Ongoing session</span>
+          </button>
+
+        </div>
       </div>
 
       {/* Main Content Grid */}
@@ -281,7 +287,7 @@ const CandidateDashboard = () => {
           </div>
 
           {/* Technologies */}
-          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
+          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[30%]">
             <h2 className="font-semibold text-gray-700 mb-6 text-left">
               Mostly Asked Technology
             </h2>
@@ -475,7 +481,7 @@ const CandidateDashboard = () => {
 
 
               {/* Language Usage */}
-              <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[150px]">
+              <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-40">
                 <h2 className="font-semibold text-gray-700 mb-3">
                   Language Usage
                 </h2>
@@ -504,50 +510,64 @@ const CandidateDashboard = () => {
 
 
 
-            <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-sm">
-              <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
-                Top Five Test Score
-              </h2>
-              <div className="space-y-3 h-72 overflow-y-auto">
-                {topScores.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all"
-                  >
-                    {/* Left content */}
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                        <span className="material-icons text-gray-400 text-[18px]">
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col">
-                        <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
-                          {item.name}
-                        </span>
-                        <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-                          Assigned by
-                        </span>
-                        <span className="text-[11px] text-gray-600 truncate max-w-[160px] mt-[4px]">
-                          Topic: {item.topic}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Right side */}
-                    <div className="flex flex-col items-end">
-                      <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
-                        {item.score}
-                      </span>
-                      <span className="text-[10px] text-gray-400">Score</span>
-                      <KeyboardArrowDown
-                        style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+<>
+  <style>{`
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+  `}</style>
+   <div style={{ height: '400px', overflowY: 'auto' }} className="scrollbar-hide">
+  <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-sm">
+    <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
+      Top Five Test Score
+    </h2>
+    <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
+      {topScores.map((item, index) => (
+        <div
+          key={index}
+          className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all"
+        >
+          {/* Left content */}
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+              <span className="material-icons text-gray-400 text-[18px]"></span>
             </div>
+            <div className="flex flex-col">
+              <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
+                {item.name}
+              </span>
+              <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+                Assigned by
+              </span>
+              <span className="text-[11px] text-gray-600 truncate max-w-[160px] mt-[4px]">
+                Topic: {item.topic}
+              </span>
+            </div>
+          </div>
+          {/* Right side */}
+          <div className="flex flex-col items-end">
+            <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
+              {item.score}
+            </span>
+            <span className="text-[10px] text-gray-400">Score</span>
+            <KeyboardArrowDown
+              style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  </div>
+</>
+
+
+
+
           </div>
 
         </div>
