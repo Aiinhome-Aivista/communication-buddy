@@ -92,7 +92,7 @@ function Login() {
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </p>
-            <p className="text-xs text-[#2C2E42]">Communication-Buddy V5</p>
+            <p className="text-xs text-[#2C2E42]">Communication Buddy V2.5</p>
           </div>
           <div className="w-full flex items-center justify-center px-6 pt-5">
             <img
@@ -111,8 +111,13 @@ function Login() {
 
           {/* Inputs */}
           <div className="input-fields flex flex-col gap-3 w-full mt-4">
-            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]">
-              <PersonRoundedIcon sx={{ color: "#BCC7D2" }} />
+            <div
+              className={`input-wrapper w-full py-2 px-3 border rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 ${userInfo.email
+                  ? "border-[#3D5B81] focus-within:ring-[#3D5B81]/50"
+                  : "border-[#BCC7D2] focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]"
+                }`}
+            >
+              <PersonRoundedIcon sx={{ color: userInfo.email ? "#3D5B81" : "#BCC7D2" }} />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type="email"
@@ -124,8 +129,13 @@ function Login() {
               />
             </div>
 
-            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]">
-              <PasswordRoundedIcon sx={{ color: "#BCC7D2" }} />
+            <div
+              className={`input-wrapper w-full py-2 px-3 border rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 ${userInfo.password
+                  ? "border-[#3D5B81] focus-within:ring-[#3D5B81]/50"
+                  : "border-[#BCC7D2] focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]"
+                }`}
+            >
+              <PasswordRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type={showPassword ? "text" : "password"}
@@ -141,9 +151,9 @@ function Login() {
                 className="focus:outline-none"
               >
                 {showPassword ? (
-                  <VisibilityOffRoundedIcon sx={{ color: "#BCC7D2" }} />
+                  <VisibilityOffRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
                 ) : (
-                  <VisibilityRoundedIcon sx={{ color: "#BCC7D2" }} />
+                  <VisibilityRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
                 )}
               </button>
             </div>

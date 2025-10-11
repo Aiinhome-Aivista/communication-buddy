@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MicIcon from "@mui/icons-material/Mic";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
@@ -22,6 +23,7 @@ export default function PracticeTest() {
 
   const [inputValue, setInputValue] = useState("");
   const [popupType, setPopupType] = useState("");
+  const navigate = useNavigate();
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
@@ -43,11 +45,9 @@ export default function PracticeTest() {
   const showEndPopup = () => setPopupType("end");
   const closePopup = () => setPopupType("");
   const confirmAction = () => {
-    if (popupType === "back") {
-      closePopup();
-    } else if (popupType === "end") {
-      closePopup();
-    }
+    closePopup();
+    // Navigate to PracticeTest page when "Yes, Confirm" is clicked
+    navigate("/test");
   };
 
   return (

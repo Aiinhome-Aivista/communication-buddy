@@ -8,6 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fatchedPostRequest, postURL } from "../../../services/ApiService";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -20,30 +21,38 @@ export default function PracticeTest() {
   const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+
+  const navigate = useNavigate();
   // setUserData is not defined in this component, so I'm assuming it comes from a context.
   // If not, you might need to import and use the correct context provider.
-  // const { setUserData } = useContext(UserContext); 
+  // const { setUserData } = useContext(UserContext);
 
   // Function to call the getAllTopics API
   useEffect(() => {
     const fetchAllTopics = async () => {
       try {
-        const payload = { "user_id": 18 }; // Specific payload as requested
+        const payload = { user_id: userId }; // Specific payload as requested
         console.log("Fetching all topics with payload:", payload);
-        const response = await fatchedPostRequest(postURL.getAllTopics, payload);
+        const response = await fatchedPostRequest(
+          postURL.getAllTopics,
+          payload
+        );
         console.log("getAllTopics response:", response);
         if (response && response.topics) {
           setAllTopics(response.topics);
 
           // Extract unique topic categories from the API response
-          const categories = ["All", ...new Set(response.topics.map((topic) => topic.topic_category))];
+          const categories = [
+            "All",
+            ...new Set(response.topics.map((topic) => topic.topic_category)),
+          ];
           setTestTypeOptions(categories);
 
           // Set default test type to the first category if available
           if (categories.length > 0) {
             setTestType(categories[0]);
           }
-
         }
       } catch (error) {
         console.error("Error fetching all topics:", error);
@@ -76,7 +85,6 @@ export default function PracticeTest() {
     };
   }, [dropdownRef]);
 
-
   const filteredData = allTopics
     .filter((topic) => {
       // Tab filtering logic
@@ -95,11 +103,11 @@ export default function PracticeTest() {
         value?.toString().toLowerCase().includes(search.toLowerCase())
       )
     )
-    .filter((topic) =>
-      // Test Type filtering logic
-      testType === "All" ||
-      topic.topic_category?.toLowerCase() === testType.toLowerCase()
-
+    .filter(
+      (topic) =>
+        // Test Type filtering logic
+        testType === "All" ||
+        topic.topic_category?.toLowerCase() === testType.toLowerCase()
     );
 
   // Helper to get status styles
@@ -120,7 +128,11 @@ export default function PracticeTest() {
   const statusBodyTemplate = (rowData) => {
     const status = rowData.topic_attend_status;
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyles(status)}`}>
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyles(
+          status
+        )}`}
+      >
         {status}
       </span>
     );
@@ -131,7 +143,9 @@ export default function PracticeTest() {
     <div className="flex flex-col items-center justify-center p-5 text-center">
       <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
       <p className="mt-4 text-lg text-gray-500">No data found</p>
-      <p className="text-sm text-gray-400">There are no tests matching your criteria.</p>
+      <p className="text-sm text-gray-400">
+        There are no tests matching your criteria.
+      </p>
     </div>
   );
 
@@ -139,9 +153,7 @@ export default function PracticeTest() {
     <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
       <div className="flex-grow flex flex-col">
         <div className="pt-4 px-4">
-          <h1 className="text-2xl font-bold text-[#2C2E42]">
-            Practice & Test
-          </h1>
+          <h1 className="text-2xl font-bold text-[#2C2E42]">Practice & Test</h1>
 
           {/* Tabs + Search + Dropdown */}
           <div className="flex flex-row items-center mt-6 space-x-4 gap-3">
@@ -149,10 +161,11 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${activeTab === tab
-                    ? "bg-[#FEFEFE] text-[#2C2E42]"
-                    : "bg-[#ECEFF2] text-[#8F96A9]"
-                    }`}
+                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${
+                    activeTab === tab
+                      ? "bg-[#FEFEFE] text-[#2C2E42]"
+                      : "bg-[#ECEFF2] text-[#8F96A9]"
+                  }`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -179,16 +192,18 @@ export default function PracticeTest() {
                 className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
                 style={{ color: "#8F96A9" }}
               >
-
                 {testType}
                 {dropdownOpen ? (
-                  <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                  onClick={() => setDropdownOpen(false)} />
+                  <KeyboardArrowUpIcon
+                    className="w-4 h-4 text-[#8F96A9] cursor-pointer"
+                    onClick={() => setDropdownOpen(false)}
+                  />
                 ) : (
-                  <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                    onClick={() => setDropdownOpen(!dropdownOpen)} />
+                  <KeyboardArrowDownIcon
+                    className="w-4 h-4 text-[#8F96A9] cursor-pointer"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  />
                 )}
-
               </button>
               {dropdownOpen && (
                 <ul className="absolute mt-1 left-0 w-80 bg-[#BCC7D2] rounded-xl shadow-md z-10 overflow-hidden">
@@ -199,25 +214,33 @@ export default function PracticeTest() {
                         setTestType(option);
                         setDropdownOpen(false);
                       }}
-                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
-                        ? "bg-[#D9D9D9] font-bold" // Selected: has background, no hover effect
-                        : "hover:bg-[#D9D9D9]/50" // Not selected: has hover effect
-                        }`}
+                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${
+                        testType === option
+                          ? "bg-[#D9D9D9] font-bold" // Selected: has background, no hover effect
+                          : "hover:bg-[#D9D9D9]/50" // Not selected: has hover effect
+                      }`}
                     >
                       {option}
                       {testType === option && (
-                        <CheckIcon sx={{ fontSize: "1.25rem", color: "#182938" }} />
+                        <CheckIcon
+                          sx={{ fontSize: "1.25rem", color: "#182938" }}
+                        />
                       )}
                     </li>
                   ))}
-
                 </ul>
               )}
             </div>
           </div>
 
           {/*DataTable */}
-          <div className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+          <div
+            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${
+              isAnimating
+                ? "opacity-0 translate-y-4"
+                : "opacity-100 translate-y-0"
+            }`}
+          >
             <div key={`${activeTab}-${search}-${testType}`}>
               <DataTable
                 value={filteredData}
@@ -227,6 +250,11 @@ export default function PracticeTest() {
                 paginatorClassName="!m-0 !border-t"
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}
+                onRowClick={(e) => {
+                  if (e.data.topic_attend_status?.toLowerCase() === "ongoing") {
+                    navigate("/test/chat");
+                  }
+                }}
               >
                 <Column
                   field="topic_name"
@@ -247,21 +275,30 @@ export default function PracticeTest() {
                   )}
                 ></Column>
                 <Column
-                  field="total_time"
-                  header="Session Duration"
-                  body={(rowData) => `${rowData.total_time} mins`}
-                ></Column>
-                <Column
-                  field="session_time"
+                  field="session_date"
                   header="Session Date"
                   body={(rowData) => {
                     if (!rowData.session_time) return "";
                     const date = new Date(rowData.session_time);
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    return date.toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
+                  }}
+                ></Column>
+                <Column
+                  field="session_time"
+                  header="Session Time"
+                  body={(rowData) => {
+                    if (!rowData.session_time) return "";
+                    const date = new Date(rowData.session_time);
+                    const day = String(date.getDate()).padStart(2, "0");
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                   }}
+                ></Column>
+                <Column
+                  field="total_time"
+                  header="Session Duration"
+                  body={(rowData) => `${rowData.total_time} mins`}
                 ></Column>
                 <Column
                   field="topic_attend_status"
