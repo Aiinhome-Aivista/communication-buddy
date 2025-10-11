@@ -102,7 +102,7 @@ export default function SessionModal({
       />
 
       <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl w-[900px] max-w-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl w-[80%] max-w-full h-[95%] max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-6 flex items-center">
             <button onClick={onClose} className="mr-4 text-[#2C2E42] hover:text-[#E5B800]">
@@ -114,8 +114,8 @@ export default function SessionModal({
           </div>
 
           {/* Form Content */}
-          <div className="px-8 py-8 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-8">
+          <div className="px-8 py-4 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               {/* Candidate Name */}
               <div>
                 <label className="block text-[#1F2937] font-medium mb-3 text-base">Candidate Name</label>
@@ -248,13 +248,13 @@ export default function SessionModal({
             </div>
 
             {/* Session Topic */}
-            <div className="mt-8">
+            <div className="mt-3">
               <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Topic</label>
               <textarea
                 value={sessionTopic}
                 onChange={(e) => setSessionTopic(e.target.value)}
                 placeholder="Write session topic..."
-                rows="6"
+                rows="4"
                 className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
                   errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
                 }`}
@@ -264,7 +264,7 @@ export default function SessionModal({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-[#E5E7EB] px-8 py-6 flex justify-between bg-white mt-auto rounded-b-2xl">
+          <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
               className="border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
