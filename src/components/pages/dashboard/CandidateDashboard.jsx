@@ -10,13 +10,11 @@ import oracleLogo from "../../../assets/logo/oracle.svg";
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
+import assignmentIcon from "../../../../public/assets/icons/assignment.svg"; // <-- ADDED THIS LINE
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import Loader from '../../ui/Loader';
 import personImage from '../../../assets/logo/person.jpg';
-
-
-
 
 import {
   BarChart,
@@ -33,12 +31,10 @@ import {
 } from "recharts";
 
 const CandidateDashboard = () => {
-
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Some parts of the app store user_id directly (see AuthProvider), so prefer that.
     let user_id = null;
     try {
       const directId = sessionStorage.getItem("user_id");
@@ -52,8 +48,6 @@ const CandidateDashboard = () => {
       console.warn("Error reading user from sessionStorage", err);
       user_id = null;
     }
-
-    // debug
     console.log("User ID from sessionStorage:", user_id);
 
     const fetchDashboardData = async () => {
@@ -62,10 +56,8 @@ const CandidateDashboard = () => {
         setLoading(false);
         return;
       }
-
       try {
         const result = await fatchedPostRequest(postURL.dashboard, { user_id });
-
         if (result?.status === "success") {
           setDashboardData(result.data);
         } else {
@@ -77,21 +69,16 @@ const CandidateDashboard = () => {
         setLoading(false);
       }
     };
-
     fetchDashboardData();
   }, []);
 
-
   const COLORS = ["#0f172a", " #DFB916"];
-
   const { session_completion = { completed: 0, pending: 0 } } = dashboardData || {};
-
 
   const pieData = [
     { name: "Completed", value: session_completion?.completed || 0 },
     { name: "Pending", value: session_completion?.pending || 0 },
   ];
-
 
   const barData = [
     { name: "Jan", uv: 4 },
@@ -117,48 +104,16 @@ const CandidateDashboard = () => {
   ];
 
   const technologyLogos = [
-    pythonLogo,
-    cppLogo,
-    reactLogo,
-    appleLogo,
-    phpLogo,
-    javaLogo,
-    mysqlLogo,
-    oracleLogo,
+    pythonLogo, cppLogo, reactLogo, appleLogo,
+    phpLogo, javaLogo, mysqlLogo, oracleLogo,
   ];
 
-  // fallback topScores (kept for UI when API doesn't return top_five_test_scores)
   const fallbackTopScores = [
-    {
-      name: "Debasish Sahoo",
-      assignedBy: "Admin",
-      topic: "Discuss about current impact of AI ...",
-      score: 78,
-    },
-    {
-      name: "Sanchari Karmakar",
-      assignedBy: "Admin",
-      topic: "Discuss about Datasince",
-      score: 75,
-    },
-    {
-      name: "Sayan Mitra",
-      assignedBy: "Admin",
-      topic: "Discuss about Neural Networking ...",
-      score: 65,
-    },
-    {
-      name: "Debasish Sahoo",
-      assignedBy: "Admin",
-      topic: "Discuss about Cloud Infrastructure ...",
-      score: 63,
-    },
-    {
-      name: "Priya Ghosh",
-      assignedBy: "Admin",
-      topic: "Discuss about Machine Learning ...",
-      score: 61,
-    },
+    { name: "Debasish Sahoo", assignedBy: "Admin", topic: "Discuss about current impact of AI ...", score: 78 },
+    { name: "Sanchari Karmakar", assignedBy: "Admin", topic: "Discuss about Datasince", score: 75 },
+    { name: "Sayan Mitra", assignedBy: "Admin", topic: "Discuss about Neural Networking ...", score: 65 },
+    { name: "Debasish Sahoo", assignedBy: "Admin", topic: "Discuss about Cloud Infrastructure ...", score: 63 },
+    { name: "Priya Ghosh", assignedBy: "Admin", topic: "Discuss about Machine Learning ...", score: 61 },
   ];
 
   const topScores = dashboardData?.top_five_test_scores
@@ -169,12 +124,9 @@ const CandidateDashboard = () => {
     }))
     : fallbackTopScores;
 
-  // derive values from API with fallbacks
   const sessionReport = dashboardData?.session_report || {};
   const lastTwelveScores = dashboardData?.last_twelve_test_scores || [];
   const sessionType = sessionReport.session_type || { communication: 0, technology: 0 };
-
-  // compute percentages for session_type bars (avoid division by zero)
   const commCount = Number(sessionType.communication) || 0;
   const techCount = Number(sessionType.technology) || 0;
   const totalType = commCount + techCount || 1;
@@ -188,7 +140,7 @@ const CandidateDashboard = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         <div className="flex items-center gap-3">
-         {/* Main action button */}
+          {/* Main action button */}
           <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
             <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
             <span>Ongoing session</span>
