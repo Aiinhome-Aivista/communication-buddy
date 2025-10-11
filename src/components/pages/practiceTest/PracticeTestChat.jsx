@@ -50,6 +50,7 @@ export default function PracticeTest() {
   const [sessionStatus, setSessionStatus] = useState(null);
   const [languageSelected, setLanguageSelected] = useState(false);
   const [waitingForLanguage, setWaitingForLanguage] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceGender, setVoiceGender] = useState("female");
   const [showTimeUpPopup, setShowTimeUpPopup] = useState(false);
@@ -395,6 +396,38 @@ export default function PracticeTest() {
               voices.find(v => v.lang === "en-IN" && !isLikelyMaleVoice(v)) ||
               voices[0];
           }
+        } else if (lang === "es-ES") {
+          // ✅ Spanish voice selection (prefer female)
+          const spanishVoices = voices.filter(v => v.lang.startsWith("es") || v.name.toLowerCase().includes("spanish") || v.name.toLowerCase().includes("español"));
+          const femaleNames = ["conchita", "isabel", "lucia", "camila", "sofia", "elena", "maria"];
+          const premiumSpanish = spanishVoices.filter(v => v.name.toLowerCase().includes("neural") || v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("premium"));
+
+          if (voiceGender === "male") {
+            selectedVoice = premiumSpanish.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+                            spanishVoices.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+                            spanishVoices[0] || voices[0];
+          } else {
+            selectedVoice = premiumSpanish.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+                            spanishVoices.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+                            spanishVoices.find(v => v.name.toLowerCase().includes("female")) ||
+                            spanishVoices[0] || voices[0];
+          }
+        } else if (lang === "fr-FR") {
+          // ✅ French voice selection (prefer female)
+          const frenchVoices = voices.filter(v => v.lang.startsWith("fr") || v.name.toLowerCase().includes("french") || v.name.toLowerCase().includes("français"));
+          const femaleNamesFr = ["amelie", "celine", "virginie", "julie", "claire", "lea", "marie"];
+          const premiumFrench = frenchVoices.filter(v => v.name.toLowerCase().includes("neural") || v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("premium"));
+
+          if (voiceGender === "male") {
+            selectedVoice = premiumFrench.find(v => !femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+                            frenchVoices.find(v => !femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+                            frenchVoices[0] || voices[0];
+          } else {
+            selectedVoice = premiumFrench.find(v => femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+                            frenchVoices.find(v => femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+                            frenchVoices.find(v => v.name.toLowerCase().includes("female")) ||
+                            frenchVoices[0] || voices[0];
+          }
         }
 
         if (selectedVoice) {
@@ -449,6 +482,32 @@ export default function PracticeTest() {
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
+  };
+
+  // Language helpers
+  const getLangCode = (readable) => {
+    switch ((readable || "").toLowerCase()) {
+      case "hindi":
+      case "हिंदी":
+        return "hi-IN";
+      case "spanish":
+      case "español":
+        return "es-ES";
+      case "french":
+      case "français":
+        return "fr-FR";
+      case "english":
+      default:
+        return "en-IN";
+    }
+  };
+
+  const getReadableLanguage = (text) => {
+    const t = (text || "").trim().toLowerCase();
+    if (t.includes("हिंदी") || t.includes("hindi")) return "Hindi";
+    if (t.includes("spanish") || t.includes("español")) return "Spanish";
+    if (t.includes("french") || t.includes("français")) return "French";
+    return "English";
   };
 
   // Check session status using ApiService
@@ -610,12 +669,11 @@ export default function PracticeTest() {
         setWaitingForLanguage(true);
 
         // Speak the welcome message
-        await speakMessage(data.message);
+        await speakMessage(data.message, getLangCode("English"));
 
-        // Generate a 4-digit session ID and start timer
-        const sessionId = Math.floor(1000 + Math.random() * 9000);
-        setSessionId(sessionId);
-        startSessionTimer();
+        // Generate a 4-digit session ID; start timer only after language is chosen
+        const sid = Math.floor(1000 + Math.random() * 9000);
+        setSessionId(sid);
       }
     } catch (error) {
       console.error("Error starting session:", error);
@@ -630,6 +688,8 @@ export default function PracticeTest() {
     }
 
     try {
+      const readableLang = getReadableLanguage(languageInput);
+      setSelectedLanguage(readableLang);
       const data = await startChatSession(userName, topicName, languageInput);
       console.log("Start session response (with language):", data);
 
@@ -639,9 +699,33 @@ export default function PracticeTest() {
         setFullConversation((prev) => [...prev, { role: "ai", message: data.message, time: new Date().toLocaleTimeString() }]);
 
         // Speak the language selection response
-        await speakMessage(data.message);
+        await speakMessage(data.message, getLangCode(readableLang));
         setWaitingForLanguage(false);
         setLanguageSelected(true);
+
+        // Start timer after language is selected
+        startSessionTimer();
+
+        // Show typing while fetching intro chat response
+        setIsAILoading(true);
+        try {
+          const intro = await sendChatMessage(
+            sessionId,
+            topicName,
+            matchedRecord?.total_time || 10,
+            "",
+            readableLang
+          );
+          const introMsg = intro?.message || `Let's begin our discussion on ${topicName}.`;
+          const introEntry = { id: Date.now() + 2, text: introMsg, sender: "bot" };
+          setMessages((prev) => [...prev, introEntry]);
+          setFullConversation((prev) => [...prev, { role: "ai", message: introMsg, time: new Date().toLocaleTimeString() }]);
+          await speakMessage(introMsg, getLangCode(readableLang));
+        } catch (e) {
+          console.error("Intro chat API error:", e);
+        } finally {
+          setIsAILoading(false);
+        }
       }
     } catch (error) {
       console.error("Error starting session with language:", error);
@@ -838,7 +922,7 @@ export default function PracticeTest() {
         topicName,
         matchedRecord?.total_time || 10,
         userInput,
-        "English"
+        selectedLanguage || "English"
       );
 
       const aiMessage = data?.message || "Invalid Message";
@@ -848,7 +932,7 @@ export default function PracticeTest() {
       setFullConversation((prev) => [...prev, { role: "ai", message: aiMessage, time: new Date().toLocaleTimeString() }]);
 
       // Speak the AI response
-      await speakMessage(aiMessage);
+      await speakMessage(aiMessage, getLangCode(selectedLanguage));
 
       // auto save on session end keywords
       const lower = aiMessage.toLowerCase();
