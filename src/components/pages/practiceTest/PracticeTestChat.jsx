@@ -180,13 +180,13 @@ export default function PracticeTest() {
           const femaleVoices = voices.filter(voice => {
             const voiceName = voice.name.toLowerCase();
             const isIndian = voice.lang.includes('en-IN') || voice.lang.includes('hi');
-            const isFemale = voiceName.includes('female') || 
-                           voiceName.includes('woman') || 
-                           voiceName.includes('lady') ||
-                           voiceName.includes('priya') ||
-                           voiceName.includes('ravi') ||
-                           voiceName.includes('veena') ||
-                           voiceName.includes('kalpana');
+            const isFemale = voiceName.includes('female') ||
+              voiceName.includes('woman') ||
+              voiceName.includes('lady') ||
+              voiceName.includes('priya') ||
+              voiceName.includes('ravi') ||
+              voiceName.includes('veena') ||
+              voiceName.includes('kalpana');
             return isIndian && isFemale;
           });
 
@@ -194,14 +194,14 @@ export default function PracticeTest() {
             selectedVoice = femaleVoices[0];
           } else {
             // Fallback to any Indian voice
-            const indianVoices = voices.filter(voice => 
+            const indianVoices = voices.filter(voice =>
               voice.lang.includes('en-IN') || voice.lang.includes('hi')
             );
             if (indianVoices.length > 0) {
               selectedVoice = indianVoices[0];
             } else {
               // Final fallback to any English voice
-              const englishVoices = voices.filter(voice => 
+              const englishVoices = voices.filter(voice =>
                 voice.lang.startsWith('en')
               );
               if (englishVoices.length > 0) {
@@ -353,7 +353,7 @@ export default function PracticeTest() {
     sessionTimerRef.current = setInterval(() => {
       const elapsedMinutes = (Date.now() - sessionStartRef.current) / (1000 * 60);
       const remainingMinutes = Math.max(0, totalTime - elapsedMinutes);
-      
+
       const minutes = Math.floor(remainingMinutes);
       const seconds = Math.floor((remainingMinutes - minutes) * 60);
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
@@ -362,7 +362,7 @@ export default function PracticeTest() {
         clearInterval(sessionTimerRef.current);
         setSessionExpired(true);
         setShowTimeUpPopup(true);
-        
+
         // Auto save and end session
         setTimeout(async () => {
           await saveChatSession({ userId, hrId, topic: topicName, fullConversation });
@@ -453,13 +453,13 @@ export default function PracticeTest() {
   useEffect(() => {
     // Initialize voice on mount
     window.speechSynthesis.cancel();
-    
+
     // Set default voice gender to female
     const defaultGender = "female";
     localStorage.setItem("voiceGender", defaultGender);
     setVoiceGender(defaultGender);
     console.log("🎵 Fresh session - Voice gender reset to:", defaultGender);
-    
+
     // Initialize voices for better cross-browser support
     if (window.speechSynthesis.getVoices().length === 0) {
       window.speechSynthesis.addEventListener('voiceschanged', () => {
@@ -586,7 +586,7 @@ export default function PracticeTest() {
         userInput,
         "English"
       );
-      
+
       const aiMessage = data?.message || "Invalid Message";
 
       const aiEntry = { id: Date.now() + 1, text: aiMessage, sender: "bot" };

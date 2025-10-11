@@ -39,7 +39,7 @@ export const checkSessionStatus = async (userId, hrId, topic) => {
   const pad = (n) => String(n).padStart(2, '0');
   const nowDate = new Date();
   const nowFormatted = `${nowDate.getFullYear()}-${pad(nowDate.getMonth() + 1)}-${pad(nowDate.getDate())} ${pad(nowDate.getHours())}:${pad(nowDate.getMinutes())}:${pad(nowDate.getSeconds())}`;
-  
+
   return fatchedPostRequest(postURL.getSessionStatus, {
     user_id: userId,
     hr_id: hrId,
