@@ -16,6 +16,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from "recharts";
+import groupLogo from "../../../assets/logo/group.svg";
 
 const HrDashboard = () => {
   const COLORS = ["#0f172a", " #DFB916"];
@@ -211,7 +212,11 @@ const HrDashboard = () => {
 
 
                 <div className="flex items-center space-x-2">
-                  <img src="/icons/group.svg" alt="group" className="w-5 h-5" />
+                      <img
+                        src={groupLogo}
+                        alt="Group Icon"
+                        className="w-5 h-5 object-contain"
+                      />
                   <div className="flex flex-col items-center -ml-2 leading-tight">
                     <span className="font-inter font-bold text-[20px] leading-none align-middle text-gray-700">{activeParticipant ?? '-'}</span>
                     <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-right align-middle text-gray-500 -mt-0.5">Active participant</span>
