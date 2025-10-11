@@ -17,6 +17,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import groupLogo from "../../../assets/logo/group.svg";
+import trending_up from "../../../assets/logo/trending_up.svg";
+import trending_down from "../../../assets/logo/trending_down.png";
 
 const HrDashboard = () => {
   const COLORS = ["#0f172a", " #DFB916"];
@@ -298,28 +300,48 @@ const HrDashboard = () => {
                     }}>Session Created</div>
                 </div>
 
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1 font-semibold">
-                    <div
-                      style={{
-                        fontFamily: 'Inter, sans-serif',
-                        fontWeight: 700,
-                        fontStyle: 'normal',
-                        fontSize: '20px',
+<div className="flex flex-col items-center">
+  <div className="flex items-center gap-1 font-semibold">
+    {/* Score */}
+    <div
+      style={{
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 700,
+        fontStyle: "normal",
+        fontSize: "20px",
+      }}
+    >
+      {Math.round(Number(sessionReport.average_score) || 0)}
+    </div>
 
-                      }}
-                    >{userTraffic ?? '-'}</div>
-                    <img src="/icons/trending_up.svg" alt="trend" className="w-4 h-4" />
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
+    {/* Check indicator first, then show icon */}
+    {sessionReport?.progress_indicator === "up" ? (
+      <img
+        src={trending_up}
+        alt="Trending Up"
+        className="w-5 h-5 object-contain"
+      />
+    ) : sessionReport?.progress_indicator === "down" ? (
+      <img
+        src={trending_down}
+        alt="Trending Down"
+        className="w-5 h-5 object-contain"
+      />
+    ) : null}
+  </div>
 
-                    }}>User Traffic</div>
-                </div>
+  {/* Label */}
+  <div
+    style={{
+      fontFamily: "Inter, sans-serif",
+      fontWeight: 400,
+      fontStyle: "normal",
+      fontSize: "12px",
+    }}
+  >
+    User Traffic
+  </div>
+</div>
 
                 <div className="flex flex-col items-center">
                   <div

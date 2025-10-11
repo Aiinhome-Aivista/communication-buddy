@@ -7,6 +7,9 @@ import phpLogo from "../../../assets/logo/php.svg";
 import javaLogo from "../../../assets/logo/java.svg";
 import mysqlLogo from "../../../assets/logo/mysql.svg";
 import oracleLogo from "../../../assets/logo/oracle.svg";
+import groupLogo from "../../../assets/logo/group.svg";
+import trending_up from "../../../assets/logo/trending_up.svg";
+import trending_down from "../../../assets/logo/trending_down.png";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import Loader from '../../ui/Loader';
@@ -312,14 +315,26 @@ const CandidateDashboard = () => {
               </h2>
 
 
-              <div className="flex items-center space-x-2">
-                <img src="/icons/group.svg" alt="group" className="w-5 h-5" />
-                <div className="flex flex-col items-center -ml-2 leading-tight">
-                  <span className="font-inter font-bold text-[20px] leading-none align-middle text-gray-700">{sessionReport.assigned_test ?? '562'}</span>
-                  <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-right align-middle text-gray-500 -mt-0.5">Active participant</span>
+<div className="flex flex-col items-start">
+  {/* First line: icon + number */}
+  <div className="flex items-center gap-2">
+    <img
+      src={groupLogo}
+      alt="Group Icon"
+      className="w-5 h-5 object-contain"
+    />
+    <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
+      {sessionReport.assigned_test ?? '562'}
+    </span>
+  </div>
 
-                </div>
-              </div>
+  {/* Second line: label */}
+<span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
+  Active participant
+</span>
+
+</div>
+
 
             </div>
 
@@ -395,28 +410,50 @@ const CandidateDashboard = () => {
                   }}>Session Created</div>
               </div>
 
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1 font-semibold">
-                  <div
-                    style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontWeight: 700,
-                      fontStyle: 'normal',
-                      fontSize: '20px',
+<div className="flex flex-col items-center">
+  <div className="flex items-center gap-1 font-semibold">
+    {/* Score */}
+    <div
+      style={{
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 700,
+        fontStyle: "normal",
+        fontSize: "20px",
+      }}
+    >
+      {Math.round(Number(sessionReport.average_score) || 0)}
+    </div>
 
-                    }}
-                  >{Math.round(sessionReport.average_score) ?? 245}</div>
-                  <img src="/icons/trending_up.svg" alt="trend" className="w-4 h-4" />
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '12px',
+    {/* Check indicator first, then show icon */}
+    {sessionReport?.progress_indicator === "up" ? (
+      <img
+        src={trending_up}
+        alt="Trending Up"
+        className="w-5 h-5 object-contain"
+      />
+    ) : sessionReport?.progress_indicator === "down" ? (
+      <img
+        src={trending_down}
+        alt="Trending Down"
+        className="w-5 h-5 object-contain"
+      />
+    ) : null}
+  </div>
 
-                  }}>User Traffic</div>
-              </div>
+  {/* Label */}
+  <div
+    style={{
+      fontFamily: "Inter, sans-serif",
+      fontWeight: 400,
+      fontStyle: "normal",
+      fontSize: "12px",
+    }}
+  >
+    User Traffic
+  </div>
+</div>
+
+
 
               <div className="flex flex-col items-center">
                 <div
@@ -519,7 +556,7 @@ const CandidateDashboard = () => {
    <div style={{ height: '400px', overflowY: 'auto' }} className="scrollbar-hide w-full md:w-1/2">
   <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-xl">
     <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
-      Top Five Test Score
+      Top 5 Session Score
     </h2>
     <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
       {topScores.map((item, index) => (
