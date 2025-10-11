@@ -272,25 +272,25 @@ const CandidateDashboard = () => {
               </h2>
 
 
-<div className="flex flex-col items-start">
-  {/* First line: icon + number */}
-  <div className="flex items-center gap-2">
-    <img
-      src={groupLogo}
-      alt="Group Icon"
-      className="w-5 h-5 object-contain"
-    />
-    <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
-      {sessionReport.assigned_test ?? '562'}
-    </span>
-  </div>
+              <div className="flex flex-col items-start">
+                {/* First line: icon + number */}
+                <div className="flex items-center gap-2">
+                  <img
+                    src={groupLogo}
+                    alt="Group Icon"
+                    className="w-5 h-5 object-contain"
+                  />
+                  <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
+                    {sessionReport.assigned_test ?? '562'}
+                  </span>
+                </div>
 
-  {/* Second line: label */}
-<span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
-  Active participant
-</span>
+                {/* Second line: label */}
+                <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
+                  Active participant
+                </span>
 
-</div>
+              </div>
 
 
             </div>
@@ -367,48 +367,48 @@ const CandidateDashboard = () => {
                   }}>Session Created</div>
               </div>
 
-<div className="flex flex-col items-center">
-  <div className="flex items-center gap-1 font-semibold">
-    {/* Score */}
-    <div
-      style={{
-        fontFamily: "Inter, sans-serif",
-        fontWeight: 700,
-        fontStyle: "normal",
-        fontSize: "20px",
-      }}
-    >
-      {Math.round(Number(sessionReport.average_score) || 0)}
-    </div>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1 font-semibold">
+                  {/* Score */}
+                  <div
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 700,
+                      fontStyle: "normal",
+                      fontSize: "20px",
+                    }}
+                  >
+                    {Math.round(Number(sessionReport.average_score) || 0)}
+                  </div>
 
-    {/* Check indicator first, then show icon */}
-    {sessionReport?.progress_indicator === "up" ? (
-      <img
-        src={trending_up}
-        alt="Trending Up"
-        className="w-5 h-5 object-contain"
-      />
-    ) : sessionReport?.progress_indicator === "down" ? (
-      <img
-        src={trending_down}
-        alt="Trending Down"
-        className="w-5 h-5 object-contain"
-      />
-    ) : null}
-  </div>
+                  {/* Check indicator first, then show icon */}
+                  {sessionReport?.progress_indicator === "up" ? (
+                    <img
+                      src={trending_up}
+                      alt="Trending Up"
+                      className="w-5 h-5 object-contain"
+                    />
+                  ) : sessionReport?.progress_indicator === "down" ? (
+                    <img
+                      src={trending_down}
+                      alt="Trending Down"
+                      className="w-5 h-5 object-contain"
+                    />
+                  ) : null}
+                </div>
 
-  {/* Label */}
-  <div
-    style={{
-      fontFamily: "Inter, sans-serif",
-      fontWeight: 400,
-      fontStyle: "normal",
-      fontSize: "12px",
-    }}
-  >
-    User Traffic
-  </div>
-</div>
+                {/* Label */}
+                <div
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 400,
+                    fontStyle: "normal",
+                    fontSize: "12px",
+                  }}
+                >
+                  User Traffic
+                </div>
+              </div>
 
 
 
@@ -500,8 +500,8 @@ const CandidateDashboard = () => {
 
 
 
-<>
-  <style>{`
+            <>
+              <style>{`
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
     }
@@ -510,58 +510,58 @@ const CandidateDashboard = () => {
       scrollbar-width: none;     /* Firefox */
     }
   `}</style>
-   <div style={{ height: '400px', overflowY: 'auto' }} className="scrollbar-hide w-full md:w-1/2">
-  <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-xl">
-    <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
-      Top 5 Session Score
-    </h2>
-    <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
-      {topScores.map((item, index) => (
-        <div
-          key={index}
-          className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
-        >
-          {/* Left content */}
-<div className="flex items-start gap-3">
-  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-   <span className="material-icons text-gray-400 text-[18px]"><img
-  src={personImage}
-  alt="Person"
-  className="w-8 h-8 rounded-full"
-/>
-</span>
+              <div style={{ height: '400px', overflowY: 'auto' }} className="scrollbar-hide w-full md:w-1/2">
+                <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-xl">
+                  <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
+                    Top 5 Session Score
+                  </h2>
+                  <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
+                    {topScores.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
+                      >
+                        {/* Left content */}
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                            <span className="material-icons text-gray-400 text-[18px]"><img
+                              src={personImage}
+                              alt="Person"
+                              className="w-8 h-8 rounded-full"
+                            />
+                            </span>
 
-  </div>
+                          </div>
 
-            <div className="flex flex-col">
-              <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-                Assigned by
-              </span>
-              <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
-                {item.name}
-              </span>
-<span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
-  Topic: {item.topic}
-</span>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+                              Assigned by
+                            </span>
+                            <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
+                              {item.name}
+                            </span>
+                            <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
+                              Topic: {item.topic}
+                            </span>
 
-            </div>
-          </div>
-          {/* Right side */}
-          <div className="flex flex-col items-end">
-            <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
-              {item.score}
-            </span>
-            <span className="text-[10px] text-gray-400">Score</span>
-            <KeyboardArrowDown
-              style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
-            />
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-  </div>
-</>
+                          </div>
+                        </div>
+                        {/* Right side */}
+                        <div className="flex flex-col items-end">
+                          <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
+                            {item.score}
+                          </span>
+                          <span className="text-[10px] text-gray-400">Score</span>
+                          <KeyboardArrowDown
+                            style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
 
 
 
