@@ -9,6 +9,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
+import SessionModal from "../../modal/SessionModal";
+import SuccessModal from "./SuccessModal";
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -27,12 +29,16 @@ export default function ScheduleSession() {
     const [rotation, setRotation] = useState(false);
     const [activeTab, setActiveTab] = useState("Upcoming");
     const [search, setSearch] = useState("");
-    const [testType, setTestType] = useState("Test Type");
+    const [testType, setTestType] = useState("All");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [allTopics, setAllTopics] = useState([]); // New state to store topics from getAllTopics API
     const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
     const [isAnimating, setIsAnimating] = useState(false);
     const dropdownRef = useRef(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [successOpen, setSuccessOpen] = useState(false);
+    const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+
     // setUserData is not defined in this component, so I'm assuming it comes from a context.
     // If not, you might need to import and use the correct context provider.
     // const { setUserData } = useContext(UserContext); 
@@ -63,6 +69,11 @@ export default function ScheduleSession() {
                     session_time: getTime(session.session_time),
                 }));
                 setSessionData(processed);
+
+                // Extract unique topic categories from the new session data
+                const categories = ["All", ...new Set(processed.map((session) => session.topic_category).filter(Boolean))];
+                setTestTypeOptions(categories);
+
             }
         } catch (error) {
             console.error('Error fetching Data', error.message);
@@ -219,34 +230,35 @@ export default function ScheduleSession() {
     }, [dropdownRef]);
 
 
-    const filteredData = allTopics
-        .filter((topic) => {
+    const filteredData = sessionData
+        .filter((session) => {
             // Tab filtering logic
-            const status = topic.topic_attend_status?.toLowerCase();
+            const status = session.status?.toLowerCase();
             const tab = activeTab.toLowerCase();
 
             if (tab === "upcoming") {
                 // Assuming 'assigned' status means it's an upcoming test
-                return status === "upcoming";
+                return status === "assigned" || status === "upcoming";
             }
             return status === tab;
         })
-        .filter((topic) =>
+        .filter((session) =>
             // Search filtering logic
-            [topic.topic_name, topic.topic_category].some((value) =>
+            [session.candidate_name, session.topic, session.topic_category].some((value) =>
                 value?.toString().toLowerCase().includes(search.toLowerCase())
             )
         )
-        .filter((topic) =>
+        .filter((session) =>
             // Test Type filtering logic
             testType === "All" ||
-            topic.topic_category?.toLowerCase() === testType.toLowerCase()
+            session.topic_category?.toLowerCase() === testType.toLowerCase()
 
         );
 
     // Helper to get status styles
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
+            case "assigned": // Map 'assigned' to the 'upcoming' style
             case "upcoming":
                 return "bg-blue-100 text-blue-600"; // Blue for upcoming
             case "ongoing":
@@ -260,7 +272,7 @@ export default function ScheduleSession() {
 
     // Custom template for status badge
     const statusBodyTemplate = (rowData) => {
-        const status = rowData.topic_attend_status;
+        const status = rowData.status;
         return (
             <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyles(status)}`}>
                 {status}
@@ -281,9 +293,26 @@ export default function ScheduleSession() {
         <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
             <div className="flex-grow flex flex-col">
                 <div className="pt-4 px-4">
-                    <h1 className="text-2xl font-bold text-[#2C2E42]">
-                        Schedule Session
-                    </h1>
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold text-[#2C2E42]">
+                            Schedule Session
+                        </h1>
+                        <button
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-[#272727] font-semibold px-8 py-2 rounded-xl shadow-none cursor-pointer"
+                            onClick={() => setModalOpen(true)}
+                        >
+                            <svg
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Create Session
+                        </button>
+                    </div>
 
                     {/* Tabs + Search + Dropdown */}
                     <div className="flex flex-row items-center mt-6 space-x-4 gap-3">
@@ -371,33 +400,29 @@ export default function ScheduleSession() {
                                 emptyMessage={emptyMessageTemplate}
                             >
                                 <Column
-                                    field="topic_name"
-                                    header="Test Title"
+                                    field="candidate_name"
+                                    header="Candidate Name"
                                     body={(rowData) => (
                                         <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                                            {rowData.topic_name}
+                                            {rowData.candidate_name}
                                         </span>
                                     )}
                                 ></Column>
                                 <Column
-                                    field="total_time"
-                                    header="Session Duration"
-                                    body={(rowData) => `${rowData.total_time} mins`}
+                                    field="topic"
+                                    header="Topic"
                                 ></Column>
                                 <Column
                                     field="session_time"
                                     header="Session Date"
-                                    body={(rowData) => {
-                                        if (!rowData.session_time) return "";
-                                        const date = new Date(rowData.session_time);
-                                        const day = String(date.getDate()).padStart(2, '0');
-                                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                                        const year = date.getFullYear();
-                                        return `${day}/${month}/${year}`;
-                                    }}
+                                    body={(rowData) => rowData.session_date}
                                 ></Column>
                                 <Column
-                                    field="topic_attend_status"
+                                    field="session_time"
+                                    header="Session Time"
+                                ></Column>
+                                <Column
+                                    field="status"
                                     header="Status"
                                     body={statusBodyTemplate}
                                     className="text-center"
@@ -407,6 +432,24 @@ export default function ScheduleSession() {
                     </div>
                 </div>
             </div>
+            <SessionModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                sessionDuration={sessionDuration}
+                setSessionDuration={setSessionDuration}
+                onSave={({ date, sessionTopic, duration }) => {
+                    // Here you would normally call an API to save
+                    // For now, close the form and show success
+                    setModalOpen(false);
+                    // setCandidateName("Aiinhome");
+                    setSuccessOpen(true);
+                }}
+            />
+            <SuccessModal
+                open={successOpen}
+                onClose={() => setSuccessOpen(false)}
+            // candidateName={candidateName}
+            />
         </div>
     );
 }

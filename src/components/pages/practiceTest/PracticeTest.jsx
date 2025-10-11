@@ -184,7 +184,7 @@ export default function PracticeTest() {
                 {testType}
                 {dropdownOpen ? (
                   <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                  onClick={() => setDropdownOpen(false)} />
+                    onClick={() => setDropdownOpen(false)} />
                 ) : (
                   <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
                     onClick={() => setDropdownOpen(!dropdownOpen)} />
@@ -248,21 +248,31 @@ export default function PracticeTest() {
                   )}
                 ></Column>
                 <Column
-                  field="total_time"
-                  header="Session Duration"
-                  body={(rowData) => `${rowData.total_time} mins`}
-                ></Column>
-                <Column
-                  field="session_time"
+                  field="session_date"
                   header="Session Date"
                   body={(rowData) => {
                     if (!rowData.session_time) return "";
                     const date = new Date(rowData.session_time);
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${day}/${month}/${year}`;
+                    return date.toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
                   }}
+                ></Column>
+                <Column
+                  field="session_time"
+                  header="Session Time"
+                  body={(rowData) => {
+                    if (!rowData.session_time) return "";
+                    const date = new Date(rowData.session_time);
+                    return date.toLocaleString('en-US', {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      hour12: true,
+                    });
+                  }}
+                ></Column>
+                <Column
+                  field="total_time"
+                  header="Session Duration"
+                  body={(rowData) => `${rowData.total_time} mins`}
                 ></Column>
                 <Column
                   field="topic_attend_status"
