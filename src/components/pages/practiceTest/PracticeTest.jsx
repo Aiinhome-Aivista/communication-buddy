@@ -247,6 +247,7 @@ export default function PracticeTest() {
                 paginator
                 rows={5}
                 rowsPerPageOptions={[3, 5]}
+                loading={loadingTable}
                 paginatorClassName="!m-0 !border-t"
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}

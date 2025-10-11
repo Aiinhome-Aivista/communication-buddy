@@ -392,6 +392,7 @@ export default function ScheduleSession() {
                         <div key={`${activeTab}-${search}-${testType}`}>
                             <DataTable
                                 value={filteredData}
+                                loading={loadingTable}
                                 paginator
                                 rows={5}
                                 rowsPerPageOptions={[3, 5]}
@@ -437,12 +438,12 @@ export default function ScheduleSession() {
                 onClose={() => setModalOpen(false)}
                 sessionDuration={sessionDuration}
                 setSessionDuration={setSessionDuration}
-                onSave={({ date, sessionTopic, duration }) => {
-                    // Here you would normally call an API to save
-                    // For now, close the form and show success
+                userData={userData}
+                topics={topics}
+                onSave={() => {
                     setModalOpen(false);
-                    // setCandidateName("Aiinhome");
                     setSuccessOpen(true);
+                    fetchSessionData(); // Refresh the data in the table
                 }}
             />
             <SuccessModal
