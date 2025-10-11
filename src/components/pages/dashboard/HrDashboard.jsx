@@ -213,18 +213,25 @@ const HrDashboard = () => {
                 </h2>
 
 
-                <div className="flex items-center space-x-2">
-                      <img
-                        src={groupLogo}
-                        alt="Group Icon"
-                        className="w-5 h-5 object-contain"
-                      />
-                  <div className="flex flex-col items-center -ml-2 leading-tight">
-                    <span className="font-inter font-bold text-[20px] leading-none align-middle text-gray-700">{activeParticipant ?? '-'}</span>
-                    <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-right align-middle text-gray-500 -mt-0.5">Active participant</span>
+<div className="flex flex-col items-start">
+  {/* First line: icon + number */}
+  <div className="flex items-center gap-2">
+    <img
+      src={groupLogo}
+      alt="Group Icon"
+      className="w-5 h-5 object-contain"
+    />
+    <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
+      {sessionReport.activeParticipants ?? '562'}
+    </span>
+  </div>
 
-                  </div>
-                </div>
+  {/* Second line: label */}
+<span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
+  Active participant
+</span>
+
+</div>
 
               </div>
 
@@ -342,6 +349,7 @@ const HrDashboard = () => {
     User Traffic
   </div>
 </div>
+
 
                 <div className="flex flex-col items-center">
                   <div
