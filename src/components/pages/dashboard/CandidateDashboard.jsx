@@ -1,5 +1,5 @@
 import pythonLogo from "../../../assets/logo/python.svg";
-import { postURL, fatchedPostRequest } from '../../../services/ApiService';
+import { postURL, fatchedPostRequest } from "../../../services/ApiService";
 import cppLogo from "../../../assets/logo/cpp.svg";
 import reactLogo from "../../../assets/logo/react.svg";
 import appleLogo from "../../../assets/logo/apple.svg";
@@ -10,11 +10,11 @@ import oracleLogo from "../../../assets/logo/oracle.svg";
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
-import assignmentIcon from "../../../../public/assets/icons/assignment.svg"; // <-- ADDED THIS LINE
+import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
-import Loader from '../../ui/Loader';
-import personImage from '../../../assets/logo/person.jpg';
+import Loader from "../../ui/Loader";
+import personImage from "../../../assets/logo/person.jpg";
 
 import {
   BarChart,
@@ -52,7 +52,9 @@ const CandidateDashboard = () => {
 
     const fetchDashboardData = async () => {
       if (!user_id) {
-        console.warn('No user_id found in sessionStorage. Skipping dashboard API call.');
+        console.warn(
+          "No user_id found in sessionStorage. Skipping dashboard API call."
+        );
         setLoading(false);
         return;
       }
@@ -73,7 +75,8 @@ const CandidateDashboard = () => {
   }, []);
 
   const COLORS = ["#0f172a", " #DFB916"];
-  const { session_completion = { completed: 0, pending: 0 } } = dashboardData || {};
+  const { session_completion = { completed: 0, pending: 0 } } =
+    dashboardData || {};
 
   const pieData = [
     { name: "Completed", value: session_completion?.completed || 0 },
@@ -104,29 +107,63 @@ const CandidateDashboard = () => {
   ];
 
   const technologyLogos = [
-    pythonLogo, cppLogo, reactLogo, appleLogo,
-    phpLogo, javaLogo, mysqlLogo, oracleLogo,
+    pythonLogo,
+    cppLogo,
+    reactLogo,
+    appleLogo,
+    phpLogo,
+    javaLogo,
+    mysqlLogo,
+    oracleLogo,
   ];
 
-  const fallbackTopScores = [
-    { name: "Debasish Sahoo", assignedBy: "Admin", topic: "Discuss about current impact of AI ...", score: 78 },
-    { name: "Sanchari Karmakar", assignedBy: "Admin", topic: "Discuss about Datasince", score: 75 },
-    { name: "Sayan Mitra", assignedBy: "Admin", topic: "Discuss about Neural Networking ...", score: 65 },
-    { name: "Debasish Sahoo", assignedBy: "Admin", topic: "Discuss about Cloud Infrastructure ...", score: 63 },
-    { name: "Priya Ghosh", assignedBy: "Admin", topic: "Discuss about Machine Learning ...", score: 61 },
-  ];
+  // const fallbackTopScores = [
+  //   {
+  //     name: "Debasish Sahoo",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about current impact of AI ...",
+  //     score: 78,
+  //   },
+  //   {
+  //     name: "Sanchari Karmakar",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Datasince",
+  //     score: 75,
+  //   },
+  //   {
+  //     name: "Sayan Mitra",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Neural Networking ...",
+  //     score: 65,
+  //   },
+  //   {
+  //     name: "Debasish Sahoo",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Cloud Infrastructure ...",
+  //     score: 63,
+  //   },
+  //   {
+  //     name: "Priya Ghosh",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Machine Learning ...",
+  //     score: 61,
+  //   },
+  // ];
 
   const topScores = dashboardData?.top_five_test_scores
     ? dashboardData.top_five_test_scores.map((s) => ({
-      name: s.hr_name || "-",
-      topic: s.topic || "-",
-      score: s.score || "-",
-    }))
-    : fallbackTopScores;
+        name: s.hr_name || "-",
+        topic: s.topic || "-",
+        score: s.score || "-",
+      }))
+    : "no data found";
 
   const sessionReport = dashboardData?.session_report || {};
   const lastTwelveScores = dashboardData?.last_twelve_test_scores || [];
-  const sessionType = sessionReport.session_type || { communication: 0, technology: 0 };
+  const sessionType = sessionReport.session_type || {
+    communication: 0,
+    technology: 0,
+  };
   const commCount = Number(sessionType.communication) || 0;
   const techCount = Number(sessionType.technology) || 0;
   const totalType = commCount + techCount || 1;
@@ -145,7 +182,6 @@ const CandidateDashboard = () => {
             <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
             <span>Ongoing session</span>
           </button>
-
         </div>
       </div>
 
@@ -158,12 +194,12 @@ const CandidateDashboard = () => {
             <h2
               className="text-gray-700 mb-2"
               style={{
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
-                fontSize: '15px',
-                lineHeight: '100%',
-                letterSpacing: '0%',
-                verticalAlign: 'middle',
+                fontSize: "15px",
+                lineHeight: "100%",
+                letterSpacing: "0%",
+                verticalAlign: "middle",
               }}
             >
               Session Completion
@@ -191,10 +227,9 @@ const CandidateDashboard = () => {
               <div className="flex flex-col items-center text-slate-900">
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 700,
-                    fontSize: '20px',
-
+                    fontSize: "20px",
                   }}
                 >
                   {dashboardData?.session_completion
@@ -203,46 +238,44 @@ const CandidateDashboard = () => {
                 </div>
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
-                    fontSize: '12px',
-
+                    fontSize: "12px",
                   }}
                 >
                   Completed
                 </div>
-
               </div>
               <div className="flex flex-col items-center">
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 700,
-                    fontSize: '20px',
+                    fontSize: "20px",
 
-                    color: ' #DFB916', // Tailwind's yellow-500
+                    color: " #DFB916",
                   }}
                 >
-                  30%
+                  {dashboardData?.session_completion
+                    ? `${dashboardData.session_completion.pending}%`
+                    : "0%"}
                 </div>
 
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
-                    fontSize: '12px',
+                    fontSize: "12px",
 
-                    color: 'black',
+                    color: "black",
                   }}
                 >
                   Pending
                 </div>
               </div>
-
             </div>
           </div>
 
-          {/* Technologies */}
           <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[30%]">
             <h2 className="font-semibold text-gray-700 mb-6 text-left">
               Mostly Asked Technology
@@ -266,11 +299,10 @@ const CandidateDashboard = () => {
           {/* Session Report */}
           <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-[220px]">
             {/* Header */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-start mb-4">
               <h2 className="font-inter font-normal text-[15px] leading-none tracking-normal align-middle text-gray-700">
                 Session Report
               </h2>
-
 
               <div className="flex flex-col items-start">
                 {/* First line: icon + number */}
@@ -281,7 +313,7 @@ const CandidateDashboard = () => {
                     className="w-5 h-5 object-contain"
                   />
                   <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
-                    {sessionReport.assigned_test ?? '562'}
+                    {sessionReport.assigned_test ?? "562"}
                   </span>
                 </div>
 
@@ -289,10 +321,7 @@ const CandidateDashboard = () => {
                 <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
                   Active participant
                 </span>
-
               </div>
-
-
             </div>
 
             {/* Session Type Label */}
@@ -300,25 +329,53 @@ const CandidateDashboard = () => {
               Session type
             </div>
 
-
-            {/* Bars */}
             <div className="space-y-3">
               {/* Communication Bar */}
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-600 w-24">Communication</span>
-                <div className="bg-slate-200 w-full h-5 rounded-md relative">
-                  <div className="bg-slate-900 h-5 rounded-md" style={{ width: `${commWidth}%` }}></div>
+                {/* Bar with label inside */}
+                <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
+                  <div
+                    className="h-5 rounded-full flex items-center pl-2"
+                    style={{
+                      width: `${commWidth}%`,
+                      backgroundColor: "#0f172a",
+                      whiteSpace: "nowrap",
+                    
+                      textOverflow: "ellipsis",
+                      transition: "width 0.3s ease",
+                    }}
+                  >
+                    <span className="text-xs text-[#8F96A9]">Communication</span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-700 font-medium ml-2">{commCount}</span>
+                {/* Count outside the bar */}
+                <span className="text-xs text-gray-700 font-medium w-8 text-right">
+                  {commCount}
+                </span>
               </div>
 
               {/* Technology Bar */}
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-600 w-24">Technology</span>
-                <div className="bg-slate-200 w-full h-5 rounded-md relative">
-                  <div className="bg-[#DFB916] h-5 rounded-md" style={{ width: `${techWidth}%` }}></div>
+                {/* Bar with label inside */}
+                <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
+                  <div
+                    className="h-5 rounded-full flex items-center pl-2"
+                    style={{
+                      width: `${techWidth}%`,
+                      backgroundColor: "#DFB916",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      transition: "width 0.3s ease",
+                    }}
+                  >
+                    <span className="text-xs text-gray-900">Technology</span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-700 font-medium ml-2">{techCount}</span>
+                {/* Count outside the bar */}
+                <span className="text-xs text-gray-700 font-medium w-8 text-right">
+                  {techCount}
+                </span>
               </div>
             </div>
 
@@ -327,20 +384,20 @@ const CandidateDashboard = () => {
               <div className="flex flex-col items-center">
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 700,
-                    fontStyle: 'normal',
-                    fontSize: '20px',
-
+                    fontStyle: "normal",
+                    fontSize: "20px",
                   }}
-                >{sessionReport.average_session_duration ?? '15 minutes'}</div>
+                >
+                  {sessionReport.average_session_duration ?? "15 minutes"}
+                </div>
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '12px',
-
+                    fontStyle: "normal",
+                    fontSize: "12px",
                   }}
                 >
                   Average Session Duration
@@ -350,21 +407,24 @@ const CandidateDashboard = () => {
               <div className="flex flex-col items-center">
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 700,
-                    fontStyle: 'normal',
-                    fontSize: '20px',
-
+                    fontStyle: "normal",
+                    fontSize: "20px",
                   }}
-                >{sessionReport.test_attempted ?? 1256}</div>
+                >
+                  {sessionReport.test_attempted ?? 1256}
+                </div>
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '12px',
-
-                  }}>Session Created</div>
+                    fontStyle: "normal",
+                    fontSize: "12px",
+                  }}
+                >
+                  Session Created
+                </div>
               </div>
 
               <div className="flex flex-col items-center">
@@ -410,33 +470,30 @@ const CandidateDashboard = () => {
                 </div>
               </div>
 
-
-
               <div className="flex flex-col items-center">
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 700,
-                    fontStyle: 'normal',
-                    fontSize: '20px',
-
+                    fontStyle: "normal",
+                    fontSize: "20px",
                   }}
-                >{Math.round(sessionReport.average_score) ?? 64}</div>
+                >
+                  {Math.round(sessionReport.average_score) ?? 64}
+                </div>
                 <div
                   style={{
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '12px',
-
-                  }}>Average Score</div>
+                    fontStyle: "normal",
+                    fontSize: "12px",
+                  }}
+                >
+                  Average Score
+                </div>
               </div>
             </div>
           </div>
-
-
-
-
 
           {/* Bottom Row (Charts + Skills Card) */}
           <div className="flex flex-col md:flex-row justify-between w-full gap-6">
@@ -469,7 +526,6 @@ const CandidateDashboard = () => {
                 </div>
               </div>
 
-
               {/* Language Usage */}
               <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-40">
                 <h2 className="font-semibold text-gray-700 mb-3">
@@ -498,8 +554,6 @@ const CandidateDashboard = () => {
               </div>
             </div>
 
-
-
             <>
               <style>{`
     .scrollbar-hide::-webkit-scrollbar {
@@ -510,7 +564,10 @@ const CandidateDashboard = () => {
       scrollbar-width: none;     /* Firefox */
     }
   `}</style>
-              <div style={{ height: '400px', overflowY: 'auto' }} className="scrollbar-hide w-full md:w-1/2">
+              <div
+                style={{ height: "400px", overflowY: "auto" }}
+                className="scrollbar-hide w-full md:w-1/2"
+              >
                 <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-xl">
                   <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
                     Top 5 Session Score
@@ -524,13 +581,13 @@ const CandidateDashboard = () => {
                         {/* Left content */}
                         <div className="flex items-start gap-3">
                           <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                            <span className="material-icons text-gray-400 text-[18px]"><img
-                              src={personImage}
-                              alt="Person"
-                              className="w-8 h-8 rounded-full"
-                            />
+                            <span className="material-icons text-gray-400 text-[18px]">
+                              <img
+                                src={personImage}
+                                alt="Person"
+                                className="w-8 h-8 rounded-full"
+                              />
                             </span>
-
                           </div>
 
                           <div className="flex flex-col">
@@ -543,7 +600,6 @@ const CandidateDashboard = () => {
                             <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
                               Topic: {item.topic}
                             </span>
-
                           </div>
                         </div>
                         {/* Right side */}
@@ -551,9 +607,15 @@ const CandidateDashboard = () => {
                           <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
                             {item.score}
                           </span>
-                          <span className="text-[10px] text-gray-400">Score</span>
+                          <span className="text-[10px] text-gray-400">
+                            Score
+                          </span>
                           <KeyboardArrowDown
-                            style={{ fontSize: "16px", color: "#B0B3B8", marginTop: "2px" }}
+                            style={{
+                              fontSize: "16px",
+                              color: "#B0B3B8",
+                              marginTop: "2px",
+                            }}
                           />
                         </div>
                       </div>
@@ -562,12 +624,7 @@ const CandidateDashboard = () => {
                 </div>
               </div>
             </>
-
-
-
-
           </div>
-
         </div>
       </div>
     </div>
