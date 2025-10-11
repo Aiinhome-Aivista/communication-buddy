@@ -111,7 +111,7 @@ function Login() {
 
           {/* Inputs */}
           <div className="input-fields flex flex-col gap-3 w-full mt-4">
-            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50">
+            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]">
               <PersonRoundedIcon sx={{ color: "#BCC7D2" }} />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
@@ -124,7 +124,7 @@ function Login() {
               />
             </div>
 
-            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50">
+            <div className="input-wrapper w-full py-2 px-3 border border-[#BCC7D2] rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]">
               <PasswordRoundedIcon sx={{ color: "#BCC7D2" }} />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"

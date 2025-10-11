@@ -4,6 +4,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import SuccessModal from "./SuccessModal";
 
 const testData = [
   { title: "Python", date: "17/10/2025", status: "Active" },
@@ -21,7 +22,9 @@ export default function ScheduleSession() {
   const [testType, setTestType] = useState("Test Type");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [sessionDuration, setSessionDuration] = useState(15);
+  const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+  const [successOpen, setSuccessOpen] = useState(false);
+  // const [candidateName, setCandidateName] = useState("");
 
 
   const filteredData = testData.filter((test) =>
@@ -173,6 +176,18 @@ export default function ScheduleSession() {
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
         setSessionDuration={setSessionDuration}
+        onSave={({ date, sessionTopic, duration }) => {
+          // Here you would normally call an API to save
+          // For now, close the form and show success
+          setModalOpen(false);
+          // setCandidateName("Aiinhome");
+          setSuccessOpen(true);
+        }}
+      />
+      <SuccessModal
+        open={successOpen}
+        onClose={() => setSuccessOpen(false)}
+      // candidateName={candidateName}
       />
     </div>
   );

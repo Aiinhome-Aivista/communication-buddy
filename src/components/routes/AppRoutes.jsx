@@ -14,6 +14,7 @@ const Default = lazy(() => import("../pages/dashboard/Default"));
 const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
 const PracticeTest = lazy(() => import("../pages/practiceTest/PracticeTest"));
+const PracticeTestChat = lazy(() => import("../pages/practiceTest/PracticeTestChat"));
 const TestResult = lazy(() => import("../pages/practiceTest/TestResult"));
 const RequestNotification = lazy(() =>
   import("../pages/dashboard/RequestNotification")
@@ -123,6 +124,14 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={<Loader />}>
               <PracticeTest />
+            </Suspense>
+          ),
+        },
+        {
+          path: "chat", // This will match /test/childpath
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PracticeTestChat />
             </Suspense>
           ),
         },

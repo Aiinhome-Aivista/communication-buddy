@@ -11,6 +11,7 @@ import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const fullName = sessionStorage.getItem("userName") || "";
   const menuItems = [
     {
       name: "Dashboard",
@@ -61,10 +62,10 @@ export default function Sidebar() {
           <div>
             <AccountCircleRoundedIcon sx={{ color: '#BCC7D2', fontSize: '2rem', fontWeight: 'medium' }} />
           </div>
-          {!collapsed && <p className="font-medium text-gray-800">John Doe</p>}
+          {!collapsed && <p className="font-medium text-[#2C2E42]">{fullName}</p>}
         </div>
         <button
-          className="text-gray-400 hover:text-gray-800 transition w-[calc(17%)]"
+          className="text-gray-400 hover:text-gray-800 transition w-[calc(17%)] flex items-center justify-center text-center cursor-pointer"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
@@ -84,23 +85,30 @@ export default function Sidebar() {
               to={item.path}
               end={item.end}
               className={({ isActive }) =>
-                `flex items-center gap-1 w-full rounded-xl py-2 my-1 text-sm font-medium transition-colors ${isActive
-                  ? "bg-[#182938] text-[#FEFEFE]"
-                  : "text-[#182938] hover:bg-[#182938] hover:text-[#FEFEFE]"
+                `group flex items-center gap-1 w-full rounded-lg py-2 my-1 text-sm font-medium transition-colors ${isActive
+                  ? "bg-[#182938] text-[#FEFEFE] active-link"
+                  : "text-[#182938] hover:bg-[#182938]/15 hover:text-[#182938]"
                 } ${collapsed ? "justify-center px-0" : "pl-2"}`
               }>
               {({ isActive }) => (
                 <>
-                  {item.icon(isActive ? '#FEFEFE' : '#182938')}
+                  {item.icon(isActive ? '#FEFEFE' : 'var(--icon-color)')}
                   {!collapsed && item.name}
+                  <style>
+                    {`
+                      .group:not(.active-link):hover svg {
+                        color: #3B4A5A;
+                      }
+                    `}
+                  </style>
                 </>
               )}
             </NavLink >
           ))}
         </nav>
       </div>
-      <div className={`flex items-center border-t border-[#BCC7D2] px-3 h-[calc(10%)] ${collapsed ? "justify-center" : "justify-between"}`}>
-        <div className="flex items-center space-x-1 pb-3">
+      <div className={`flex items-center border-t border-[#BCC7D2] px-3 h-[calc(10.5%)] ${collapsed ? "justify-center" : "justify-between"}`}>
+        <div className="flex items-center space-x-1">
           <InfoRoundedIcon sx={{ color: "#7E8489" }} />
           {!collapsed && (
             <span className="font-medium text-[#7E8489] text-sm">Help and FAQ</span>
