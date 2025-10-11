@@ -9,7 +9,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
-import Loader from "../../ui/Loader";
 
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
@@ -113,7 +112,7 @@ export default function ManageUser() {
   const emptyMessageTemplate = (
     <div className="flex flex-col items-center justify-center p-5 text-center">
       {loading ? (
-        <Loader show text="Loading Users..." />
+        <p>Loading Users...</p>
       ) : (
         <>
           <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
@@ -128,32 +127,30 @@ export default function ManageUser() {
 
   return (
     <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
-      <Loader show={loading && !userData.length} text="Loading Users..." />
       <div className="flex-grow flex flex-col">
         <div className="pt-4 px-4">
           <h1 className="text-2xl font-bold text-[#2C2E42]">Manage Users</h1>
-
           {/* Tabs + Search + Dropdown */}
-          <div className="flex flex-row items-center mt-6 space-x-4 gap-3">
+          <div className="flex flex-row items-center justify-end mt-6 gap-4">
             {/* Search */}
-            <div className="relative flex-1">
+            <div className="relative w-80">
               <input
                 type="text"
                 placeholder="Search content"
-                className="w-full h-10 px-6 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2] pr-12"
+                className="w-full h-10 pl-10 pr-4 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2]"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9]"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
                 sx={{ fontSize: "1.25rem" }}
               />
             </div>
 
             {/* Dropdown */}
-            <div className="relative ml-auto" ref={dropdownRef}>
+            <div className="relative w-80" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
+                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10"
                 style={{ color: "#8F96A9" }}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >

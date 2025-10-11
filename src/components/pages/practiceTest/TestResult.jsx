@@ -10,8 +10,6 @@ import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
 
-const tabOptions = ["Upcoming", "Ongoing", "Expired"];
-
 export default function TestResult() {
   const [topics, setTopics] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -24,7 +22,6 @@ export default function TestResult() {
   const [loading, setLoading] = useState(false); // Full page loader
   const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
   const [rotation, setRotation] = useState(false);
-  const [activeTab, setActiveTab] = useState("Upcoming");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("All");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -56,6 +53,11 @@ export default function TestResult() {
             session_time: getTime(session.session_time),
           }));
           setSessionData(processedData);
+
+          // Extract unique statuses for the dropdown filter
+          const statuses = ["All", ...new Set(processedData.map(session => session.status).filter(Boolean))];
+          setTestTypeOptions(statuses);
+          if (statuses.length > 0) setTestType(statuses[0]);
         }
       } catch (error) {
         console.error("Error fetching test results:", error);
@@ -73,7 +75,7 @@ export default function TestResult() {
       setIsAnimating(false);
     }, 300); // Duration of the animation
     return () => clearTimeout(timer);
-  }, [activeTab, search, testType]);
+  }, [search, testType]);
 
   // Effect to handle clicks outside the dropdown
   useEffect(() => {
@@ -92,27 +94,16 @@ export default function TestResult() {
 
 
   const filteredData = sessionData
-    .filter((session) => {
-      // Tab filtering logic
-      const status = session.status?.toLowerCase();
-      const tab = activeTab.toLowerCase();
-
-      if (tab === "upcoming") {
-        // Assuming 'assigned' status means it's an upcoming test
-        return status === "assigned" || status === "upcoming";
-      }
-      return status === tab;
-    })
     .filter((session) =>
       // Search filtering logic
-      [session.username, session.topic, session.topic_category].some((value) =>
+      [session.username, session.topic, session.status].some((value) =>
         value?.toString().toLowerCase().includes(search.toLowerCase())
       )
     )
     .filter((session) =>
       // Test Type filtering logic
       testType === "All" ||
-      session.topic_category?.toLowerCase() === testType.toLowerCase()
+      session.status?.toLowerCase() === testType.toLowerCase()
 
     );
 
@@ -159,49 +150,35 @@ export default function TestResult() {
           </div>
 
           {/* Tabs + Search + Dropdown */}
-          <div className="flex flex-row items-center mt-6 space-x-4 gap-3">
-            <div className="flex border border-[#BCC7D2] rounded-xl overflow-hidden h-10">
-              {tabOptions.map((tab) => (
-                <button
-                  key={tab}
-                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${activeTab === tab
-                    ? "bg-[#FEFEFE] text-[#2C2E42]"
-                    : "bg-[#ECEFF2] text-[#8F96A9]"
-                    }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            <div className="relative flex-1">
+          <div className="flex flex-row items-center justify-end mt-6 gap-4">
+            <div className="relative w-80">
               <input
                 type="text"
                 placeholder="Search content"
-                className="w-full h-10 px-6 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2] pr-12"
+                className="w-full h-10 pl-10 pr-4 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2]"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
                 sx={{ fontSize: "1.25rem" }}
               />
             </div>
             {/* Test type */}
-            <div className="relative ml-auto" ref={dropdownRef}>
+            <div className="relative w-80" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
+                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10"
                 style={{ color: "#8F96A9" }}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               >
 
                 {testType}
                 {dropdownOpen ? (
                   <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                    onClick={() => setDropdownOpen(false)} />
+                  />
                 ) : (
                   <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                    onClick={() => setDropdownOpen(!dropdownOpen)} />
+                  />
                 )}
 
               </button>
@@ -233,7 +210,7 @@ export default function TestResult() {
 
           {/*DataTable */}
           <div className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-            <div key={`${activeTab}-${search}-${testType}`}>
+            <div key={`${search}-${testType}`}>
               <DataTable
                 value={filteredData}
                 loading={loading || loadingTable}
@@ -279,12 +256,6 @@ export default function TestResult() {
                   header="Qualitative Score"
                   sortable
                   body={(rowData) => `${rowData.qualitative_score || 'N/A'}`}
-                ></Column>
-                <Column
-                  field="status"
-                  header="Status"
-                  body={statusBodyTemplate}
-                  className="text-center"
                 ></Column>
               </DataTable>
             </div>
