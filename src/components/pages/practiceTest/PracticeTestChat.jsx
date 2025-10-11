@@ -74,6 +74,19 @@ export default function PracticeTest() {
   } = useCustomSpeechRecognition({ language: "en-IN" }) || {};
   const speechTimerRef = useRef(null);
 
+  // Persist chat meta for logout-based review save
+  useEffect(() => {
+    if (hrId) sessionStorage.setItem("hr_id", String(hrId));
+    if (topicName) sessionStorage.setItem("topic", String(topicName));
+  }, [hrId, topicName]);
+
+  // Keep fullConversation mirrored in sessionStorage
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fullConversation", JSON.stringify(fullConversation || []));
+    } catch { }
+  }, [fullConversation]);
+
   // Enhanced speech synthesis function with female voice (from textReader)
   const sanitizeTextForSpeech = (text) => {
     if (!text) return "";
@@ -112,13 +125,14 @@ export default function PracticeTest() {
 
       window.speechSynthesis.cancel();
 
-      // Enhanced voice loading for better cross-browser support
+      // ✅ Ensure voices are loaded before proceeding (Browser compatibility)
       const waitForVoices = () => {
         return new Promise((voiceResolve) => {
           const voices = window.speechSynthesis.getVoices();
           if (voices.length > 0) {
             voiceResolve(voices);
           } else {
+            // Different browsers handle voice loading differently
             let attempts = 0;
             const maxAttempts = 10;
 
@@ -130,12 +144,14 @@ export default function PracticeTest() {
                 attempts++;
                 setTimeout(checkVoices, 200);
               } else {
+                // Final attempt with voiceschanged event
                 const handleVoicesChanged = () => {
                   window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
                   voiceResolve(window.speechSynthesis.getVoices());
                 };
                 window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
 
+                // Fallback timeout for stubborn browsers
                 setTimeout(() => {
                   window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
                   voiceResolve(window.speechSynthesis.getVoices());
@@ -152,96 +168,279 @@ export default function PracticeTest() {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
 
-        // Enhanced voice settings for natural Indian speech
-        utterance.rate = 0.80;
-        utterance.pitch = 0.9;
-        utterance.volume = 0.8;
+        // ✅ Enhanced voice settings for natural Indian speech
+        utterance.rate = 0.80;   // Optimal speed for Indian accent clarity
+        utterance.pitch = 0.9;   // Slightly lower pitch for warmer, more natural tone
+        utterance.volume = 0.8;  // Clear but not overwhelming volume
 
-        // Browser-specific adjustments
+        // Browser-specific adjustments for Indian voices
         const isChrome = /Chrome/.test(navigator.userAgent);
         const isFirefox = /Firefox/.test(navigator.userAgent);
         const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         const isEdge = /Edg/.test(navigator.userAgent);
 
         if (isFirefox) {
-          utterance.rate = 0.8;
-          utterance.pitch = 0.85;
+          utterance.rate = 0.8; // Firefox tends to be faster, slow down more
+          utterance.pitch = 0.85; // Lower pitch for Firefox
         } else if (isSafari) {
-          utterance.rate = 0.9;
-          utterance.pitch = 0.95;
+          utterance.rate = 0.9; // Safari handles speech well
+          utterance.pitch = 0.95; // Keep slightly higher pitch for Safari
         } else if (isEdge) {
-          utterance.rate = 0.85;
+          utterance.rate = 0.82; // Edge specific adjustments
           utterance.pitch = 0.88;
         }
 
-        // Enhanced voice selection for female Indian voices
+        // ✅ Enhanced Indian voice selection with natural tone priority
         let selectedVoice = null;
-        if (voices.length > 0) {
-          const femaleVoices = voices.filter(voice => {
-            const voiceName = voice.name.toLowerCase();
-            const isIndian = voice.lang.includes('en-IN') || voice.lang.includes('hi');
-            const isFemale = voiceName.includes('female') ||
-              voiceName.includes('woman') ||
-              voiceName.includes('lady') ||
-              voiceName.includes('priya') ||
-              voiceName.includes('ravi') ||
-              voiceName.includes('veena') ||
-              voiceName.includes('kalpana');
-            return isIndian && isFemale;
-          });
 
-          if (femaleVoices.length > 0) {
-            selectedVoice = femaleVoices[0];
-          } else {
-            // Fallback to any Indian voice
-            const indianVoices = voices.filter(voice =>
-              voice.lang.includes('en-IN') || voice.lang.includes('hi')
-            );
-            if (indianVoices.length > 0) {
-              selectedVoice = indianVoices[0];
-            } else {
-              // Final fallback to any English voice
-              const englishVoices = voices.filter(voice =>
-                voice.lang.startsWith('en')
-              );
-              if (englishVoices.length > 0) {
-                selectedVoice = englishVoices[0];
-              }
-            }
+        // ✅ Improved gender detection for Indian voices
+        const isLikelyMaleVoice = (voice) => {
+          const name = voice.name.toLowerCase();
+
+          // Specific Indian male voice names
+          const indianMaleNames = [
+            'ravi', 'hemant', 'arjun', 'kiran', 'raj', 'suresh', 'mohan',
+            'kumar', 'singh', 'sharma', 'gupta', 'male', 'man'
+          ];
+
+          // Specific Indian female voice names  
+          const indianFemaleNames = [
+            'heera', 'priya', 'sunita', 'kavya', 'ananya', 'shreya', 'pooja',
+            'meera', 'sita', 'female', 'woman', 'lady'
+          ];
+
+          // Check for explicit male indicators
+          const hasMaleIndicator = indianMaleNames.some(keyword => name.includes(keyword));
+          const hasFemaleIndicator = indianFemaleNames.some(keyword => name.includes(keyword));
+
+          if (hasMaleIndicator) return true;
+          if (hasFemaleIndicator) return false;
+
+          // For voices without clear gender indicators, use additional heuristics
+          // Microsoft voices often have gender in description
+          if (name.includes('microsoft')) {
+            // Default assumption for ambiguous Microsoft voices
+            return !name.includes('aria') && !name.includes('jenny') && !name.includes('emma');
           }
 
-          if (selectedVoice) {
-            utterance.voice = selectedVoice;
-            console.log(`🗣️ Selected voice: ${selectedVoice.name} (${selectedVoice.lang})`);
+          // Default to male for ambiguous cases (many system defaults are male)
+          return true;
+        };
+
+        console.log("🎤 Selecting natural Indian voice for:", { lang, gender: voiceGender });
+        console.log("🎤 Available voices:", voices.length, voices.map(v => ({ name: v.name, lang: v.lang })));
+
+        if (lang === "en-IN") {
+          // ✅ Priority order for natural Indian English voices
+          const naturalIndianVoices = voices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              v.lang === "en-IN" ||
+              name.includes("india") ||
+              name.includes("ravi") ||
+              name.includes("heera") ||
+              name.includes("hemant") ||
+              name.includes("priya") ||
+              (name.includes("microsoft") && name.includes("desktop"))
+            );
+          });
+
+          const premiumVoices = voices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              name.includes("neural") ||
+              name.includes("premium") ||
+              name.includes("natural") ||
+              (name.includes("microsoft") && name.includes("neural"))
+            );
+          });
+
+          const englishVoices = voices.filter(v => v.lang.startsWith("en"));
+
+          console.log("🇮🇳 Natural Indian voices found:", naturalIndianVoices.length, naturalIndianVoices.map(v => v.name));
+          console.log("⭐ Premium voices found:", premiumVoices.length, premiumVoices.map(v => v.name));
+
+          if (voiceGender === "male") {
+            selectedVoice =
+              // Top priority: Natural Indian male voices
+              naturalIndianVoices.find(v => isLikelyMaleVoice(v)) ||
+              // Specific high-quality Indian male voices
+              voices.find(v => v.name.toLowerCase().includes("ravi") && v.name.toLowerCase().includes("desktop")) ||
+              voices.find(v => v.name.toLowerCase().includes("hemant")) ||
+              // Premium male voices with Indian accent capability
+              premiumVoices.find(v => v.lang === "en-IN" && isLikelyMaleVoice(v)) ||
+              premiumVoices.find(v => v.lang.startsWith("en") && isLikelyMaleVoice(v)) ||
+              // Any Indian voice that sounds male
+              naturalIndianVoices.find(v => !v.name.toLowerCase().includes("female")) ||
+              // General English male voices as fallback
+              englishVoices.find(v => isLikelyMaleVoice(v)) ||
+              englishVoices.find(v => !v.name.toLowerCase().includes("female")) ||
+              // Last resort
+              voices[0];
+          } else {
+            selectedVoice =
+              // Top priority: Natural Indian female voices
+              naturalIndianVoices.find(v => !isLikelyMaleVoice(v)) ||
+              // Specific high-quality Indian female voices
+              voices.find(v => v.name.toLowerCase().includes("heera") && v.name.toLowerCase().includes("desktop")) ||
+              voices.find(v => v.name.toLowerCase().includes("priya")) ||
+              voices.find(v => v.name.toLowerCase().includes("sunita")) ||
+              // Premium female voices with clear, natural tone
+              premiumVoices.find(v => v.lang === "en-IN" && !isLikelyMaleVoice(v)) ||
+              voices.find(v => v.name.toLowerCase().includes("aria") && v.lang.startsWith("en")) ||
+              voices.find(v => v.name.toLowerCase().includes("jenny") && v.lang.startsWith("en")) ||
+              premiumVoices.find(v => v.lang.startsWith("en") && !isLikelyMaleVoice(v)) ||
+              // Any female-sounding Indian voice
+              naturalIndianVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              // General English female voices as fallback
+              englishVoices.find(v => !isLikelyMaleVoice(v)) ||
+              englishVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              // Fallback to any available voice
+              voices[0];
+          }
+        } else if (lang === "hi-IN") {
+          // ✅ Enhanced Hindi voice selection for natural Indian tone
+          const hindiVoices = voices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              v.lang.startsWith("hi") ||
+              name.includes("hindi") ||
+              name.includes("bharat") ||
+              (name.includes("microsoft") && v.lang === "hi-IN")
+            );
+          });
+
+          const premiumHindiVoices = hindiVoices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              name.includes("neural") ||
+              name.includes("premium") ||
+              name.includes("natural") ||
+              name.includes("desktop")
+            );
+          });
+
+          console.log("🇮🇳 Hindi voices found:", hindiVoices.length, hindiVoices.map(v => v.name));
+          console.log("⭐ Premium Hindi voices found:", premiumHindiVoices.length, premiumHindiVoices.map(v => v.name));
+
+          if (voiceGender === "male") {
+            selectedVoice =
+              // Premium Hindi male voices
+              premiumHindiVoices.find(v => isLikelyMaleVoice(v)) ||
+              // Standard Hindi male voices
+              hindiVoices.find(v => isLikelyMaleVoice(v)) ||
+              hindiVoices.find(v => !v.name.toLowerCase().includes("female")) ||
+              // Fallback to any Hindi voice
+              hindiVoices[0] ||
+              voices[0];
+          } else {
+            selectedVoice =
+              // Premium Hindi female voices
+              premiumHindiVoices.find(v => !isLikelyMaleVoice(v)) ||
+              // Standard Hindi female voices
+              hindiVoices.find(v => !isLikelyMaleVoice(v)) ||
+              hindiVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              // Fallback to any Hindi voice
+              hindiVoices[0] ||
+              voices[0];
+          }
+        } else if (lang === "bn-IN" || lang === "bn-BD") {
+          // ✅ Enhanced Bengali voice support with natural tone priority
+          const bengaliVoices = voices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              v.lang.startsWith("bn") ||
+              name.includes("bengali") ||
+              name.includes("bangla") ||
+              name.includes("bangladesh") ||
+              (name.includes("microsoft") && v.lang.startsWith("bn"))
+            );
+          });
+
+          const premiumBengaliVoices = bengaliVoices.filter(v => {
+            const name = v.name.toLowerCase();
+            return (
+              name.includes("neural") ||
+              name.includes("premium") ||
+              name.includes("natural") ||
+              name.includes("desktop")
+            );
+          });
+
+          console.log("🇧🇩 Bengali voices found:", bengaliVoices.length, bengaliVoices.map(v => v.name));
+          console.log("⭐ Premium Bengali voices found:", premiumBengaliVoices.length, premiumBengaliVoices.map(v => v.name));
+
+          if (voiceGender === "male") {
+            selectedVoice =
+              // Premium Bengali male voices
+              premiumBengaliVoices.find(v => isLikelyMaleVoice(v)) ||
+              // Standard Bengali male voices
+              bengaliVoices.find(v => isLikelyMaleVoice(v)) ||
+              bengaliVoices.find(v => !v.name.toLowerCase().includes("female")) ||
+              // Fallback to any Bengali voice
+              bengaliVoices[0] ||
+              // Fallback to Indian English male voices if no Bengali available
+              voices.find(v => v.lang === "en-IN" && isLikelyMaleVoice(v)) ||
+              voices[0];
+          } else {
+            selectedVoice =
+              // Premium Bengali female voices
+              premiumBengaliVoices.find(v => !isLikelyMaleVoice(v)) ||
+              // Standard Bengali female voices
+              bengaliVoices.find(v => !isLikelyMaleVoice(v)) ||
+              bengaliVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              // Fallback to any Bengali voice
+              bengaliVoices[0] ||
+              // Fallback to Indian English female voices if no Bengali available
+              voices.find(v => v.lang === "en-IN" && !isLikelyMaleVoice(v)) ||
+              voices[0];
           }
         }
 
-        utterance.onstart = () => {
-          setIsSpeaking(true);
-          console.log("🗣️ Speech started");
-        };
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          console.log("🎤 ✅ Using Voice:", {
+            name: selectedVoice.name,
+            lang: selectedVoice.lang,
+            requestedGender: voiceGender,
+            actuallyMale: isLikelyMaleVoice(selectedVoice),
+            genderMatch: (voiceGender === "male") === isLikelyMaleVoice(selectedVoice)
+          });
+        } else {
+          console.warn("⚠️ No suitable voice found for:", { lang, voiceGender, availableVoices: voices.length });
+          console.warn("⚠️ Using system default voice");
+        }
+
+        setIsSpeaking(true);
 
         utterance.onend = () => {
           setIsSpeaking(false);
-          console.log("🗣️ Speech ended");
           resolve();
         };
 
-        utterance.onerror = (event) => {
+        utterance.onerror = (error) => {
+          console.error("Speech synthesis error:", error);
           setIsSpeaking(false);
-          console.error("🗣️ Speech error:", event.error);
           resolve();
         };
 
-        utterance.onpause = () => {
-          setIsSpeaking(false);
-        };
+        // ✅ Enhanced speech synthesis with voice verification
+        setTimeout(() => {
+          // Verify the voice is still selected correctly before speaking
+          if (selectedVoice && utterance.voice !== selectedVoice) {
+            console.warn("⚠️ Voice changed during setup, reapplying:", selectedVoice.name);
+            utterance.voice = selectedVoice;
+          }
 
-        utterance.onresume = () => {
-          setIsSpeaking(true);
-        };
-
-        window.speechSynthesis.speak(utterance);
+          try {
+            window.speechSynthesis.speak(utterance);
+            console.log("🎤 Speech started with voice:", utterance.voice?.name || "default");
+          } catch (error) {
+            console.error("❌ Error starting speech synthesis:", error);
+            setIsSpeaking(false);
+            resolve();
+          }
+        }, 100);
       });
     });
   };
@@ -279,6 +478,19 @@ export default function PracticeTest() {
       console.log("Calling get_session_status API...");
       const data = await checkSessionStatus(userId, hrId, topicName);
       console.log("Session status response:", data);
+
+      // Check if the response contains an error
+      if (data.error) {
+        console.error("API returned error:", data.error);
+        // Handle different error scenarios
+        if (data.error.includes("No session found")) {
+          console.warn("No session found - this might be expected for new sessions");
+          // Set user status to handle this case
+          setUserStatus("no_session");
+          return;
+        }
+      }
+
       setSessionStatus(data);
 
       // Check if session is upcoming, ongoing, or expired
@@ -300,6 +512,10 @@ export default function PracticeTest() {
       }
     } catch (error) {
       console.error("Error checking session status:", error);
+      // Fallback behavior - allow user to proceed
+      console.log("Fallback: Setting status to ongoing to allow user to start session");
+      setUserStatus("ongoing");
+      await startSessionInitial();
     }
   };
 
@@ -464,8 +680,46 @@ export default function PracticeTest() {
     if (window.speechSynthesis.getVoices().length === 0) {
       window.speechSynthesis.addEventListener('voiceschanged', () => {
         console.log('🎤 Voices loaded:', window.speechSynthesis.getVoices().length);
+        // Log all available voices for debugging
+        const voices = window.speechSynthesis.getVoices();
+        console.log("🔍 All available voices:", voices.map(v => `${v.name} (${v.lang}) - ${v.gender || 'unknown gender'}`));
       });
+    } else {
+      // Voices already loaded
+      const voices = window.speechSynthesis.getVoices();
+      console.log("🔍 All available voices:", voices.map(v => `${v.name} (${v.lang}) - ${v.gender || 'unknown gender'}`));
     }
+
+    // Add debugging function for voice testing
+    window.debugVoices = {
+      listAll: () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.table(voices.map(v => ({
+          name: v.name,
+          lang: v.lang,
+          gender: v.gender || 'unknown',
+          default: v.default
+        })));
+        return voices;
+      },
+      testFemaleVoice: () => {
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoices = voices.filter(voice => {
+          const name = voice.name.toLowerCase();
+          return name.includes('female') || name.includes('woman') || name.includes('zira') || name.includes('hazel');
+        });
+        console.log("Female voices found:", femaleVoices);
+        if (femaleVoices.length > 0) {
+          const utterance = new SpeechSynthesisUtterance("This is a test of the female voice");
+          utterance.voice = femaleVoices[0];
+          window.speechSynthesis.speak(utterance);
+        }
+      },
+      getCurrentVoice: () => {
+        console.log("Current voice gender preference:", voiceGender);
+      }
+    };
+    console.log("🛠️ Debug functions available: window.debugVoices");
 
     return () => {
       if (window.speechSynthesis.speaking) {
@@ -563,7 +817,7 @@ export default function PracticeTest() {
         stopRecording?.();
         // The transcript will be processed by the previous useEffect
       }
-    }, 5000);
+    }, 2000);
 
     return () => {
       if (speechTimerRef.current) {
@@ -649,6 +903,31 @@ export default function PracticeTest() {
                 onClick={() => navigate("/test")}
               >
                 Back to Tests
+              </button>
+            </div>
+          </div>
+        ) : userStatus === "no_session" ? (
+          // No session found - allow user to start manually
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-[#2C2E42] mb-4">Ready to Start</h2>
+              <p className="text-lg text-[#7E8489] mb-6">Click below to begin your session</p>
+              <div className="mb-4">
+                <p className="text-sm text-[#7E8489]">
+                  Topic: {topicName || "Loading..."}
+                </p>
+                <p className="text-sm text-[#7E8489]">
+                  HR: {hrName || "Loading..."}
+                </p>
+              </div>
+              <button
+                className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
+                onClick={async () => {
+                  setUserStatus("ongoing");
+                  await startSessionInitial();
+                }}
+              >
+                Start Session
               </button>
             </div>
           </div>

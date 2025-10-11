@@ -1,6 +1,13 @@
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Helper function to ensure proper URL construction
+const buildURL = (endpoint) => {
+  const baseUrl = BASE_URL?.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+  const cleanEndpoint = endpoint?.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${baseUrl}${cleanEndpoint}`;
+};
+
 export const getURL = {
   GetAllUser: `${BASE_URL}/get-all-users`,
 
@@ -23,10 +30,10 @@ export const postURL = {
   deleteUserTopic: `${BASE_URL}/delete-user-topic`,
   // candidate dashboard endpoint
   dashboard: `${BASE_URL}/candidate_dashboard`,
-  // Chat-related endpoints
-  getSessionStatus: `${BASE_URL}get_session_status`,
-  startSession: `${BASE_URL}start_session`,
-  chat: `${BASE_URL}chat`,
+  // Chat-related endpoints - using buildURL helper to prevent double slashes
+  getSessionStatus: buildURL('get_session_status'),
+  startSession: buildURL('start_session'),
+  chat: buildURL('chat'),
 };
 
 // Convenience helper: fetch HR dashboard with { hr_id }
@@ -40,10 +47,18 @@ export const checkSessionStatus = async (userId, hrId, topic) => {
   const nowDate = new Date();
   const nowFormatted = `${nowDate.getFullYear()}-${pad(nowDate.getMonth() + 1)}-${pad(nowDate.getDate())} ${pad(nowDate.getHours())}:${pad(nowDate.getMinutes())}:${pad(nowDate.getSeconds())}`;
 
-  return fatchedPostRequest(postURL.getSessionStatus, {
+  console.log("🔍 Calling checkSessionStatus with:", {
     user_id: userId,
     hr_id: hrId,
     topic: topic,
+    now: nowFormatted
+  });
+  console.log("🌐 API URL:", postURL.getSessionStatus);
+
+  return fatchedPostRequest(postURL.getSessionStatus, {
+    user_id: userId,
+    hr_id: hrId,
+    topic: topic,  // Backend expects 'topic', not 'topic_name'
     now: nowFormatted
   });
 };
