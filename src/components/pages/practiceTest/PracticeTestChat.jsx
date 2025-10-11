@@ -404,13 +404,13 @@ export default function PracticeTest() {
 
           if (voiceGender === "male") {
             selectedVoice = premiumSpanish.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
-                            spanishVoices.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
-                            spanishVoices[0] || voices[0];
+              spanishVoices.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+              spanishVoices[0] || voices[0];
           } else {
             selectedVoice = premiumSpanish.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
-                            spanishVoices.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
-                            spanishVoices.find(v => v.name.toLowerCase().includes("female")) ||
-                            spanishVoices[0] || voices[0];
+              spanishVoices.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n))) ||
+              spanishVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              spanishVoices[0] || voices[0];
           }
         } else if (lang === "fr-FR") {
           // ✅ French voice selection (prefer female)
@@ -420,13 +420,13 @@ export default function PracticeTest() {
 
           if (voiceGender === "male") {
             selectedVoice = premiumFrench.find(v => !femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
-                            frenchVoices.find(v => !femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
-                            frenchVoices[0] || voices[0];
+              frenchVoices.find(v => !femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+              frenchVoices[0] || voices[0];
           } else {
             selectedVoice = premiumFrench.find(v => femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
-                            frenchVoices.find(v => femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
-                            frenchVoices.find(v => v.name.toLowerCase().includes("female")) ||
-                            frenchVoices[0] || voices[0];
+              frenchVoices.find(v => femaleNamesFr.some(n => v.name.toLowerCase().includes(n))) ||
+              frenchVoices.find(v => v.name.toLowerCase().includes("female")) ||
+              frenchVoices[0] || voices[0];
           }
         }
 
