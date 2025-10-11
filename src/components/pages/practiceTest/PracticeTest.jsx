@@ -21,6 +21,7 @@ export default function PracticeTest() {
   const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
 
   const navigate = useNavigate();
   // setUserData is not defined in this component, so I'm assuming it comes from a context.
@@ -31,7 +32,7 @@ export default function PracticeTest() {
   useEffect(() => {
     const fetchAllTopics = async () => {
       try {
-        const payload = { user_id: 18 }; // Specific payload as requested
+        const payload = { user_id: userId }; // Specific payload as requested
         console.log("Fetching all topics with payload:", payload);
         const response = await fatchedPostRequest(
           postURL.getAllTopics,
@@ -160,11 +161,10 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${
-                    activeTab === tab
+                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${activeTab === tab
                       ? "bg-[#FEFEFE] text-[#2C2E42]"
                       : "bg-[#ECEFF2] text-[#8F96A9]"
-                  }`}
+                    }`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -213,11 +213,10 @@ export default function PracticeTest() {
                         setTestType(option);
                         setDropdownOpen(false);
                       }}
-                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${
-                        testType === option
+                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
                           ? "bg-[#D9D9D9] font-bold" // Selected: has background, no hover effect
                           : "hover:bg-[#D9D9D9]/50" // Not selected: has hover effect
-                      }`}
+                        }`}
                     >
                       {option}
                       {testType === option && (
@@ -234,11 +233,10 @@ export default function PracticeTest() {
 
           {/*DataTable */}
           <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${
-              isAnimating
+            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating
                 ? "opacity-0 translate-y-4"
                 : "opacity-100 translate-y-0"
-            }`}
+              }`}
           >
             <div key={`${activeTab}-${search}-${testType}`}>
               <DataTable
@@ -251,7 +249,17 @@ export default function PracticeTest() {
                 emptyMessage={emptyMessageTemplate}
                 onRowClick={(e) => {
                   if (e.data.topic_attend_status?.toLowerCase() === "ongoing") {
-                    navigate("/test/chat");
+                    navigate("/test/chat", {
+                      state: {
+                        topic: e.data.topic_name,
+                        topic_name: e.data.topic_name,
+                        hr_id: e.data.hr_id,
+                        hr_name: e.data.hr_name,
+                        assigned_by: e.data.hr_name,
+                        user_id: e.data.user_id,
+                        status: e.data.topic_attend_status
+                      }
+                    });
                   }
                 }}
               >
@@ -274,13 +282,17 @@ export default function PracticeTest() {
                   )}
                 ></Column>
                 <Column
-                  field="total_time"
-                  header="Session Duration"
-                  body={(rowData) => `${rowData.total_time} mins`}
+                  field="session_date"
+                  header="Session Date"
+                  body={(rowData) => {
+                    if (!rowData.session_time) return "";
+                    const date = new Date(rowData.session_time);
+                    return date.toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
+                  }}
                 ></Column>
                 <Column
                   field="session_time"
-                  header="Session Date"
+                  header="Session Time"
                   body={(rowData) => {
                     if (!rowData.session_time) return "";
                     const date = new Date(rowData.session_time);
@@ -289,6 +301,11 @@ export default function PracticeTest() {
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                   }}
+                ></Column>
+                <Column
+                  field="total_time"
+                  header="Session Duration"
+                  body={(rowData) => `${rowData.total_time} mins`}
                 ></Column>
                 <Column
                   field="topic_attend_status"

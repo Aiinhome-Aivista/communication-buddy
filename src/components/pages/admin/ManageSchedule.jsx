@@ -12,6 +12,7 @@ import { FaRotate } from 'react-icons/fa6';
 import Loader from '../../ui/Loader';
 
 function ManageSchedule() {
+    
     const headers = ["Candidate Name", "Email", "Session Date", "Session Time", "Session Topic", "Session Category", "Status",];
     const keys = ["candidate_name", "email", "session_date", "session_time", "topic", "topic_category", "status",];
     const [topics, setTopics] = useState([]);
