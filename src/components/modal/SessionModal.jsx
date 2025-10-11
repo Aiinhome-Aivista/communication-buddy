@@ -1,7 +1,8 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import SuccessModal from "./SessionModal";
+import { fatchedPostRequest, postURL } from "../../services/ApiService";
 
 const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
   <div className="relative w-full" onClick={onClick} style={{ cursor: "pointer" }}>
@@ -32,15 +33,25 @@ export default function SessionModal({
   sessionDuration,
   setSessionDuration,
   onSave,
+  userData = [],
+  topics = []
 }) {
   if (!open) return null;
+
+  useEffect(() => {
+    console.log("Topics data in SessionModal:", topics);
+  }, [topics]);
 
   const [date, setDate] = useState(null);
   const [sessionTopic, setSessionTopic] = useState("");
   const [candidateName, setCandidateName] = useState("");
   const [sessionCategory, setSessionCategory] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+
+  const uniqueCategories = [...new Set(topics.map(topic => topic.topic_category).filter(Boolean))];
 
   const validate = () => {
     const newErrors = {};
@@ -52,23 +63,43 @@ export default function SessionModal({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return;
+    setIsSaving(true);
 
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      onClose();
-    }, 2000);
+    const formatDateTime = (isoDate) => {
+      if (!isoDate) return "";
+      const d = new Date(isoDate);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
 
-    if (onSave) {
-      onSave({
-        date,
-        sessionTopic,
-        duration: sessionDuration?.value ?? sessionDuration,
-        candidateName,
-        sessionCategory,
-      });
+    const scheduleData = {
+      user_id: candidateName, // Assuming candidateName state holds the ID
+      hr_id: userId,
+      topic: sessionTopic,
+      topic_category: sessionCategory,
+      assign_datetime: formatDateTime(date),
+      total_time: sessionDuration?.value ?? sessionDuration,
+    };
+
+    try {
+      const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
+      if (response && (response.message === "request updated" || response.success === true || response.status === 200)) {
+        onSave(scheduleData); // Notify parent that save was successful
+      } else {
+        alert('Failed to create schedule.');
+      }
+    } catch (error) {
+      console.error("Error inserting schedule:", error);
+      alert('An error occurred while creating the schedule.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -99,6 +130,7 @@ export default function SessionModal({
         open={showSuccess}
         onClose={() => setShowSuccess(false)}
         candidateName={candidateName}
+        isSuccess={true} // Assuming this is a success modal
       />
 
       <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
@@ -121,16 +153,15 @@ export default function SessionModal({
                 <label className="block text-[#1F2937] font-medium mb-3 text-base">Candidate Name</label>
                 <div className="relative">
                   <select
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.candidateName ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#1F2937]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
+                      } text-[#1F2937]`}
                     value={candidateName}
                     onChange={(e) => setCandidateName(e.target.value)}
                   >
                     <option value="">Select candidate</option>
-                    <option value="Anshome">Anshome</option>
-                    <option value="John Doe">John Doe</option>
-                    <option value="Jane Smith">Jane Smith</option>
+                    {userData.map((candidate) => (
+                      <option key={candidate.id} value={candidate.id}>{candidate.name_email}</option>
+                    ))}
                   </select>
                   <svg
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none"
@@ -147,12 +178,14 @@ export default function SessionModal({
               {/* Session Date */}
               <div>
                 <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Date Time</label>
-                <div className="w-full">
+                <div className="w-full cursor-pointer">
                   <DatePicker
                     selected={date}
                     onChange={setDate}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="DD/MM/YYYY"
+                    showTimeSelect
+                    dateFormat="dd/MM/yyyy h:mm aa"
+                    timeFormat="h:mm aa"
+                    placeholderText="DD/MM/YYYY HH:MM"
                     customInput={<CustomInput />}
                     popperPlacement="bottom"
                     wrapperClassName="w-full"
@@ -166,16 +199,15 @@ export default function SessionModal({
                 <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Category</label>
                 <div className="relative">
                   <select
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.sessionCategory ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#1F2937]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.sessionCategory ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
+                      } text-[#1F2937]`}
                     value={sessionCategory}
                     onChange={(e) => setSessionCategory(e.target.value)}
                   >
                     <option value="">Select category</option>
-                    <option value="Technical Interview">Technical Interview</option>
-                    <option value="HR Round">HR Round</option>
-                    <option value="Coding Test">Coding Test</option>
+                    {uniqueCategories.map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
                   </select>
                   <svg
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none"
@@ -222,11 +254,9 @@ export default function SessionModal({
                         }
                         className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
                         style={{
-                          background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${
-                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
-                          }%, rgba(41, 50, 65, 0.05) ${
-                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
-                          }%, rgba(41, 50, 65, 0.05) 100%)`,
+                          background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                            }%, rgba(41, 50, 65, 0.05) ${((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                            }%, rgba(41, 50, 65, 0.05) 100%)`,
                         }}
                       />
                       <div
@@ -255,9 +285,8 @@ export default function SessionModal({
                 onChange={(e) => setSessionTopic(e.target.value)}
                 placeholder="Write session topic..."
                 rows="4"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
-                  errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
-                }`}
+                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
+                  } text-[#1F2937]`}
               />
               {errors.sessionTopic && <p className="text-red-500 text-sm mt-1">{errors.sessionTopic}</p>}
             </div>
@@ -267,7 +296,7 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-              className="border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
+              className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
               onClick={handleReset}
             >
               Reset
@@ -276,17 +305,18 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-                className="border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
+                className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
                 onClick={onClose}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="bg-[#E5B800] hover:bg-[#D4A700] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl transition"
+                className="cursor-pointer bg-[#E5B800] hover:bg-[#D4A700] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl transition disabled:opacity-70 disabled:cursor-not-allowed"
                 onClick={handleSave}
+                disabled={isSaving}
               >
-                Initiate
+                {isSaving ? "Initiating..." : "Initiate"}
               </button>
             </div>
           </div>
