@@ -13,13 +13,13 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
         <div className="flex justify-between w-full">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded"
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded cursor-pointer"
           >
             No
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-teal-600 hover:bg-teal-500 rounded"
+            className="px-4 py-2 bg-teal-600 hover:bg-teal-500 rounded cursor-pointer"
           >
             Yes
           </button>
