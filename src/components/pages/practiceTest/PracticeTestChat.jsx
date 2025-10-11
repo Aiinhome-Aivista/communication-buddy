@@ -64,6 +64,7 @@ export default function PracticeTest() {
   const sessionTimerRef = useRef(null);
   const sessionStartRef = useRef(null);
   const countdownTimerRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   // Speech recognition hook
   const {
@@ -566,7 +567,13 @@ export default function PracticeTest() {
         return;
       } else {
         setUserStatus("ongoing");
-        // Always start the session after checking status for ongoing
+        // Use API-provided total_time and session_time to drive remaining timer
+        if (data?.total_time) {
+          startSessionTimer(Number(data.total_time), data.session_time);
+        } else {
+          startSessionTimer();
+        }
+        // Start welcome flow
         await startSessionInitial();
       }
     } catch (error) {
@@ -615,18 +622,19 @@ export default function PracticeTest() {
     }, 1000);
   };
 
-  // Session timer functionality
-  const startSessionTimer = () => {
-    const totalTime = matchedRecord?.total_time || 10; // minutes
+  // Session timer functionality (uses API total_time and session_time when available)
+  const startSessionTimer = (totalMinutesParam, sessionStartAt) => {
+    const totalTime = Number(totalMinutesParam ?? matchedRecord?.total_time ?? 10); // minutes
     setSessionTotalTime(totalTime);
-    sessionStartRef.current = Date.now();
+    sessionStartRef.current = sessionStartAt ? new Date(sessionStartAt).getTime() : Date.now();
 
     if (sessionTimerRef.current) {
       clearInterval(sessionTimerRef.current);
     }
 
-    sessionTimerRef.current = setInterval(() => {
-      const elapsedMinutes = (Date.now() - sessionStartRef.current) / (1000 * 60);
+    const tick = () => {
+      const now = Date.now();
+      const elapsedMinutes = (now - sessionStartRef.current) / (1000 * 60);
       const remainingMinutes = Math.max(0, totalTime - elapsedMinutes);
 
       const minutes = Math.floor(remainingMinutes);
@@ -635,15 +643,27 @@ export default function PracticeTest() {
 
       if (remainingMinutes <= 0) {
         clearInterval(sessionTimerRef.current);
+        sessionTimerRef.current = null;
+        // Stop speech and disable input per requirement
+        try { window.speechSynthesis.cancel(); } catch { }
+        setIsSpeaking(false);
         setSessionExpired(true);
         setShowTimeUpPopup(true);
 
         // Auto save and end session
         setTimeout(async () => {
-          await saveChatSession({ userId, hrId, topic: topicName, fullConversation });
-        }, 1000);
+          try {
+            await saveChatSession({ userId, hrId, topic: topicName, fullConversation });
+          } catch (e) {
+            console.warn('Error saving conversation on timeout', e);
+          }
+        }, 500);
       }
-    }, 1000);
+    };
+
+    // run immediately and then every second
+    tick();
+    sessionTimerRef.current = setInterval(tick, 1000);
   };
 
   // Start session - first call (without user input) using ApiService
@@ -703,8 +723,8 @@ export default function PracticeTest() {
         setWaitingForLanguage(false);
         setLanguageSelected(true);
 
-        // Start timer after language is selected
-        startSessionTimer();
+        // Start timer after language is selected if not already started via status
+        if (!sessionTimerRef.current) startSessionTimer();
 
         // Show typing while fetching intro chat response
         setIsAILoading(true);
@@ -838,6 +858,13 @@ export default function PracticeTest() {
       callChatAPI(text);
     }
   };
+
+  // Auto-scroll to bottom when messages change or popup visibility changes
+  useEffect(() => {
+    try {
+      chatContainerRef.current?.scrollTo({ top: chatContainerRef.current.scrollHeight, behavior: 'smooth' });
+    } catch { }
+  }, [messages, isAILoading, showTimeUpPopup]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -1038,7 +1065,7 @@ export default function PracticeTest() {
                     <p className="text-xs text-[#7E8489]">Hiring manager</p>
                   </div>
                   <div className="leading-tight">
-                    <h3 className="text-sm font-semibold text-[#8F96A9]">{matchedRecord?.total_time || 10} mins</h3>
+                    <h3 className="text-sm font-semibold text-[#8F96A9]">{sessionStatus?.total_time || matchedRecord?.total_time || 10} mins</h3>
                     <p className="text-xs text-[#7E8489]">Allocated duration</p>
                   </div>
                   <div className="leading-tight">
@@ -1061,6 +1088,7 @@ export default function PracticeTest() {
 
             {/* Chat Messages */}
             <div
+              ref={chatContainerRef}
               className="flex-1 overflow-y-auto px-8 py-6 bg-white space-y-4 
                 scrollbar-thin scrollbar-thumb-[#F8E68A] scrollbar-track-transparent rounded-lg"
               style={{
@@ -1095,7 +1123,7 @@ export default function PracticeTest() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white">
+            <div className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? 'blur-sm pointer-events-none' : ''}`}>
               <input
                 type="text"
                 placeholder={waitingForLanguage ? "Please select your language (english, hindi, etc.)..." : "Type a information..."}
@@ -1103,7 +1131,7 @@ export default function PracticeTest() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={!sessionStarted}
+                disabled={!sessionStarted || sessionExpired}
               />
               <button className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
                 onClick={() => {
@@ -1113,7 +1141,7 @@ export default function PracticeTest() {
                     startRecording();
                   }
                 }}
-                disabled={!sessionStarted}
+                disabled={!sessionStarted || sessionExpired}
               >
                 <MicIcon style={{
                   color: isRecording ? "#E53E3E" : (sessionStarted ? "#DFB916" : "#B7BDC2"),
@@ -1125,7 +1153,7 @@ export default function PracticeTest() {
                 className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#d6a600] transition h-11.5 flex items-center disabled:bg-gray-400"
                 onClick={handleSend}
                 type="button"
-                disabled={!sessionStarted || !inputValue.trim()}
+                disabled={!sessionStarted || !inputValue.trim() || sessionExpired}
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
               </button>
@@ -1145,9 +1173,9 @@ export default function PracticeTest() {
                   <button
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                     onClick={() => {
+                      // Close popup, keep sessionExpired true so inputs remain disabled.
+                      try { window.speechSynthesis.cancel(); } catch { }
                       setShowTimeUpPopup(false);
-                      setSessionExpired(false);
-                      navigate("/test");
                     }}
                   >
                     OK
