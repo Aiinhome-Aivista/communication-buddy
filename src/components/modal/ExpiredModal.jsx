@@ -10,16 +10,17 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
       visible={isOpen}
       onHide={onClose}
       style={{ width: "350px"}}
+      className="custom-dialog"
      
     
 
     >
-      <div className="flex flex-col items-center justify-center text-center p-4">
+      <div className="flex flex-col items-center justify-center text-center">
 
         <WarningAmberIcon sx={{ fontSize: "2.5rem", color: "#DFB916" }} />
         
 
-        <h2 className="text-lg font-semibold text-[#2C2E42] mt-4">
+        <h2 className="text-lg font-semibold text-[#2C2E42]">
           Your session has expired
         </h2>
 

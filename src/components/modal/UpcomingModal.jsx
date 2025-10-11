@@ -38,15 +38,15 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
       header="Upcoming Test"
       visible={isOpen}
       onHide={onClose}
-      style={{ width: "350px" }}
-      className="rounded-4xl"
+      style={{ width: "350px"}}
+       className="custom-dialog"
     >
-      <div className="flex flex-col items-center justify-center text-center p-4">
-        <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#7E848945" }} />
-        <h2 className="text-lg font-semibold text-[#2C2E42] mt-4">
+      <div className="flex flex-col items-center justify-center text-center">
+        <InfoOutlinedIcon sx={{ fontSize: "2.5rem", color: "#7E848945" }} />
+        <h2 className="text-lg font-semibold text-[#2C2E42]">
           {selectedTestItem.topic_name}
         </h2>
-        <p className="text-sm text-gray-600 mt-2">
+        <p className="text-sm text-gray-600">
           Starts in: {countdown}
         </p>
       </div>
