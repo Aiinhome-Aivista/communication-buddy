@@ -9,6 +9,7 @@ import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRound
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const fullName = sessionStorage.getItem("userName") || "";
@@ -25,7 +26,7 @@ export default function Sidebar() {
 
   const hrMenu = [
     { name: "Dashboard", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/dashboard", end: true },
-    { name: "Manage Users", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/manage-users", end: true },
+    { name: "Manage Users", icon: (color) => <GroupAddRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/manage-users", end: true },
     { name: "Schedule Session", icon: (color) => <HourglassBottomRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/schedule" },
     { name: "Test Results", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
     { name: "Settings", icon: (color) => <SettingsRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/settings" },
