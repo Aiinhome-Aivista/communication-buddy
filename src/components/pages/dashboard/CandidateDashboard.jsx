@@ -10,6 +10,7 @@ import oracleLogo from "../../../assets/logo/oracle.svg";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import Loader from '../../ui/Loader';
+import assignmentIcon from '../../../../public/assets/images/assignment.png';
 
 
 
@@ -182,9 +183,14 @@ const CandidateDashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
-        <button className="bg-[#DFB916] hover:bg-[#c8a514] px-5 py-2 rounded-md font-semibold text-gray-900">
-          + Create Session
-        </button>
+        <div className="flex items-center gap-3">
+         {/* Main action button */}
+          <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
+            <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
+            <span>Ongoing session</span>
+          </button>
+
+        </div>
       </div>
 
       {/* Main Content Grid */}
