@@ -174,7 +174,7 @@ const HrDashboard = () => {
           <div className="col-span-12 md:col-span-3 flex flex-col space-y-6">
             {/* Session Completion */}
             <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-[220px]">
-              <h2 className="text-gray-700 mb-2 text-[15px] font-inter font-medium">
+              <h2 className="text-[#8F96A9] mb-2 text-[15px] font-inter font-sm">
                 Session Completion
               </h2>
               <ResponsiveContainer width="100%" height={120}>
@@ -235,9 +235,9 @@ const HrDashboard = () => {
           {/* RIGHT SECTION */}
           <div className="col-span-12 md:col-span-9 flex flex-col space-y-6">
             {/* Session Report */}
-            <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-[220px]">
+            <div className="bg-white rounded-2xl shadow-sm p-1 px-4 w-full h-[220px]">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-[15px] text-gray-700">Session Report</h2>
+                <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
                 <div className="flex flex-col items-start">
                   <div className="flex items-center gap-2">
                     <img src={groupLogo} alt="Group" className="w-5 h-5" />
@@ -254,6 +254,7 @@ const HrDashboard = () => {
               {/* Bars */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
+               
                   <span className="text-xs w-24 text-gray-600">Communication</span>
                   <div className="bg-slate-200 w-full h-5 rounded-md relative">
                     <div
