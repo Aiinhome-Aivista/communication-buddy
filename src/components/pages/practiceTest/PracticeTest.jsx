@@ -27,6 +27,7 @@ export default function PracticeTest() {
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   const [selectedTestItem, setSelectedTestItem] = useState(null);
   const [isUpcomingModalOpen, setIsUpcomingModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
 
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ export default function PracticeTest() {
   // Fetch topics
   useEffect(() => {
     const fetchAllTopics = async () => {
+      setLoading(true);
       try {
         const payload = { user_id: userId };
         const response = await fatchedPostRequest(postURL.getAllTopics, payload);
@@ -52,6 +54,8 @@ export default function PracticeTest() {
         }
       } catch (error) {
         console.error("Error fetching all topics:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchAllTopics();
@@ -124,11 +128,17 @@ export default function PracticeTest() {
   // Empty message
   const emptyMessageTemplate = (
     <div className="flex flex-col items-center justify-center p-5 text-center">
-      <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
-      <p className="mt-4 text-lg text-gray-500">No data found</p>
-      <p className="text-sm text-gray-400">
-        There are no tests matching your criteria.
-      </p>
+      {loading ? (
+        <p>Loading tests...</p>
+      ) : (
+        <>
+          <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
+          <p className="mt-4 text-lg text-gray-500">No data found</p>
+          <p className="text-sm text-gray-400">
+            There are no tests matching your criteria.
+          </p>
+        </>
+      )}
     </div>
   );
 
@@ -146,8 +156,8 @@ export default function PracticeTest() {
                 <button
                   key={tab}
                   className={`px-6 py-2 text-sm font-medium rounded-xl ${activeTab === tab
-                      ? "bg-[#FEFEFE] text-[#2C2E42]"
-                      : "bg-[#ECEFF2] text-[#8F96A9]"
+                    ? "bg-[#FEFEFE] text-[#2C2E42]"
+                    : "bg-[#ECEFF2] text-[#8F96A9]"
                     }`}
                   onClick={() => setActiveTab(tab)}
                 >
@@ -195,8 +205,8 @@ export default function PracticeTest() {
                         setDropdownOpen(false);
                       }}
                       className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
-                          ? "bg-[#D9D9D9] font-bold"
-                          : "hover:bg-[#D9D9D9]/50"
+                        ? "bg-[#D9D9D9] font-bold"
+                        : "hover:bg-[#D9D9D9]/50"
                         }`}
                     >
                       {option}
@@ -226,6 +236,7 @@ export default function PracticeTest() {
                 paginatorClassName="!m-0 !border-t"
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}
+                loading={loading}
                 onRowClick={(e) => {
                   const status = e.data.topic_attend_status?.toLowerCase();
                   if (status === "ongoing") {
