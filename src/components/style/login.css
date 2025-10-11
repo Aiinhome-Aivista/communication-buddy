@@ -5,3 +5,8 @@
 .input-field::placeholder {
     color: rgba(188, 199, 210, 1) !important;
 }
+
+.input-field:hover::placeholder {
+    color: rgba(61, 91, 129, 1) !important; /* Different color on hover */
+}
+

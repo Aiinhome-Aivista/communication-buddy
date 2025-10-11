@@ -7,8 +7,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fatchedPostRequest, postURL } from "../../../services/ApiService";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import ExpiredModal from "../../../components/modal/ExpiredModal";
+import UpcomingModal from "../../../components/modal/UpcomingModal";
+
+
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -17,114 +20,94 @@ export default function PracticeTest() {
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [allTopics, setAllTopics] = useState([]); // New state to store topics from getAllTopics API
-  const [testTypeOptions, setTestTypeOptions] = useState(["All"]); // Initialize with "All"
+  const [allTopics, setAllTopics] = useState([]);
+  const [testTypeOptions, setTestTypeOptions] = useState(["All"]);
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+  const [selectedTestItem, setSelectedTestItem] = useState(null);
+  const [isUpcomingModalOpen, setIsUpcomingModalOpen] = useState(false);
+
 
   const navigate = useNavigate();
-  // setUserData is not defined in this component, so I'm assuming it comes from a context.
-  // If not, you might need to import and use the correct context provider.
-  // const { setUserData } = useContext(UserContext);
 
-  // Function to call the getAllTopics API
+  // ✅ Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTestTitle, setSelectedTestTitle] = useState("");
+
+  // Fetch topics
   useEffect(() => {
     const fetchAllTopics = async () => {
       try {
-        const payload = { user_id: userId }; // Specific payload as requested
-        console.log("Fetching all topics with payload:", payload);
-        const response = await fatchedPostRequest(
-          postURL.getAllTopics,
-          payload
-        );
-        console.log("getAllTopics response:", response);
+        const payload = { user_id: userId };
+        const response = await fatchedPostRequest(postURL.getAllTopics, payload);
         if (response && response.topics) {
           setAllTopics(response.topics);
-
-          // Extract unique topic categories from the API response
           const categories = [
             "All",
             ...new Set(response.topics.map((topic) => topic.topic_category)),
           ];
           setTestTypeOptions(categories);
-
-          // Set default test type to the first category if available
-          if (categories.length > 0) {
-            setTestType(categories[0]);
-          }
+          if (categories.length > 0) setTestType(categories[0]);
         }
       } catch (error) {
         console.error("Error fetching all topics:", error);
       }
     };
     fetchAllTopics();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Effect to handle the animation when filters change
+  // Filter animation
   useEffect(() => {
     setIsAnimating(true);
-    const timer = setTimeout(() => {
-      setIsAnimating(false);
-    }, 300); // Duration of the animation
+    const timer = setTimeout(() => setIsAnimating(false), 300);
     return () => clearTimeout(timer);
   }, [activeTab, search, testType]);
 
-  // Effect to handle clicks outside the dropdown
+  // Handle click outside dropdown
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     }
-    // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
+  // Filter logic
   const filteredData = allTopics
     .filter((topic) => {
-      // Tab filtering logic
       const status = topic.topic_attend_status?.toLowerCase();
       const tab = activeTab.toLowerCase();
-
-      if (tab === "upcoming") {
-        // Assuming 'assigned' status means it's an upcoming test
-        return status === "upcoming";
-      }
+      if (tab === "upcoming") return status === "upcoming";
       return status === tab;
     })
     .filter((topic) =>
-      // Search filtering logic
       [topic.topic_name, topic.topic_category, topic.hr_name].some((value) =>
         value?.toString().toLowerCase().includes(search.toLowerCase())
       )
     )
     .filter(
       (topic) =>
-        // Test Type filtering logic
         testType === "All" ||
         topic.topic_category?.toLowerCase() === testType.toLowerCase()
     );
 
-  // Helper to get status styles
+  // Status badge
   const getStatusStyles = (status) => {
     switch (status?.toLowerCase()) {
       case "upcoming":
-        return "bg-blue-100 text-blue-600"; // Blue for upcoming
+        return "bg-blue-100 text-blue-600";
       case "ongoing":
-        return "bg-[#35FF021A] text-[#46BA2F]"; // Green for ongoing
+        return "bg-[#35FF021A] text-[#46BA2F]";
       case "expired":
-        return "bg-red-100 text-red-600"; // Red for expired
+        return "bg-red-100 text-red-600";
       default:
-        return "bg-gray-100 text-gray-500"; // Default/fallback style
+        return "bg-gray-100 text-gray-500";
     }
   };
 
-  // Custom template for status badge
   const statusBodyTemplate = (rowData) => {
     const status = rowData.topic_attend_status;
     return (
@@ -138,7 +121,7 @@ export default function PracticeTest() {
     );
   };
 
-  // Custom template for the empty message
+  // Empty message
   const emptyMessageTemplate = (
     <div className="flex flex-col items-center justify-center p-5 text-center">
       <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
@@ -157,11 +140,12 @@ export default function PracticeTest() {
 
           {/* Tabs + Search + Dropdown */}
           <div className="flex flex-row items-center mt-6 space-x-4 gap-3">
+            {/* Tabs */}
             <div className="flex border border-[#BCC7D2] rounded-xl overflow-hidden h-10">
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${activeTab === tab
+                  className={`px-6 py-2 text-sm font-medium rounded-xl ${activeTab === tab
                       ? "bg-[#FEFEFE] text-[#2C2E42]"
                       : "bg-[#ECEFF2] text-[#8F96A9]"
                     }`}
@@ -172,6 +156,7 @@ export default function PracticeTest() {
               ))}
             </div>
 
+            {/* Search */}
             <div className="relative flex-1">
               <input
                 type="text"
@@ -181,27 +166,23 @@ export default function PracticeTest() {
                 onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9]"
                 sx={{ fontSize: "1.25rem" }}
               />
             </div>
-            {/* Test type */}
+
+            {/* Dropdown */}
             <div className="relative ml-auto" ref={dropdownRef}>
               <button
                 className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
                 style={{ color: "#8F96A9" }}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 {testType}
                 {dropdownOpen ? (
-                  <KeyboardArrowUpIcon
-                    className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                    onClick={() => setDropdownOpen(false)}
-                  />
+                  <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9]" />
                 ) : (
-                  <KeyboardArrowDownIcon
-                    className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                  />
+                  <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9]" />
                 )}
               </button>
               {dropdownOpen && (
@@ -214,8 +195,8 @@ export default function PracticeTest() {
                         setDropdownOpen(false);
                       }}
                       className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
-                          ? "bg-[#D9D9D9] font-bold" // Selected: has background, no hover effect
-                          : "hover:bg-[#D9D9D9]/50" // Not selected: has hover effect
+                          ? "bg-[#D9D9D9] font-bold"
+                          : "hover:bg-[#D9D9D9]/50"
                         }`}
                     >
                       {option}
@@ -231,11 +212,9 @@ export default function PracticeTest() {
             </div>
           </div>
 
-          {/*DataTable */}
+          {/* Table */}
           <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating
-                ? "opacity-0 translate-y-4"
-                : "opacity-100 translate-y-0"
+            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
               }`}
           >
             <div key={`${activeTab}-${search}-${testType}`}>
@@ -248,7 +227,8 @@ export default function PracticeTest() {
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}
                 onRowClick={(e) => {
-                  if (e.data.topic_attend_status?.toLowerCase() === "ongoing") {
+                  const status = e.data.topic_attend_status?.toLowerCase();
+                  if (status === "ongoing") {
                     navigate("/test/chat", {
                       state: {
                         topic: e.data.topic_name,
@@ -257,10 +237,18 @@ export default function PracticeTest() {
                         hr_name: e.data.hr_name,
                         assigned_by: e.data.hr_name,
                         user_id: e.data.user_id,
-                        status: e.data.topic_attend_status
-                      }
+                        status: e.data.topic_attend_status,
+                      },
                     });
+                  } else if (status === "expired") {
+                    setSelectedTestTitle(e.data.topic_name);
+                    setIsModalOpen(true);
+                  } else if (status === "upcoming") {
+                    setSelectedTestItem(e.data);
+                    setIsUpcomingModalOpen(true);
                   }
+
+
                 }}
               >
                 <Column
@@ -287,7 +275,7 @@ export default function PracticeTest() {
                   body={(rowData) => {
                     if (!rowData.session_time) return "";
                     const date = new Date(rowData.session_time);
-                    return date.toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
+                    return date.toLocaleDateString("en-GB");
                   }}
                 ></Column>
                 <Column
@@ -318,6 +306,20 @@ export default function PracticeTest() {
           </div>
         </div>
       </div>
+
+      {/* ✅ Expired Modal */}
+      <ExpiredModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedTestTitle={selectedTestTitle}
+      />
+
+      <UpcomingModal
+        isOpen={isUpcomingModalOpen}
+        onClose={() => setIsUpcomingModalOpen(false)}
+        selectedTestItem={selectedTestItem}
+      />
+
     </div>
   );
 }
