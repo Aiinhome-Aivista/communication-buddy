@@ -566,15 +566,8 @@ export default function PracticeTest() {
         setShowTimeUpPopup(true);
         return;
       } else {
+        // Ongoing: wait for user to press Start Chat; don't auto-start or start timer here
         setUserStatus("ongoing");
-        // Use API-provided total_time and session_time to drive remaining timer
-        if (data?.total_time) {
-          startSessionTimer(Number(data.total_time), data.session_time);
-        } else {
-          startSessionTimer();
-        }
-        // Start welcome flow
-        await startSessionInitial();
       }
     } catch (error) {
       console.error("Error checking session status:", error);
@@ -1070,7 +1063,7 @@ export default function PracticeTest() {
                   </div>
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
-                      {userStatus === "upcoming" ? countdownTime : (timeLeft || "10:00")}
+                      {userStatus === "upcoming" ? countdownTime : (sessionStarted ? (timeLeft || "--:--") : (sessionStatus?.total_time ? `${String(sessionStatus.total_time).padStart(2, '0')}:00` : `${String(matchedRecord?.total_time || 10).padStart(2, '0')}:00`))}
                     </h3>
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming" ? "Time to start" : "Remaining time"}
@@ -1086,47 +1079,69 @@ export default function PracticeTest() {
               </div>
             </div>
 
-            {/* Chat Messages */}
-            <div
-              ref={chatContainerRef}
-              className="flex-1 overflow-y-auto px-8 py-6 bg-white space-y-4 
-                scrollbar-thin scrollbar-thumb-[#F8E68A] scrollbar-track-transparent rounded-lg"
-              style={{
-                scrollbarColor: "#DFB91614 transparent",
-                scrollbarWidth: "thin",
-              }}
-            >
-              {messages.map((msg) =>
-                msg.sender === "bot" ? (
-                  <div key={msg.id} className="flex">
-                    <div className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words">
-                      {msg.text}
-                    </div>
-                  </div>
-                ) : (
-                  <div key={msg.id} className="flex justify-end">
-                    <div className="bg-[#ECEFF2] text-[#7E8489] px-4 py-2 rounded-lg inline-block max-w-[70%] w-auto break-words">
-                      {msg.text}
-                    </div>
-                  </div>
-                )
-              )}
-
-              {/* Typing indicator */}
-              {isAILoading && (
-                <div className="flex">
-                  <div className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words animate-pulse">
-                    Typing...
-                  </div>
+            {/* Either show Start Chat prompt or the chat area */}
+            {!sessionStarted ? (
+              <div className="flex-1 flex items-center justify-center bg-white">
+                <div className="text-center space-y-4">
+                  <p className="text-lg text-[#7E8489]">Click below to start your interview chat</p>
+                  <button
+                    className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
+                    onClick={async () => {
+                      // Set up timer countdown from allocated duration when starting
+                      const total = Number(sessionStatus?.total_time ?? matchedRecord?.total_time ?? 10);
+                      startSessionTimer(total, Date.now());
+                      await startSessionInitial();
+                    }}
+                  >
+                    Start Chat
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <>
+                {/* Chat Messages */}
+                <div
+                  ref={chatContainerRef}
+                  className="flex-1 overflow-y-auto px-8 py-6 bg-white space-y-4 
+                    scrollbar-thin scrollbar-thumb-[#F8E68A] scrollbar-track-transparent rounded-lg"
+                  style={{
+                    scrollbarColor: "#DFB91614 transparent",
+                    scrollbarWidth: "thin",
+                  }}
+                >
+                  {messages.map((msg) =>
+                    msg.sender === "bot" ? (
+                      <div key={msg.id} className="flex">
+                        <div className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words">
+                          {msg.text}
+                        </div>
+                      </div>
+                    ) : (
+                      <div key={msg.id} className="flex justify-end">
+                        <div className="bg-[#ECEFF2] text-[#7E8489] px-4 py-2 rounded-lg inline-block max-w-[70%] w-auto break-words">
+                          {msg.text}
+                        </div>
+                      </div>
+                    )
+                  )}
+
+                  {/* Typing indicator */}
+                  {isAILoading && (
+                    <div className="flex">
+                      <div className="bg-[#DFB91614] text-[#7E8489] px-4 py-2 rounded-xl inline-block max-w-[70%] w-auto break-words animate-pulse">
+                        Typing...
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Footer */}
             <div className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? 'blur-sm pointer-events-none' : ''}`}>
               <input
                 type="text"
-                placeholder={waitingForLanguage ? "Please select your language (english, hindi, etc.)..." : "Type a information..."}
+                placeholder={waitingForLanguage ? "Type a information..." : "Type a information..."}
                 className="flex-1 border-none bg-[#F8F9FB] px-4 py-3 rounded-xl text-sm text-[#2C2E42] placeholder:text-[#B7BDC2] focus:outline-none focus:ring-1 focus:ring-[#F4E48A]"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
