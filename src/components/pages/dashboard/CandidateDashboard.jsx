@@ -338,12 +338,12 @@ const CandidateDashboard = () => {
                       width: `${commWidth}%`,
                       backgroundColor: "#0f172a",
                       whiteSpace: "nowrap",
-                      overflow: "hidden",
+                    
                       textOverflow: "ellipsis",
                       transition: "width 0.3s ease",
                     }}
                   >
-                    <span className="text-xs text-white">Communication</span>
+                    <span className="text-xs text-[#8F96A9]">Communication</span>
                   </div>
                 </div>
                 {/* Count outside the bar */}
