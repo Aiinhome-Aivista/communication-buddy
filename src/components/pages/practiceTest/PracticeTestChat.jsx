@@ -720,10 +720,11 @@ export default function PracticeTest() {
           const introEntry = { id: Date.now() + 2, text: introMsg, sender: "bot" };
           setMessages((prev) => [...prev, introEntry]);
           setFullConversation((prev) => [...prev, { role: "ai", message: introMsg, time: new Date().toLocaleTimeString() }]);
+          // Hide typing as soon as response is received; do not keep it during speaking
+          setIsAILoading(false);
           await speakMessage(introMsg, getLangCode(readableLang));
         } catch (e) {
           console.error("Intro chat API error:", e);
-        } finally {
           setIsAILoading(false);
         }
       }
@@ -931,6 +932,8 @@ export default function PracticeTest() {
       setMessages((prev) => [...prev, aiEntry]);
       setFullConversation((prev) => [...prev, { role: "ai", message: aiMessage, time: new Date().toLocaleTimeString() }]);
 
+      // Stop typing indicator immediately after receiving response
+      setIsAILoading(false);
       // Speak the AI response
       await speakMessage(aiMessage, getLangCode(selectedLanguage));
 
@@ -941,7 +944,6 @@ export default function PracticeTest() {
         setShowTimeUpPopup(true);
       }
 
-      setIsAILoading(false);
     } catch (error) {
       console.error("API error:", error);
       // push fallback bot message
