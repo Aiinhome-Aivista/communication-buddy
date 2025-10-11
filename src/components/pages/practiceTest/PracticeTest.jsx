@@ -161,11 +161,10 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${
-                    activeTab === tab
+                  className={`px-6 py-2 text-sm text-semibold rounded-xl font-medium cursor-pointer ${activeTab === tab
                       ? "bg-[#FEFEFE] text-[#2C2E42]"
                       : "bg-[#ECEFF2] text-[#8F96A9]"
-                  }`}
+                    }`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -214,11 +213,10 @@ export default function PracticeTest() {
                         setTestType(option);
                         setDropdownOpen(false);
                       }}
-                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${
-                        testType === option
+                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
                           ? "bg-[#D9D9D9] font-bold" // Selected: has background, no hover effect
                           : "hover:bg-[#D9D9D9]/50" // Not selected: has hover effect
-                      }`}
+                        }`}
                     >
                       {option}
                       {testType === option && (
@@ -235,11 +233,10 @@ export default function PracticeTest() {
 
           {/*DataTable */}
           <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${
-              isAnimating
+            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating
                 ? "opacity-0 translate-y-4"
                 : "opacity-100 translate-y-0"
-            }`}
+              }`}
           >
             <div key={`${activeTab}-${search}-${testType}`}>
               <DataTable
@@ -252,7 +249,17 @@ export default function PracticeTest() {
                 emptyMessage={emptyMessageTemplate}
                 onRowClick={(e) => {
                   if (e.data.topic_attend_status?.toLowerCase() === "ongoing") {
-                    navigate("/test/chat");
+                    navigate("/test/chat", {
+                      state: {
+                        topic: e.data.topic_name,
+                        topic_name: e.data.topic_name,
+                        hr_id: e.data.hr_id,
+                        hr_name: e.data.hr_name,
+                        assigned_by: e.data.hr_name,
+                        user_id: e.data.user_id,
+                        status: e.data.topic_attend_status
+                      }
+                    });
                   }
                 }}
               >
