@@ -1,4 +1,5 @@
 import pythonLogo from "../../../assets/logo/python.svg";
+import reactSvg from "../../../assets/react.svg";
 import { postURL, fatchedPostRequest } from "../../../services/ApiService";
 // import cppLogo from "../../../assets/logo/cpp.svg";
 // import reactLogo from "../../../assets/logo/react.svg";
@@ -95,27 +96,27 @@ const CandidateDashboard = () => {
 
 
 
-const lineData = useMemo(() => {
-  const list = Array.isArray(dashboardData?.language_usage)
-    ? dashboardData.language_usage
-    : [];
+  const lineData = useMemo(() => {
+    const list = Array.isArray(dashboardData?.language_usage)
+      ? dashboardData.language_usage
+      : [];
 
-  return list.map((item, idx) => {
-    // Each item is an object with one key-value pair
-    const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
-    return {
-      name: key, // language name
-      uv: Number(value ?? 0), // count
-    };
-  });
-}, [dashboardData]);
+    return list.map((item, idx) => {
+      // Each item is an object with one key-value pair
+      const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
+      return {
+        name: key, // language name
+        uv: Number(value ?? 0), // count
+      };
+    });
+  }, [dashboardData]);
 
 
-const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
-  ? dashboardData.most_asked_technologies
-  : Array.isArray(dashboardData?.top_technologies)
-  ? dashboardData.top_technologies
-  : [];
+  const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
+    ? dashboardData.most_asked_technologies
+    : Array.isArray(dashboardData?.top_technologies)
+      ? dashboardData.top_technologies
+      : [];
 
 
   const mostDiscussedSkills = Array.isArray(
@@ -152,37 +153,37 @@ const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologi
 
 
 
-const CustomTooltip1 = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: "#DFB91614", // light transparent background
-          padding: "6px 10px",
-          borderRadius: "8px",
-          border: "1px solid #DFB91633",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <span
-          style={{// solid background for text
-            color: "#DFB916", // readable dark text
-            fontWeight: 600,
-            fontSize: "13px",
-            padding: "3px 8px",
-            borderRadius: "4px",
-            textTransform: "capitalize",
+  const CustomTooltip1 = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#DFB91614", // light transparent background
+            padding: "6px 10px",
+            borderRadius: "8px",
+            border: "1px solid #DFB91633",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {label} : {payload[0].value}
-        </span>
-      </div>
-    );
-  }
-  return null;
-};
+          <span
+            style={{// solid background for text
+              color: "#DFB916", // readable dark text
+              fontWeight: 600,
+              fontSize: "13px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              textTransform: "capitalize",
+            }}
+          >
+            {label} : {payload[0].value}
+          </span>
+        </div>
+      );
+    }
+    return null;
+  };
 
 
 
@@ -208,29 +209,50 @@ const CustomTooltip1 = ({ active, payload, label }) => {
   const techWidth = Math.round((techCount / totalType) * 100);
 
 
- const getTechIcon = (name) => {
-  switch (name?.toLowerCase()) {
-    case "python": return "/assets/icons/tech_icon/python.svg";
-    case "angular": return "/assets/icons/tech_icon/angular.svg";
-    case "css": return "/assets/icons/tech_icon/css.svg";
-    case "html": return "/assets/icons/tech_icon/html.svg";
-    case "javascript": return "/assets/icons/tech_icon/javascript.svg";
-    case "pandas": return "/assets/icons/tech_icon/pandas.svg";
-    case "pyspark": return "/assets/icons/tech_icon/pyspark.svg";
-    case "react": return "/assets/icons/tech_icon/react.svg";
-    case "streamlit": return "/assets/icons/tech_icon/streamlit.svg";
-    case "tensorflow": return "/assets/icons/tech_icon/tensorflow.svg";
-    case "angular": return "/assets/icons/tech_icon/angular.svg";
-    case "c++": return "/assets/icons/tech_icon/cpp.svg";
-    case "c": return "/assets/icons/tech_icon/c.svg";
-    case "java": return "/assets/icons/tech_icon/java.svg";
-    case "php": return "/assets/icons/tech_icon/php.svg";
-    case "mysql": return "/assets/icons/tech_icon/mysql.svg";
-    case "oracle": return "/assets/icons/tech_icon/oracle.svg";
-    case "swift": return "/assets/icons/tech_icon/swift.svg";
-    default: return "/assets/icons/tech_icon/default.svg";
-  }
-};
+  const getTechIcon = (name) => {
+    const key = (name || "").toLowerCase();
+    switch (key) {
+      // Prefer imported, bundled assets when available
+      case "python":
+        return pythonLogo;
+      case "react":
+        return reactSvg;
+
+      // Keep support for public assets if present in /public
+      case "angular":
+        return "/assets/icons/tech_icon/angular.svg";
+      case "css":
+        return "/assets/icons/tech_icon/css.svg";
+      case "html":
+        return "/assets/icons/tech_icon/html.svg";
+      case "javascript":
+        return "/assets/icons/tech_icon/javascript.svg";
+      case "pandas":
+        return "/assets/icons/tech_icon/pandas.svg";
+      case "pyspark":
+        return "/assets/icons/tech_icon/pyspark.svg";
+      case "streamlit":
+        return "/assets/icons/tech_icon/streamlit.svg";
+      case "tensorflow":
+        return "/assets/icons/tech_icon/tensorflow.svg";
+      case "c++":
+        return "/assets/icons/tech_icon/cpp.svg";
+      case "c":
+        return "/assets/icons/tech_icon/c.svg";
+      case "java":
+        return "/assets/icons/tech_icon/java.svg";
+      case "php":
+        return "/assets/icons/tech_icon/php.svg";
+      case "mysql":
+        return "/assets/icons/tech_icon/mysql.svg";
+      case "oracle":
+        return "/assets/icons/tech_icon/oracle.svg";
+      case "swift":
+        return "/assets/icons/tech_icon/swift.svg";
+      default:
+        return null; // force fallback
+    }
+  };
 
 
   return (
@@ -342,50 +364,44 @@ const CustomTooltip1 = ({ active, payload, label }) => {
           </div>
 
           {/* Mostly Asked Tech */}
-<div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-  <h2
-    style={{
-      fontFamily: "Inter, sans-serif",
-      fontWeight: 400,
-      fontStyle: "normal",
-      fontSize: "15px",
-      verticalAlign: "middle",
-      display: "inline-block",
-      padding: "2px 6px",
-      borderRadius: "4px",
-      color: "#8F96A9",
-    }}
-  >
-    Mostly Asked Technology
-  </h2>
+          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
+            <h2
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                fontStyle: "normal",
+                fontSize: "15px",
+                verticalAlign: "middle",
+                display: "inline-block",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                color: "#8F96A9",
+              }}
+            >
+              Mostly Asked Technology
+            </h2>
 
-  {mostAskedTechnologies.length > 0 ? (
-    <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-      {mostAskedTechnologies.map((tech, idx) => {
-        const iconSrc = getTechIcon(tech);
-        return (
-          <div
-            key={`${tech}-${idx}`}
-            className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100 transition"
-            title={tech}
-          >
-            <img
-              src={iconSrc}
-              alt={tech}
-              className="w-5 h-5 object-contain"
-              onError={(e) => (e.currentTarget.style.display = "none")}
-            />
-            <span>{tech}</span>
+            {mostAskedTechnologies.length > 0 ? (
+              <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
+                {mostAskedTechnologies.map((tech, idx) => {
+                  const iconSrc = getTechIcon(tech);
+                  return (
+                    <div key={`${tech}-${idx}`} className="w-[45px] h-[45px] flex items-center justify-center">
+                      {iconSrc ? (
+                        <img src={iconSrc} alt="" className="w-[45px] h-[45px] object-contain" />
+                      ) : (
+                        <div className="w-[65px] h-[65px] bg-gray-100 rounded" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                No data found
+              </div>
+            )}
           </div>
-        );
-      })}
-    </div>
-  ) : (
-    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-      No data found
-    </div>
-  )}
-</div>
 
         </div>
 
@@ -490,19 +506,19 @@ const CustomTooltip1 = ({ active, payload, label }) => {
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
+                <div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.average_session_duration ?? "15 minutes"}
                 </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Session Duration
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
+                <div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.test_attempted ?? 1256}
                 </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Test Attempted
                 </div>
               </div>
@@ -510,7 +526,7 @@ const CustomTooltip1 = ({ active, payload, label }) => {
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 font-semibold">
                   {/* Score */}
-<div className="font-bold text-[20px] text-[#8F96A9]">
+                  <div className="font-bold text-[20px] text-[#8F96A9]">
                     {Math.round(Number(sessionReport.highest_score) || 0)}
                   </div>
 
@@ -531,16 +547,16 @@ const CustomTooltip1 = ({ active, payload, label }) => {
                 </div>
 
                 {/* Label */}
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Highest Score
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
+                <div className="font-bold text-[20px] text-[#8F96A9]">
                   {Math.round(sessionReport.average_score) ?? 64}
                 </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Score
                 </div>
               </div>
