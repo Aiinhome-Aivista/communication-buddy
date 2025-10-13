@@ -382,7 +382,7 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-              className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
+              className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-[#E5B800] transition"
               onClick={handleReset}
             >
               Reset
@@ -391,7 +391,7 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-                className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-yellow-50 transition"
+                className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-[#E5B800] transition"
                 onClick={onClose}
               >
                 Cancel

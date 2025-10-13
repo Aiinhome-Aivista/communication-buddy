@@ -1,6 +1,6 @@
 import React from "react";
 import CancelIcon from '@mui/icons-material/Cancel';
-import WarningIcon from '@mui/icons-material/Warning';
+import WarningIcon from '@mui/icons-material/WarningRounded';
 
 export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
   if (!isOpen) return null;

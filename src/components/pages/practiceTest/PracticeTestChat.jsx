@@ -9,7 +9,7 @@ import { saveChatSession, greettingMessage } from "../../../utils/saveChatSessio
 import { checkSessionStatus, startChatSession, sendChatMessage } from "../../../services/ApiService";
 import ErrorIcon from '@mui/icons-material/Error';
 import CancelIcon from '@mui/icons-material/Cancel';
-import WarningIcon from '@mui/icons-material/Warning';
+import WarningIcon from '@mui/icons-material/WarningRounded';
 export default function PracticeTest() {
   const [messages, setMessages] = useState([]);
 

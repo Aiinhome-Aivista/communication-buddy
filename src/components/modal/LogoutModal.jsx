@@ -18,7 +18,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
                 {/* Cancel icon at top right */}
                 <button
                     onClick={onClose}
-                    className="absolute top-1 right-1 text-[#DFB916] hover:text-[#f1df79] transition"
+                    className="absolute top-1 right-1 text-[#DFB916]  transition"
                     aria-label="Close"
                 >
                     <CancelIcon className="w-7 h-7" />
