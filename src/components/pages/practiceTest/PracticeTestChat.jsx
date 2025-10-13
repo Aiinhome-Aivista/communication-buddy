@@ -655,15 +655,7 @@ export default function PracticeTest() {
         setIsSpeaking(false);
         setSessionExpired(true);
         setShowTimeUpPopup(true);
-
-        // Auto save and end session
-        setTimeout(async () => {
-          try {
-            await saveChatSession({ userId, hrId, topic: topicName, fullConversation });
-          } catch (e) {
-            console.warn('Error saving conversation on timeout', e);
-          }
-        }, 500);
+        // Note: Removed auto-save on time up per requirement
       }
     };
 
@@ -988,10 +980,9 @@ export default function PracticeTest() {
       // Speak the AI response
       await speakMessage(aiMessage, getLangCode(selectedLanguage));
 
-      // auto save on session end keywords
+      // Note: Removed auto-save on session end keywords per requirement; still show the popup if needed
       const lower = aiMessage.toLowerCase();
       if (lower.includes("time is up") || lower.includes("thank you for the discussion")) {
-        await saveChatSession({ userId, hrId, topic: topicName, fullConversation: [...fullConversation, { role: "ai", message: aiMessage }] });
         setShowTimeUpPopup(true);
       }
 
