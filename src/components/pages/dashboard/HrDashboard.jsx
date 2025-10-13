@@ -19,6 +19,8 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 
+
+
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,6 +28,8 @@ const HrDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
+  const [animateBars, setAnimateBars] = useState(false);
+
 
   const hrId =
     typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
@@ -67,14 +71,14 @@ const HrDashboard = () => {
   const completedPct =
     completionTotal > 0
       ? Math.round(
-          (Number(sessionCompletion.completed || 0) / completionTotal) * 100
-        )
+        (Number(sessionCompletion.completed || 0) / completionTotal) * 100
+      )
       : 0;
   const pendingPct =
     completionTotal > 0
       ? Math.round(
-          (Number(sessionCompletion.pending || 0) / completionTotal) * 100
-        )
+        (Number(sessionCompletion.pending || 0) / completionTotal) * 100
+      )
       : 0;
 
   const pieData = useMemo(() => {
@@ -134,9 +138,21 @@ const HrDashboard = () => {
 
   const commRaw = sessionReport?.session_type?.communication ?? 0;
   const techRaw = sessionReport?.session_type?.technology ?? 0;
-  const totalType = Math.max(1, commRaw + techRaw);
-  const commWidth = `${Math.round((commRaw / totalType) * 100)}%`;
-  const techWidth = `${Math.round((techRaw / totalType) * 100)}%`;
+
+  useEffect(() => {
+    if (!loading && data) {
+      // Delay to allow smooth entry animation
+      setTimeout(() => setAnimateBars(true), 300);
+    }
+  }, [loading, data]);
+
+
+
+
+
+
+
+
 
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
@@ -173,7 +189,7 @@ const HrDashboard = () => {
           {/* LEFT COLUMN */}
           <div className="col-span-12 md:col-span-3 flex flex-col space-y-6">
             {/* Session Completion */}
-            <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-[220px]">
+            <div className="bg-white rounded-xl shadow-sm p-4 w-full h-[220px]">
               <h2 className="text-[#8F96A9] mb-2 text-[15px] font-inter font-sm">
                 Session Completion
               </h2>
@@ -186,7 +202,11 @@ const HrDashboard = () => {
                     innerRadius={30}
                     outerRadius={55}
                     paddingAngle={4}
+                    cornerRadius={6}
                     dataKey="value"
+                    isAnimationActive={true}
+                    animationBegin={animateBars ? 300 : 0}
+                    animationDuration={700}
                   >
                     {pieData.map((_, i) => (
                       <Cell key={i} fill={COLORS[i]} />
@@ -195,21 +215,21 @@ const HrDashboard = () => {
                 </PieChart>
               </ResponsiveContainer>
 
-              <div className="flex justify-center gap-8 mt-2 text-xs font-medium">
-                <div className="flex flex-col items-center text-slate-900">
+              <div className="flex justify-center gap-8 mt-1 text-xs font-medium">
+                <div className="flex flex-col items-center">
                   <div className="font-bold text-[20px]">{completedPct}%</div>
-                  <div className="text-[12px]">Completed</div>
+                  <div className="text-[12px] text-[#8F96A9] ">Completed</div>
                 </div>
                 <div className="flex flex-col items-center text-[#DFB916]">
                   <div className="font-bold text-[20px]">{pendingPct}%</div>
-                  <div className="text-[12px] text-black">Pending</div>
+                  <div className="text-[12px] text-[#8F96A9]">Pending</div>
                 </div>
               </div>
             </div>
 
             {/* Mostly Asked Tech */}
-            <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-              <h2 className="font-semibold text-gray-700 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-5 w-full h-[374px]">
+              <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
               {mostAskedTechnologies.length > 0 ? (
@@ -225,7 +245,7 @@ const HrDashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                   no data found
                 </div>
               )}
@@ -235,80 +255,87 @@ const HrDashboard = () => {
           {/* RIGHT SECTION */}
           <div className="col-span-12 md:col-span-9 flex flex-col space-y-6">
             {/* Session Report */}
-            <div className="bg-white rounded-2xl shadow-sm p-1 px-4 w-full h-[220px]">
+            <div className="bg-white rounded-xl shadow-sm p-1 px-4 w-full h-[220px]">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
+
                 <div className="flex flex-col items-start">
                   <div className="flex items-center gap-2">
                     <img src={groupLogo} alt="Group" className="w-5 h-5" />
-                    <span className="font-bold text-[20px] text-gray-700">
+                    <span className="font-bold text-[20px] text-[#8F96A9]">
                       {activeParticipant}
                     </span>
                   </div>
-                  <span className="text-[12px] text-gray-500 mt-1 -ml-7">
+                  <span className="text-[12px] text-[#8F96A9] -ml-7">
                     Active participant
+                  </span>
+
+                </div>
+              </div>
+              <div className="font-inter font-normal text-[13px] leading-none tracking-normal align-middle text-[#8F96A9] mb-3">
+                Session type
+              </div>
+
+              {/* Bars */}
+
+              <div className="space-y-3 max-w-[500px]">
+                {/* Communication Bar */}
+                <div className="flex items-center gap-3">
+                  <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+                    <div
+                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700"
+                      style={{
+                        width: `${(commRaw / Math.max(1, sessionCreated)) * 500}px`,
+                        backgroundColor: "#0f172a",
+
+                      }}
+                    >
+
+                      <span className="text-xs text-white">Communication</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-[#8F96A9] font-medium text-right">
+                    {commRaw}
+                  </span>
+                </div>
+
+                {/* Technology Bar */}
+                <div className="flex items-center gap-3">
+                  <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+                    <div
+                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700"
+                      style={{
+                        width: `${(techRaw / Math.max(1, sessionCreated)) * 500}px`,
+                        backgroundColor: "#DFB916",
+
+                      }}
+                    >
+                      <span className="text-xs text-gray-900">Technology</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-[#8F96A9] font-medium text-right">
+                    {techRaw}
                   </span>
                 </div>
               </div>
 
-              {/* Bars */}
-         <div className="space-y-3">
-  {/* Communication Bar */}
-  <div className="flex items-center gap-3">
-    <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
-      <div
-        className="h-5 rounded-full flex items-center pl-2"
-        style={{
-          width: `${commWidth}%`,
-          backgroundColor: '#0f172a',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          transition: 'width 0.3s ease'
-        }}
-      >
-        <span className="text-xs text-white">Communication</span>
-      </div>
-    </div>
-    <span className="text-xs text-gray-700 font-medium w-8 text-right">{commRaw}</span>
-  </div>
 
-  {/* Technology Bar */}
-  <div className="flex items-center gap-3">
-    <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
-      <div
-        className="h-5 rounded-full flex items-center pl-2"
-        style={{
-          width: `${techWidth}%`,
-          backgroundColor: '#DFB916',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          transition: 'width 0.3s ease'
-        }}
-      >
-        <span className="text-xs text-gray-900">Technology</span>
-      </div>
-    </div>
-    <span className="text-xs text-gray-700 font-medium w-8 text-right">{techRaw}</span>
-  </div>
-</div>
 
 
               {/* Bottom Stats */}
-              <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
+              <div className="flex justify-between items-center mt-4 text-sm font-medium text-slate-900">
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{avgSessionDuration}</div>
-                  <div className="text-[12px]">Average Session Duration</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{sessionCreated}</div>
-                  <div className="text-[12px]">Session Created</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{sessionCreated}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Session Created</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1 font-semibold">
+                  <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
                       {Math.round(Number(userTraffic) || 0)}
                     </div>
@@ -318,12 +345,12 @@ const HrDashboard = () => {
                       <img src={trending_down} alt="Down" className="w-5 h-5" />
                     ) : null}
                   </div>
-                  <div className="text-[12px]">User Traffic</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">User Traffic</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{averageScore}</div>
-                  <div className="text-[12px]">Average Score</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{averageScore}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
                 </div>
               </div>
             </div>
@@ -331,8 +358,8 @@ const HrDashboard = () => {
             {/* Bottom Row */}
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div className="flex flex-col gap-6 w-full md:w-2/3">
-                <div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 h-[198px] flex flex-col">
-                  <h2 className="font-semibold mb-3 text-[#182938]">
+                <div className="bg-[#DFB916] rounded-xl shadow-sm p-5 h-[198px] flex flex-col">
+                  <h2 className="font-normal mb-3 text-[#3D5B81]">
                     Annually Hiring Process
                   </h2>
                   <div className="flex-1">
@@ -351,14 +378,17 @@ const HrDashboard = () => {
                           fill="#182938"
                           barSize={25}
                           radius={[6, 6, 0, 0]}
+                          isAnimationActive={true}
+                          animationBegin={animateBars ? 300 : 0}
+                          animationDuration={700}
                         />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-[10px] shadow-sm p-5 h-[150px]">
-                  <h2 className="font-semibold text-gray-700 mb-3">
+                <div className="bg-white rounded-xl shadow-sm p-5 h-[150px]">
+                  <h2 className="font-normal text-[#8F96A9] mb-3">
                     Language Usage
                   </h2>
                   {lineData.length > 0 ? (
@@ -383,15 +413,15 @@ const HrDashboard = () => {
                       </LineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-[80px] text-gray-500 text-sm">
+                    <div className="flex items-center justify-center h-[80px] text-[#8F96A9] text-sm">
                       no data found
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="bg-white shadow-sm p-5 rounded-[10px] w-full md:w-1/3 h-[374px] flex-shrink-0">
-                <h2 className="font-semibold text-gray-700 mb-6">
+              <div className="bg-white shadow-sm p-5 rounded-xl w-full md:w-1/3 h-full flex-shrink-0">
+                <h2 className="font-normal text-[#8F96A9] mb-6">
                   Mostly Asked Technical Skill
                 </h2>
                 {mostDiscussedSkills.length > 0 ? (
@@ -407,7 +437,7 @@ const HrDashboard = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                  <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                     no data found
                   </div>
                 )}
