@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
 
@@ -9,7 +9,7 @@ export default function SessionModal({
   setSessionDuration,
   onSave,
   userData = [],
-  topics = []
+  topics = [],
 }) {
   if (!open) return null;
 
@@ -26,14 +26,35 @@ export default function SessionModal({
   const [errors, setErrors] = useState({});
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
 
-  const uniqueCategories = [...new Set(topics.map(topic => topic.topic_category).filter(Boolean))];
+  const uniqueCategories = [
+    ...new Set(topics.map((topic) => topic.topic_category).filter(Boolean)),
+  ];
+  
+  const [candidateSearch, setCandidateSearch] = useState("");
+
+const filteredCandidates = userData.filter(
+  (candidate) =>
+    candidate.name_email &&
+    candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
+);
+
+  // ✅ Helper function to clear a specific field’s error
+  const clearError = (field) => {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
 
   const validate = () => {
     const newErrors = {};
-    if (!candidateName) newErrors.candidateName = "Candidate name is required.";
-    if (!date) newErrors.date = "Date is required.";
-    if (!sessionCategory) newErrors.sessionCategory = "Session category is required.";
-    if (!sessionTopic.trim()) newErrors.sessionTopic = "Session topic is required.";
+    if (!candidateName) newErrors.candidateName = "Candidate Name should not be empty.";
+    if (!date) newErrors.date = "Date should not be empty.";
+    if (!sessionCategory)
+      newErrors.sessionCategory = "Session category is required.";
+    if (!sessionTopic.trim())
+      newErrors.sessionTopic = "Session topic is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -46,16 +67,16 @@ export default function SessionModal({
       if (!isoDate) return "";
       const d = new Date(isoDate);
       const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      const seconds = String(d.getSeconds()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const hours = String(d.getHours()).padStart(2, "0");
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      const seconds = String(d.getSeconds()).padStart(2, "0");
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
     const scheduleData = {
-      user_id: candidateName, // Assuming candidateName state holds the ID
+      user_id: candidateName, // Assuming candidateName holds ID
       hr_id: userId,
       topic: sessionTopic,
       topic_category: sessionCategory,
@@ -64,15 +85,23 @@ export default function SessionModal({
     };
 
     try {
-      const response = await fatchedPostRequest(postURL.insertUserTopic, scheduleData);
-      if (response && (response.message === "request updated" || response.success === true || response.status === 200)) {
-        onSave(scheduleData); // Notify parent that save was successful
+      const response = await fatchedPostRequest(
+        postURL.insertUserTopic,
+        scheduleData
+      );
+      if (
+        response &&
+        (response.message === "request updated" ||
+          response.success === true ||
+          response.status === 200)
+      ) {
+        onSave(scheduleData);
       } else {
-        alert('Failed to create schedule.');
+        alert("Failed to create schedule.");
       }
     } catch (error) {
       console.error("Error inserting schedule:", error);
-      alert('An error occurred while creating the schedule.');
+      alert("An error occurred while creating the schedule.");
     } finally {
       setIsSaving(false);
     }
@@ -105,19 +134,34 @@ export default function SessionModal({
         open={showSuccess}
         onClose={() => setShowSuccess(false)}
         candidateName={candidateName}
-        isSuccess={true} // Assuming this is a success modal
+        isSuccess={true}
       />
 
       <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl w-[50%] max-w-full h-[80%] max-h-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl w-[50%] max-w-full h-[90%] max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
-            <button onClick={onClose} className="mr-4 text-[#2C2E42] hover:text-[#E5B800]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <button
+              onClick={onClose}
+              className="mr-4 text-[#2C2E42] hover:text-[#E5B800]"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
-            <h2 className="text-2xl font-bold text-[#1F2937]">Add new schedule</h2>
+            <h2 className="text-2xl font-bold text-[#1F2937]">
+              Add new schedule
+            </h2>
           </div>
 
           {/* Form Content */}
@@ -125,59 +169,101 @@ export default function SessionModal({
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               {/* Candidate Name */}
               <div>
-                <label className="block text-[#1F2937] font-medium mb-3 text-base">Candidate Name</label>
+                <label className="block text-[#182938] font-medium mb-3 text-base">
+                  Candidate Name
+                    <span className="text-red-500 mr-1"> *</span>
+                </label>
                 <div className="relative">
                   <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                      } text-[#1F2937]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
+                      errors.candidateName
+                        ? "border-red-500"
+                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
+                    } text-[#BCC7D2]`}
                     value={candidateName}
-                    onChange={(e) => setCandidateName(e.target.value)}
+                    onChange={(e) => {
+                      setCandidateName(e.target.value);
+                      if (e.target.value) clearError("candidateName");
+                    }}
                   >
                     <option value="">Select candidate</option>
                     {userData.map((candidate) => (
-                      <option key={candidate.id} value={candidate.id}>{candidate.name_email}</option>
+                      <option key={candidate.id} value={candidate.id}>
+                        {candidate.name_email}
+                      </option>
                     ))}
                   </select>
                   <svg
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none overflow-y-auto scrollbar-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
-                {errors.candidateName && <p className="text-red-500 text-sm mt-1">{errors.candidateName}</p>}
+                {errors.candidateName && (
+                  <p className="text-red-500 text-sm mt-1 overflow-y-auto scrollbar-none">
+                    {errors.candidateName}
+                  </p>
+                )}
               </div>
 
               {/* Session Date */}
               <div>
-                <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Date Time</label>
+                <label className="block text-[#182938] font-medium mb-3 text-base">
+                  Session Date Time
+                  <span className="text-red-500 mr-1"> *</span>
+                </label>
                 <div className="w-full cursor-pointer">
                   <input
                     type="datetime-local"
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${errors.date ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                      } text-[#1F2937] `}
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                      if (e.target.value) clearError("date");
+                    }}
+                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${
+                      errors.date
+                        ? "border-red-500"
+                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
+                    } text-[#1F2937]`}
                   />
                 </div>
-                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
+                {errors.date && (
+                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                )}
               </div>
 
               {/* Session Category */}
               <div>
-                <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Category</label>
+                <label className="block text-[#182938] font-medium mb-3 text-base">
+                  Session Category
+                  <span className="text-red-500 mr-1"> *</span>
+                </label>
                 <div className="relative">
                   <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.sessionCategory ? "border-red-500" : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                      } text-[#1F2937]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
+                      errors.sessionCategory
+                        ? "border-red-500"
+                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
+                    } text-[#BCC7D2]`}
                     value={sessionCategory}
-                    onChange={(e) => setSessionCategory(e.target.value)}
+                    onChange={(e) => {
+                      setSessionCategory(e.target.value);
+                      if (e.target.value) clearError("sessionCategory");
+                    }}
                   >
                     <option value="">Select category</option>
                     {uniqueCategories.map((category) => (
-                      <option key={category} value={category}>{category}</option>
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
                     ))}
                   </select>
                   <svg
@@ -186,15 +272,27 @@ export default function SessionModal({
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
-                {errors.sessionCategory && <p className="text-red-500 text-sm mt-1">{errors.sessionCategory}</p>}
+                {errors.sessionCategory && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.sessionCategory}
+                  </p>
+                )}
               </div>
 
               {/* Session Duration */}
               <div>
-                <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Duration</label>
+                <label className="block text-[#182938] font-medium mb-3 text-base">
+                  Session Duration
+                  <span className="text-red-500 mr-1"> *</span>
+                </label>
                 <div className="flex items-center gap-4">
                   {/* Editable Input */}
                   <div className="w-[80px] h-[48px] border border-[#E5E7EB] rounded-xl flex items-center justify-center bg-white">
@@ -204,7 +302,7 @@ export default function SessionModal({
                       max={50}
                       value={sessionDuration?.value ?? 15}
                       onChange={handleInputChange}
-                      className="text-[#1F2937] font-medium text-base w-full text-center outline-none bg-transparent"
+                      className="text-[#BCC7D2] font-medium text-base w-full text-center outline-none bg-transparent"
                     />
                   </div>
 
@@ -225,15 +323,19 @@ export default function SessionModal({
                         }
                         className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
                         style={{
-                          background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${((sessionDuration?.value ?? 15) - 5) / 45 * 100
-                            }%, rgba(41, 50, 65, 0.05) ${((sessionDuration?.value ?? 15) - 5) / 45 * 100
-                            }%, rgba(41, 50, 65, 0.05) 100%)`,
+                          background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${
+                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                          }%, rgba(41, 50, 65, 0.05) ${
+                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                          }%, rgba(41, 50, 65, 0.05) 100%)`,
                         }}
                       />
                       <div
                         className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
                         style={{
-                          left: `calc(${((sessionDuration?.value ?? 15) - 5) / 45 * 100}% - 12px)`,
+                          left: `calc(${
+                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                          }% - 12px)`,
                         }}
                       >
                         {sessionDuration?.value ?? 15}
@@ -250,16 +352,29 @@ export default function SessionModal({
 
             {/* Session Topic */}
             <div className="mt-3">
-              <label className="block text-[#1F2937] font-medium mb-3 text-base">Session Topic</label>
+              <label className="block text-[#182938] font-medium mb-3 text-base">
+                Session Topic
+                <span className="text-red-500 mr-1"> *</span>
+              </label>
               <textarea
                 value={sessionTopic}
-                onChange={(e) => setSessionTopic(e.target.value)}
+                onChange={(e) => {
+                  setSessionTopic(e.target.value);
+                  if (e.target.value.trim()) clearError("sessionTopic");
+                }}
                 placeholder="Write session topic..."
                 rows="4"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
-                  } text-[#1F2937]`}
+                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
+                  errors.sessionTopic
+                    ? "border-red-500"
+                    : "border-[#E5E7EB]"
+                } text-[#BCC7D2]`}
               />
-              {errors.sessionTopic && <p className="text-red-500 text-sm mt-1">{errors.sessionTopic}</p>}
+              {errors.sessionTopic && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.sessionTopic}
+                </p>
+              )}
             </div>
           </div>
 
@@ -300,7 +415,7 @@ export default function SessionModal({
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #E5B800;
+          background: #e5b800;
           cursor: pointer;
           border: 6px solid rgba(61, 91, 129, 1);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
