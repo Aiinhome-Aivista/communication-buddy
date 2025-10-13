@@ -6,6 +6,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
@@ -391,6 +392,12 @@ export default function ScheduleSession() {
                                 </ul>
                             )}
                         </div>
+                        <div
+                            className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+                            onClick={ReloadGridData}
+                        >
+                            <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loadingTable || rotation ? 'animate-spin' : ''}`} />
+                        </div>
                     </div>
 
                     {/*DataTable */}
@@ -398,7 +405,6 @@ export default function ScheduleSession() {
                         <div key={`${activeTab}-${search}-${testType}`}>
                             <DataTable
                                 value={filteredData}
-                                loading={loadingTable}
                                 paginator
                                 rows={5}
                                 rowsPerPageOptions={[3, 5]}

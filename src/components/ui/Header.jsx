@@ -76,7 +76,13 @@ export default function Header() {
           </div>
           <Tooltip title="Logout" arrow>
             <LogoutRoundedIcon
-              sx={{ color: "#7E8489" }}
+              sx={{
+                color: "#7E8489",
+                transition: "color 0.2s ease-in-out",
+                "&:hover": {
+                  color: "#4a4e51ff", // Darker color on hover
+                },
+              }}
               className='cursor-pointer'
               onClick={() => setShowLogoutPopup(true)}
             />

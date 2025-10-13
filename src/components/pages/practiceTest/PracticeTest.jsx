@@ -10,8 +10,7 @@ import { fatchedPostRequest, postURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import ExpiredModal from "../../../components/modal/ExpiredModal";
 import UpcomingModal from "../../../components/modal/UpcomingModal";
-
-
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -36,30 +35,31 @@ export default function PracticeTest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTestTitle, setSelectedTestTitle] = useState("");
 
+  const fetchAllTopics = async () => {
+    setLoading(true);
+    try {
+      const payload = { user_id: userId };
+      const response = await fatchedPostRequest(postURL.getAllTopics, payload);
+      if (response && response.topics) {
+        setAllTopics(response.topics);
+        const categories = [
+          "All",
+          ...new Set(response.topics.map((topic) => topic.topic_category)),
+        ];
+        setTestTypeOptions(categories);
+        if (categories.length > 0) setTestType(categories[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching all topics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch topics
   useEffect(() => {
-    const fetchAllTopics = async () => {
-      setLoading(true);
-      try {
-        const payload = { user_id: userId };
-        const response = await fatchedPostRequest(postURL.getAllTopics, payload);
-        if (response && response.topics) {
-          setAllTopics(response.topics);
-          const categories = [
-            "All",
-            ...new Set(response.topics.map((topic) => topic.topic_category)),
-          ];
-          setTestTypeOptions(categories);
-          if (categories.length > 0) setTestType(categories[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching all topics:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAllTopics();
-  }, []);
+  }, [userId]);
 
   // Filter animation
   useEffect(() => {
@@ -155,7 +155,7 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm font-medium rounded-xl ${activeTab === tab
+                  className={`px-6 py-2 text-sm font-medium rounded-xl cursor-pointer ${activeTab === tab
                     ? "bg-[#FEFEFE] text-[#2C2E42]"
                     : "bg-[#ECEFF2] text-[#8F96A9]"
                     }`}
@@ -184,7 +184,7 @@ export default function PracticeTest() {
             {/* Dropdown */}
             <div className="relative ml-auto" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
+                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10 cursor-pointer"
                 style={{ color: "#8F96A9" }}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -219,6 +219,12 @@ export default function PracticeTest() {
                   ))}
                 </ul>
               )}
+            </div>
+            <div
+              className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+              onClick={fetchAllTopics}
+            >
+              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`} />
             </div>
           </div>
 

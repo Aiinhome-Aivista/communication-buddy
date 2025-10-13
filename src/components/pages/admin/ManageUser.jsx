@@ -6,6 +6,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
@@ -27,29 +28,30 @@ export default function ManageUser() {
 
   const navigate = useNavigate();
 
+  const fetchUserData = async () => {
+    setLoading(true);
+    try {
+      const response = await fatchedGetRequest(getURL.GetAllUser);
+      if (response.Success === true || response.status === 200) {
+        const processedData = (response.data || []).map((user) => ({
+          ...user,
+          dob: getDate(user.dob),
+        }));
+        setUserData(processedData);
+
+        const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
+        setTestTypeOptions(userTypes);
+        if (userTypes.length > 0) setTestType(userTypes[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch user data
   useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      try {
-        const response = await fatchedGetRequest(getURL.GetAllUser);
-        if (response.Success === true || response.status === 200) {
-          const processedData = (response.data || []).map((user) => ({
-            ...user,
-            dob: getDate(user.dob),
-          }));
-          setUserData(processedData);
-
-          const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
-          setTestTypeOptions(userTypes);
-          if (userTypes.length > 0) setTestType(userTypes[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUserData();
   }, []);
 
@@ -185,6 +187,12 @@ export default function ManageUser() {
                   ))}
                 </ul>
               )}
+            </div>
+            <div
+              className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+              onClick={fetchUserData}
+            >
+              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`} />
             </div>
           </div>
 

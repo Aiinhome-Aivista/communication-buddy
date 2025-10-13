@@ -6,6 +6,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
@@ -37,35 +38,35 @@ export default function TestResult() {
   // If not, you might need to import and use the correct context provider.
   // const { setUserData } = useContext(UserContext); 
 
+  const fetchTestResults = async () => {
+    if (!userId) return;
+    setLoading(true);
+    try {
+      const payload = { hr_id: userId };
+      const response = await fatchedPostRequest(postURL.hrSessions, payload);
+      console.log("API Response:", response);
+      if (response && response.sessions) {
+        const processedData = (response.sessions || []).map((session) => ({
+          ...session,
+          original_session_time: session.session_time, // Keep original for sorting
+          session_date: getDate(session.session_time),
+          session_time_formatted: getTime(session.session_time),
+        }));
+        setSessionData(processedData);
+
+        // Extract unique statuses for the dropdown filter
+        const statuses = ["All", ...new Set(processedData.map(session => session.status).filter(Boolean))];
+        setTestTypeOptions(statuses);
+        if (statuses.length > 0) setTestType(statuses[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching test results:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Fetch session results data
   useEffect(() => {
-    const fetchTestResults = async () => {
-      if (!userId) return;
-      setLoading(true);
-      try {
-        const payload = { hr_id: userId };
-        const response = await fatchedPostRequest(postURL.hrSessions, payload);
-        console.log("API Response:", response);
-        if (response && response.sessions) {
-          const processedData = (response.sessions || []).map((session) => ({
-            ...session,
-            original_session_time: session.session_time, // Keep original for sorting
-            session_date: getDate(session.session_time),
-            session_time_formatted: getTime(session.session_time),
-          }));
-          setSessionData(processedData);
-
-          // Extract unique statuses for the dropdown filter
-          const statuses = ["All", ...new Set(processedData.map(session => session.status).filter(Boolean))];
-          setTestTypeOptions(statuses);
-          if (statuses.length > 0) setTestType(statuses[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching test results:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchTestResults();
   }, [userId]);
 
@@ -206,6 +207,12 @@ export default function TestResult() {
 
                 </ul>
               )}
+            </div>
+            <div
+              className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+              onClick={fetchTestResults}
+            >
+              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`} />
             </div>
           </div>
 
