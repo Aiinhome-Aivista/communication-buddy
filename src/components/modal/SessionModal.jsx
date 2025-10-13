@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
@@ -38,7 +39,6 @@ export default function SessionModal({
       candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
   );
 
-  // ✅ Helper function to clear a specific field’s error
   const clearError = (field) => {
     setErrors((prev) => {
       const newErrors = { ...prev };
@@ -77,7 +77,7 @@ export default function SessionModal({
     };
 
     const scheduleData = {
-      user_id: candidateName, // Assuming candidateName holds ID
+      user_id: candidateName,
       hr_id: userId,
       topic: sessionTopic,
       topic_category: sessionCategory,
@@ -115,17 +115,19 @@ export default function SessionModal({
     setSessionCategory("");
     setSessionDuration({ value: 15, direction: "up" });
     setErrors({});
+    setCandidateSearch("");
   };
 
+  // Editable Input: Remove up/down arrows and allow only direct typing
   const handleInputChange = (e) => {
-    let val = Number(e.target.value);
-    if (isNaN(val)) return;
+    let val = e.target.value.replace(/[^0-9]/g, "");
+    if (!val) val = 5;
+    val = Number(val);
     if (val < 5) val = 5;
     if (val > 50) val = 50;
-
     setSessionDuration({
       value: val,
-      direction: val > sessionDuration.value ? "up" : "down",
+      direction: "up",
     });
   };
 
@@ -240,7 +242,6 @@ export default function SessionModal({
                 )}
               </div>
 
-
               {/* Session Category */}
               <div>
                 <label className="block text-[#182938] font-medium mb-3 text-base">
@@ -295,49 +296,59 @@ export default function SessionModal({
                   <span className="text-red-500 mr-1"> *</span>
                 </label>
                 <div className="flex items-center gap-4">
-                  {/* Editable Input */}
+                  {/* Editable Input: Remove up/down arrows */}
                   <div className="w-[80px] h-[48px] border border-[#E5E7EB] rounded-xl flex items-center justify-center bg-white">
                     <input
-                      type="number"
-                      min={5}
-                      max={50}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={sessionDuration?.value ?? 15}
                       onChange={handleInputChange}
                       className="text-[#BCC7D2] font-medium text-base w-full text-center outline-none bg-transparent"
+                      style={{
+                        MozAppearance: "textfield",
+                        appearance: "textfield",
+                      }}
+                      onKeyDown={(e) => {
+                        // Prevent up/down arrow keys
+                        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </div>
-
-                  {/* Range Slider */}
+                  {/* Smooth Range Slider */}
                   <div className="flex-1 relative flex flex-col items-stretch">
                     <div className="relative">
-                      <input
-                        type="range"
-                        min={5}
-                        max={50}
-                        step={5}
-                        value={sessionDuration?.value ?? 15}
-                        onChange={(e) =>
-                          setSessionDuration({
-                            value: Number(e.target.value),
-                            direction: "up",
-                          })
-                        }
-                        className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
-                        style={{
-                          background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, rgba(41, 50, 65, 0.05) ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, rgba(41, 50, 65, 0.05) 100%)`,
-                        }}
-                      />
-
+                     <input
+  type="range"
+  min={5}
+  max={50}
+  step={1}
+  value={sessionDuration?.value ?? 15}
+  onChange={(e) =>
+    setSessionDuration({
+      value: Number(e.target.value),
+      direction: "up",
+    })
+  }
+  className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+  style={{
+    background: `linear-gradient(to right, #29324173 0%, #29324173 ${
+      (((sessionDuration?.value ?? 15) - 5) / 45) * 100
+    }%, #e5e7eb ${
+      (((sessionDuration?.value ?? 15) - 5) / 45) * 100
+    }%, #e5e7eb 100%)`,
+    transition: "background 0.2s linear",
+  }}
+/>
                       <div
                         className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
                         style={{
                           left: `calc(${
                             (((sessionDuration?.value ?? 15) - 5) / 45) * 100
                           }% - 12px)`,
+                          transition: "left 0.2s linear",
                         }}
                       >
                         {sessionDuration?.value ?? 15}
@@ -365,7 +376,7 @@ export default function SessionModal({
                   if (e.target.value.trim()) clearError("sessionTopic");
                 }}
                 placeholder="Write session topic..."
-                rows="4.5"
+                rows="6.5"
                 className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
                   errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
                 } text-[#BCC7D2]`}
@@ -382,7 +393,8 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-              className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-[#E5B800] transition"
+               className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                   
               onClick={handleReset}
             >
               Reset
@@ -391,14 +403,16 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-                className="cursor-pointer border-2 border-[#E5B800] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl bg-transparent hover:bg-[#E5B800] transition"
+               className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                  
                 onClick={onClose}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="cursor-pointer bg-[#E5B800] hover:bg-[#D4A700] text-[#1F2937] font-semibold px-8 py-2.5 rounded-xl transition disabled:opacity-70 disabled:cursor-not-allowed"
+                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+               
                 onClick={handleSave}
                 disabled={isSaving}
               >
