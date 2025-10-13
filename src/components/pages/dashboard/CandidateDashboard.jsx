@@ -1,23 +1,11 @@
-import pythonLogo from "../../../assets/logo/python.svg";
-import reactSvg from "../../../assets/react.svg";
 import { postURL, fatchedPostRequest } from "../../../services/ApiService";
-// import cppLogo from "../../../assets/logo/cpp.svg";
-// import reactLogo from "../../../assets/logo/react.svg";
-// import appleLogo from "../../../assets/logo/apple.svg";
-// import phpLogo from "../../../assets/logo/php.svg";
-// import javaLogo from "../../../assets/logo/java.svg";
-// import mysqlLogo from "../../../assets/logo/mysql.svg";
-// import oracleLogo from "../../../assets/logo/oracle.svg";
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
-import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
+import assignmentIcon from "../../../../public/assets/icons/assignment.png";
 import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code, TableChart, Bolt, ShowChart, Science, DataObject } from "@mui/icons-material";
 import { useState, useEffect, useMemo } from "react";
-
 import personImage from "../../../assets/logo/person.jpg";
-import * as SIIcons from "react-icons/si";
-import { FaCode } from "react-icons/fa";
 
 
 
@@ -216,35 +204,165 @@ const CandidateDashboard = () => {
 
   // Map technology names to Material UI icon components
   const getTechIcon = (name) => {
-    if (!name) return FaCode; // fallback
-    const key = name
-      .toLowerCase()
-      .replace(/\+/g, "plus")
-      .replace(/\s/g, ""); // normalize key
+    const key = (name || "").toLowerCase();
+    switch (key) {
+      // Frontend Technologies
+      case "react":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+      case "angular":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg";
+      case "vue":
+      case "vue.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg";
+      case "svelte":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg";
+      case "nextjs":
+      case "next.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg";
 
-    // Map normalized names to actual icon names
-    const mapping = {
-      python: "SiPython",
-      react: "SiReact",
-      angular: "SiAngular",
-      css: "SiCss3",
-      html: "SiHtml5",
-      javascript: "SiJavascript",
-      pandas: "SiPandas",
-      pyspark: "SiApachespark", // note correct export
-      streamlit: "SiStreamlit",
-      tensorflow: "SiTensorflow",
-      "c++": "SiCplusplus",
-      c: "SiC",
-      java: "SiJava",
-      php: "SiPhp",
-      mysql: "SiMysql",
-      oracle: "SiOracle",
-      swift: "SiSwift",
-    };
+      // Web Technologies
+      case "html":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg";
+      case "css":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg";
+      case "javascript":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg";
+      case "typescript":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg";
+      case "jsx":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+      case "sass":
+      case "scss":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg";
+      case "tailwind":
+      case "tailwindcss":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg";
 
-    const iconName = mapping[key];
-    return iconName && SIIcons[iconName] ? SIIcons[iconName] : FaCode;
+      // Backend Technologies
+      case "nodejs":
+      case "node.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg";
+      case "express":
+      case "expressjs":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg";
+      case "nestjs":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-plain.svg";
+      case "fastapi":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg";
+      case "flask":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg";
+      case "django":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg";
+
+      // Programming Languages
+      case "python":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg";
+      case "java":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg";
+      case "c++":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg";
+      case "c":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg";
+      case "c#":
+      case "csharp":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg";
+      case "php":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg";
+      case "ruby":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg";
+      case "go":
+      case "golang":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg";
+      case "rust":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-plain.svg";
+      case "swift":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg";
+      case "kotlin":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg";
+      case "scala":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scala/scala-original.svg";
+
+      // Databases
+      case "mysql":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg";
+      case "postgresql":
+      case "postgres":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg";
+      case "mongodb":
+      case "mongo":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg";
+      case "redis":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg";
+      case "sqlite":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg";
+      case "oracle":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg";
+
+      // Cloud & DevOps
+      case "aws":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg";
+      case "azure":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg";
+      case "gcp":
+      case "google cloud":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg";
+      case "docker":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg";
+      case "kubernetes":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg";
+      case "jenkins":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg";
+
+      // Data Science & AI
+      case "tensorflow":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg";
+      case "pytorch":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg";
+      case "pandas":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg";
+      case "numpy":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg";
+      case "jupyter":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg";
+      case "streamlit":
+        return "https://streamlit.io/images/brand/streamlit-mark-color.svg";
+
+      // Tools & Others
+      case "git":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg";
+      case "github":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg";
+      case "gitlab":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg";
+      case "vscode":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg";
+      case "apache kafka":
+      case "kafka":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg";
+      case "elasticsearch":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg";
+      case "nginx":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg";
+      case "apache":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg";
+      case "pyspark":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg";
+      case "dash":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg";
+      case "dom":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg";
+
+      // Mobile Development
+      case "android":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg";
+      case "flutter":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg";
+      case "react native":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+
+      default:
+        return "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F"; // Gray placeholder with question mark
+    }
   };
 
 
@@ -378,17 +496,22 @@ const CandidateDashboard = () => {
             {mostAskedTechnologies.length > 0 ? (
               <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
                 {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
-                  const IconComp = getTechIcon(tech); // function returning a React Icon or fallback
+                  const iconSrc = getTechIcon(tech);
                   return (
                     <div
                       key={`${tech}-${idx}`}
                       className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                      title={tech}
                     >
-                      {IconComp ? (
-                        <IconComp size={40} color="#2C2E42" />
-                      ) : (
-                        <FaCode size={40} color="#2C2E42" />
-                      )}
+                      <img
+                        src={iconSrc}
+                        alt={tech || "Technology"}
+                        className="w-[40px] h-[40px] object-contain"
+                        onError={(e) => {
+                          // If image fails to load, show placeholder
+                          e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                        }}
+                      />
                     </div>
                   );
                 })}
@@ -496,20 +619,58 @@ const CandidateDashboard = () => {
 
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
-              <div className="flex flex-col items-center">
-                <div className="font-bold text-[20px] text-[#8F96A9]">
-                  {sessionReport.average_session_duration ?? "15 minutes"}
-                </div>
-                <div className="text-[12px] text-[#8F96A9] font-normal">
-                  Average Session Duration
-                </div>
-              </div>
+<div className="flex flex-col items-center">
+  <div className="text-[#8F96A9] text-[20px]">
+    {/* Split integer and decimal parts */}
+    {sessionReport.average_session_duration ? (
+      <>
+        {/* Integer part - Bold */}
+        <span
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 700, // Bold
+            fontStyle: "normal",
+            fontSize: "20px",
+            lineHeight: "100%",
+            letterSpacing: "0%",
+            textAlign: "center",
+            verticalAlign: "middle",
+          }}
+        >
+          {String(sessionReport.average_session_duration).split(".")[0]}
+        </span>
+
+        {/* Decimal part - Light */}
+        <span
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 300, // Light
+            fontStyle: "normal",
+            fontSize: "20px",
+            lineHeight: "100%",
+            letterSpacing: "0%",
+            textAlign: "center",
+            verticalAlign: "middle",
+          }}
+        >
+          .{String(sessionReport.average_session_duration).split(".")[1] || "00"}
+        </span>
+      </>
+    ) : (
+      "15.00"
+    )}
+  </div>
+
+  {/* Label text - Medium */}
+  <div className="text-[12px] text-[#8F96A9] font-normal">
+    Average Session Duration
+  </div>
+</div>
+
 
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[20px] text-[#8F96A9]">
-                                    {Number.isFinite(Number(sessionReport.test_attempted))
-                    ? Number(sessionReport.test_attempted).toFixed(1)
-                    : "0.0"}
+                  {sessionReport.test_attempted ?? "0"}
                 </div>
                 <div className="text-[12px] text-[#8F96A9] font-normal">
                   Test Attempted
@@ -517,15 +678,37 @@ const CandidateDashboard = () => {
               </div>
 
               <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1 font-semibold">
-                  {/* Score */}
-                  <div className="font-bold text-[20px] text-[#8F96A9]">
-                    {Math.round(
-                      Number.isFinite(Number(sessionReport.highest_score))
-                        ? Number(sessionReport.highest_score)
-                        : 0
-                    ).toFixed(1)}
-                  </div>
+<div className="flex items-center gap-1 font-semibold">
+  {/* Score */}
+  <div className="text-[20px] text-[#8F96A9] flex items-center">
+    {(() => {
+      const score = Number(sessionReport.highest_score) || 0;
+      const rounded = score.toFixed(2); // ensures 2 decimals
+      const [intPart, decPart] = rounded.split(".");
+      return (
+        <>
+          <span className="font-bold">{intPart}</span>
+          <span
+            className="font-light"
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 300,        // Light
+              fontStyle: "normal",
+              fontSize: "20px",
+              lineHeight: "100%",
+              letterSpacing: "0%",
+              textAlign: "center",
+              verticalAlign: "middle",
+            }}
+          >
+            .{decPart}
+          </span>
+        </>
+      );
+    })()}
+  </div>
+
+
 
                   {/* Check indicator first, then show icon */}
                   {sessionReport?.highest_score === "up" ? (
@@ -549,17 +732,35 @@ const CandidateDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center">
-                <div className="font-bold text-[20px] text-[#8F96A9]">
-                  {Number.isFinite(Number(sessionReport.average_score))
-                    ? Number(sessionReport.average_score).toFixed(1)
-                    : "0.0"}
+<div className="flex flex-col items-center">
+  <div className="text-[20px] text-[#8F96A9] flex">
+    {(() => {
+      const score = Number(sessionReport.average_score);
+      const rounded = Number.isFinite(score) ? score.toFixed(1) : "0.0";
+      const [intPart, decPart] = rounded.split(".");
+      return (
+        <>
+          <span className="font-bold">{intPart}</span>
+          <span
+            className="font-light"
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 300, // Light
+              fontSize: "20px",
+            }}
+          >
+            .{decPart}
+          </span>
+        </>
+      );
+    })()}
+  </div>
+  <div className="text-[12px] text-[#8F96A9] font-normal">
+    Average Score
+  </div>
+</div>
 
-                                </div>
-                <div className="text-[12px] text-[#8F96A9] font-normal">
-                  Average Score
-                </div>
-              </div>
+
             </div>
           </div>
 
