@@ -29,6 +29,8 @@ const HrDashboard = () => {
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const [topics, setTopics] = useState([]);
 
 
   const hrId =
