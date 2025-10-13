@@ -12,10 +12,30 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code, TableChart, Bolt, ShowChart, Science, DataObject } from "@mui/icons-material";
 import { useState, useEffect, useMemo } from "react";
 
 import personImage from "../../../assets/logo/person.jpg";
+import {
+  SiPython,
+  SiReact,
+  SiAngular,
+  SiCss3,
+  SiHtml5,
+  SiJavascript,
+  SiPandas,
+  SiApachespark,
+  SiStreamlit,
+  SiTensorflow,
+  SiCplusplus,
+  SiC,
+  SiJava,
+  SiPhp,
+  SiMysql,
+  SiOracle,
+  SiSwift,
+} from "react-icons/si";
+
 
 import {
   BarChart,
@@ -209,49 +229,30 @@ const CandidateDashboard = () => {
   const techWidth = Math.round((techCount / totalType) * 100);
 
 
-  const getTechIcon = (name) => {
+  // Map technology names to Material UI icon components
+  const getTechIconComp = (name) => {
     const key = (name || "").toLowerCase();
-    switch (key) {
-      // Prefer imported, bundled assets when available
-      case "python":
-        return pythonLogo;
-      case "react":
-        return reactSvg;
+    const mapping = {
+      python: SiPython,
+      react: SiReact,
+      angular: SiAngular,
+      css: SiCss3,
+      html: SiHtml5,
+      javascript: SiJavascript,
+      pandas: SiPandas,
+      pyspark: SiApachespark,
+      streamlit: SiStreamlit,
+      tensorflow: SiTensorflow,
+      "c++": SiCplusplus,
+      c: SiC,
+      java: SiJava,
+      php: SiPhp,
+      mysql: SiMysql,
+      oracle: SiOracle,
+      swift: SiSwift,
+    };
 
-      // Keep support for public assets if present in /public
-      case "angular":
-        return "/assets/icons/tech_icon/angular.svg";
-      case "css":
-        return "/assets/icons/tech_icon/css.svg";
-      case "html":
-        return "/assets/icons/tech_icon/html.svg";
-      case "javascript":
-        return "/assets/icons/tech_icon/javascript.svg";
-      case "pandas":
-        return "/assets/icons/tech_icon/pandas.svg";
-      case "pyspark":
-        return "/assets/icons/tech_icon/pyspark.svg";
-      case "streamlit":
-        return "/assets/icons/tech_icon/streamlit.svg";
-      case "tensorflow":
-        return "/assets/icons/tech_icon/tensorflow.svg";
-      case "c++":
-        return "/assets/icons/tech_icon/cpp.svg";
-      case "c":
-        return "/assets/icons/tech_icon/c.svg";
-      case "java":
-        return "/assets/icons/tech_icon/java.svg";
-      case "php":
-        return "/assets/icons/tech_icon/php.svg";
-      case "mysql":
-        return "/assets/icons/tech_icon/mysql.svg";
-      case "oracle":
-        return "/assets/icons/tech_icon/oracle.svg";
-      case "swift":
-        return "/assets/icons/tech_icon/swift.svg";
-      default:
-        return null; // force fallback
-    }
+    return mapping[key] || null;
   };
 
 
@@ -383,14 +384,14 @@ const CandidateDashboard = () => {
 
             {mostAskedTechnologies.length > 0 ? (
               <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
-                {mostAskedTechnologies.map((tech, idx) => {
-                  const iconSrc = getTechIcon(tech);
+                {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
+                  const IconComp = getTechIconComp(tech);
                   return (
-                    <div key={`${tech}-${idx}`} className="w-[45px] h-[45px] flex items-center justify-center">
-                      {iconSrc ? (
-                        <img src={iconSrc} alt="" className="w-[45px] h-[45px] object-contain" />
+                    <div key={`${tech}-${idx}`} className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded">
+                      {IconComp ? (
+                        <IconComp sx={{ fontSize: 40, color: '#2C2E42' }} />
                       ) : (
-                        <div className="w-[65px] h-[65px] bg-gray-100 rounded" />
+                        <Code sx={{ fontSize: 40, color: '#2C2E42' }} />
                       )}
                     </div>
                   );
