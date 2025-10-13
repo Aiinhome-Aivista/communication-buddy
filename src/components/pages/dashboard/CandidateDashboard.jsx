@@ -581,14 +581,14 @@ const CustomTooltip1 = ({ active, payload, label }) => {
                         type="monotone"
                         dataKey="uv"
                         stroke="#DFB916"
-                        strokeWidth={3}
+                        strokeWidth={2}
                         dot={{
-                          r: 5,
+                          r: 4,
                           fill: "#DFB916",
                           stroke: "#0f172a",
                           strokeWidth: 1,
                         }}
-                        activeDot={{ r: 7, fill: "#DFB916" }}
+                        activeDot={{ r: 4, fill: "#DFB916" }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
