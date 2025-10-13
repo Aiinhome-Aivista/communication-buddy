@@ -77,6 +77,9 @@ export default function PracticeTest() {
     resetTranscript,
   } = useCustomSpeechRecognition({ language: sttLanguage }) || {};
   const speechTimerRef = useRef(null);
+  // Guards to prevent double submission from mic
+  const micSendLockRef = useRef(false);
+  const lastTranscriptRef = useRef("");
 
   // Persist chat meta for logout-based review save
   useEffect(() => {
@@ -510,7 +513,7 @@ export default function PracticeTest() {
     try {
       const code = getLangCode(selectedLanguage);
       setSttLanguage(code);
-    } catch {}
+    } catch { }
   }, [selectedLanguage]);
 
   const getReadableLanguage = (text) => {
@@ -892,11 +895,16 @@ export default function PracticeTest() {
     })();
   };
 
-  // when transcript changes and user stops recording, send it
+  // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
     if (!isRecording && transcript && transcript.trim() && sessionStarted) {
       // send transcript as message
       const text = transcript.trim();
+      // Prevent double submission: if the same text was just sent, or lock is active, skip
+      if (micSendLockRef.current) return;
+      if (lastTranscriptRef.current && lastTranscriptRef.current === text) return;
+      micSendLockRef.current = true;
+      lastTranscriptRef.current = text;
       const userEntry = { id: Date.now(), text, sender: "user" };
       setMessages((prev) => [...prev, userEntry]);
       setFullConversation((prev) => [...prev, { role: "user", message: text, time: new Date().toLocaleTimeString() }]);
@@ -916,6 +924,11 @@ export default function PracticeTest() {
         // Normal chat API call
         callChatAPI(text);
       }
+
+      // Release the lock shortly after dispatch to avoid rapid duplicate triggers
+      setTimeout(() => {
+        micSendLockRef.current = false;
+      }, 400);
     }
   }, [isRecording, transcript, sessionStarted, waitingForLanguage, languageSelected]);
 
@@ -1169,8 +1182,21 @@ export default function PracticeTest() {
               <button className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
                 onClick={() => {
                   if (isRecording) {
+                    // Manual stop should clear pending timer and release lock soon
+                    try {
+                      if (speechTimerRef.current) {
+                        clearTimeout(speechTimerRef.current);
+                        speechTimerRef.current = null;
+                      }
+                    } catch {}
                     stopRecording();
+                    setTimeout(() => {
+                      micSendLockRef.current = false;
+                    }, 200);
                   } else {
+                    // New recording: clear previous transcript guard and locks
+                    lastTranscriptRef.current = "";
+                    micSendLockRef.current = false;
                     startRecording();
                   }
                 }}
