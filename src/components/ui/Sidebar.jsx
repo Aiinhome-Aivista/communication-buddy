@@ -60,7 +60,7 @@ export default function Sidebar() {
       </div>
       <div className="h-[calc(81%)]">
         {/* Menu */}
-        <nav className="mt-2 p-3">
+        <nav className={`mt-2 ${collapsed ? 'px-4' : 'p-3'}`}>
           {menuItems.map((item) => (
             <NavLink
               key={item.name}
@@ -75,7 +75,7 @@ export default function Sidebar() {
               {({ isActive }) => (
                 <>
                   <div className="group-hover:text-[#3B4A5A]">
-                    {item.icon(isActive ? '#FEFEFE' : '#7E8489')}
+                    {item.icon(isActive ? '#FEFEFE' : '#182938')}
                   </div>
                   {!collapsed && item.name}
                 </>

@@ -6,9 +6,11 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
+import LoaderNew from "../../ui/LoaderNew";
 
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
@@ -27,29 +29,30 @@ export default function ManageUser() {
 
   const navigate = useNavigate();
 
+  const fetchUserData = async () => {
+    setLoading(true);
+    try {
+      const response = await fatchedGetRequest(getURL.GetAllUser);
+      if (response.Success === true || response.status === 200) {
+        const processedData = (response.data || []).map((user) => ({
+          ...user,
+          dob: getDate(user.dob),
+        }));
+        setUserData(processedData);
+
+        const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
+        setTestTypeOptions(userTypes);
+        if (userTypes.length > 0) setTestType(userTypes[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch user data
   useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      try {
-        const response = await fatchedGetRequest(getURL.GetAllUser);
-        if (response.Success === true || response.status === 200) {
-          const processedData = (response.data || []).map((user) => ({
-            ...user,
-            dob: getDate(user.dob),
-          }));
-          setUserData(processedData);
-
-          const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
-          setTestTypeOptions(userTypes);
-          if (userTypes.length > 0) setTestType(userTypes[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUserData();
   }, []);
 
@@ -186,58 +189,74 @@ export default function ManageUser() {
                 </ul>
               )}
             </div>
+            <div
+              className={`relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors ${loading ? 'bg-gray-200' : ''}`}
+              onClick={fetchUserData}
+            >
+              <AutorenewRoundedIcon className={`w-5 h-5 ${loading ? 'animate-spin text-[#2C2E42]' : 'text-[#8F96A9]'}`}
+                sx={{
+                  transition: "color 0.2s ease-in-out",
+                  "&:hover": {
+                    color: "#2C2E42", // Darker color on hover
+                  },
+                }} />
+            </div>
           </div>
 
           {/* Table */}
-          <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-              }`}
-          >
-            <div key={`${search}-${testType}`}>
-              <DataTable
-                value={filteredData}
-                paginator
-                rows={5}
-                rowsPerPageOptions={[5, 10, 25]}
-                paginatorClassName="!m-0 !border-t"
-                rowHover={filteredData.length > 0}
-                emptyMessage={emptyMessageTemplate}
-              >
-                <Column
-                  field="name"
-                  header="Name"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.name}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="email"
-                  header="Email"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.email}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="phone_number"
-                  header="Phone"
-                ></Column>
-                <Column
-                  field="dob"
-                  header="DOB"
-                ></Column>
-                <Column
-                  field="userType"
-                  header="User Type"
-                  body={statusBodyTemplate}
-                  className="text-center"
-                ></Column>
-              </DataTable>
+          {loading ? (
+            <LoaderNew />
+          ) : (
+            <div
+              className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                }`}
+            >
+              <div key={`${search}-${testType}`}>
+                <DataTable
+                  value={filteredData}
+                  paginator
+                  rows={5}
+                  rowsPerPageOptions={[5, 10, 25]}
+                  paginatorClassName="!m-0 !border-t"
+                  rowHover={filteredData.length > 0}
+                  emptyMessage={emptyMessageTemplate}
+                >
+                  <Column
+                    field="name"
+                    header="Name"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.name}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="email"
+                    header="Email"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.email}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="phone_number"
+                    header="Phone"
+                  ></Column>
+                  <Column
+                    field="dob"
+                    header="DOB"
+                  ></Column>
+                  <Column
+                    field="userType"
+                    header="User Type"
+                    body={statusBodyTemplate}
+                    className="text-center"
+                  ></Column>
+                </DataTable>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

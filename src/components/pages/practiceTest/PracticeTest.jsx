@@ -10,8 +10,8 @@ import { fatchedPostRequest, postURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import ExpiredModal from "../../../components/modal/ExpiredModal";
 import UpcomingModal from "../../../components/modal/UpcomingModal";
-
-
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
+import LoaderNew from "../../ui/LoaderNew";
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -36,30 +36,31 @@ export default function PracticeTest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTestTitle, setSelectedTestTitle] = useState("");
 
+  const fetchAllTopics = async () => {
+    setLoading(true);
+    try {
+      const payload = { user_id: userId };
+      const response = await fatchedPostRequest(postURL.getAllTopics, payload);
+      if (response && response.topics) {
+        setAllTopics(response.topics);
+        const categories = [
+          "All",
+          ...new Set(response.topics.map((topic) => topic.topic_category)),
+        ];
+        setTestTypeOptions(categories);
+        if (categories.length > 0) setTestType(categories[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching all topics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch topics
   useEffect(() => {
-    const fetchAllTopics = async () => {
-      setLoading(true);
-      try {
-        const payload = { user_id: userId };
-        const response = await fatchedPostRequest(postURL.getAllTopics, payload);
-        if (response && response.topics) {
-          setAllTopics(response.topics);
-          const categories = [
-            "All",
-            ...new Set(response.topics.map((topic) => topic.topic_category)),
-          ];
-          setTestTypeOptions(categories);
-          if (categories.length > 0) setTestType(categories[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching all topics:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAllTopics();
-  }, []);
+  }, [userId]);
 
   // Filter animation
   useEffect(() => {
@@ -155,8 +156,8 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm font-medium rounded-xl ${activeTab === tab
-                    ? "bg-[#FEFEFE] text-[#2C2E42]"
+                  className={`px-6 py-2 text-sm rounded-xl cursor-pointer ${activeTab === tab
+                    ? "bg-[#FEFEFE] text-[#2C2E42] font-bold"
                     : "bg-[#ECEFF2] text-[#8F96A9]"
                     }`}
                   onClick={() => setActiveTab(tab)}
@@ -184,7 +185,7 @@ export default function PracticeTest() {
             {/* Dropdown */}
             <div className="relative ml-auto" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
+                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10 cursor-pointer"
                 style={{ color: "#8F96A9" }}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -220,100 +221,116 @@ export default function PracticeTest() {
                 </ul>
               )}
             </div>
+            <div
+              className={`relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors ${loading ? 'bg-gray-200' : ''}`}
+              onClick={fetchAllTopics}
+            >
+              <AutorenewRoundedIcon className={`w-5 h-5 ${loading ? 'animate-spin text-[#2C2E42]' : 'text-[#8F96A9]'}`}
+                sx={{
+                  transition: "color 0.2s ease-in-out",
+                  "&:hover": {
+                    color: "#2C2E42", // Darker color on hover
+                  },
+                }} />
+            </div>
           </div>
 
           {/* Table */}
-          <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-              }`}
-          >
-            <div key={`${activeTab}-${search}-${testType}`}>
-              <DataTable
-                value={filteredData}
-                paginator
-                rows={5}
-                rowsPerPageOptions={[3, 5]}
-                paginatorClassName="!m-0 !border-t"
-                rowHover={filteredData.length > 0}
-                emptyMessage={emptyMessageTemplate}
-                onRowClick={(e) => {
-                  const status = e.data.topic_attend_status?.toLowerCase();
-                  if (status === "ongoing") {
-                    navigate("/test/chat", {
-                      state: {
-                        topic: e.data.topic_name,
-                        topic_name: e.data.topic_name,
-                        hr_id: e.data.hr_id,
-                        hr_name: e.data.hr_name,
-                        assigned_by: e.data.hr_name,
-                        user_id: e.data.user_id,
-                        status: e.data.topic_attend_status,
-                      },
-                    });
-                  } else if (status === "expired") {
-                    setSelectedTestTitle(e.data.topic_name);
-                    setIsModalOpen(true);
-                  } else if (status === "upcoming") {
-                    setSelectedTestItem(e.data);
-                    setIsUpcomingModalOpen(true);
-                  }
+          {loading ? (
+            <LoaderNew />
+          ) : (
+            <div
+              className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                }`}
+            >
+              <div key={`${activeTab}-${search}-${testType}`}>
+                <DataTable
+                  value={filteredData}
+                  paginator
+                  rows={5}
+                  rowsPerPageOptions={[3, 5]}
+                  paginatorClassName="!m-0 !border-t"
+                  rowHover={filteredData.length > 0}
+                  emptyMessage={emptyMessageTemplate}
+                  onRowClick={(e) => {
+                    const status = e.data.topic_attend_status?.toLowerCase();
+                    if (status === "ongoing") {
+                      navigate("/test/chat", {
+                        state: {
+                          topic: e.data.topic_name,
+                          topic_name: e.data.topic_name,
+                          hr_id: e.data.hr_id,
+                          hr_name: e.data.hr_name,
+                          assigned_by: e.data.hr_name,
+                          user_id: e.data.user_id,
+                          status: e.data.topic_attend_status,
+                        },
+                      });
+                    } else if (status === "expired") {
+                      setSelectedTestTitle(e.data.topic_name);
+                      setIsModalOpen(true);
+                    } else if (status === "upcoming") {
+                      setSelectedTestItem(e.data);
+                      setIsUpcomingModalOpen(true);
+                    }
 
 
-                }}
-              >
-                <Column
-                  field="topic_name"
-                  header="Test Title"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.topic_name}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="hr_name"
-                  header="Assigned by"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.hr_name}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="session_date"
-                  header="Session Date"
-                  body={(rowData) => {
-                    if (!rowData.session_time) return "";
-                    const date = new Date(rowData.session_time);
-                    return date.toLocaleDateString("en-GB");
                   }}
-                ></Column>
-                <Column
-                  field="session_time"
-                  header="Session Time"
-                  body={(rowData) => {
-                    if (!rowData.session_time) return "N/A";
-                    return new Date(rowData.session_time).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    });
-                  }}
-                ></Column>
-                <Column
-                  field="total_time"
-                  header="Session Duration"
-                  body={(rowData) => `${rowData.total_time} mins`}
-                ></Column>
-                <Column
-                  field="topic_attend_status"
-                  header="Status"
-                  body={statusBodyTemplate}
-                  className="text-center"
-                ></Column>
-              </DataTable>
+                >
+                  <Column
+                    field="topic_name"
+                    header="Test Title"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.topic_name}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="hr_name"
+                    header="Assigned by"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.hr_name}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="session_date"
+                    header="Session Date"
+                    body={(rowData) => {
+                      if (!rowData.session_time) return "";
+                      const date = new Date(rowData.session_time);
+                      return date.toLocaleDateString("en-GB");
+                    }}
+                  ></Column>
+                  <Column
+                    field="session_time"
+                    header="Session Time"
+                    body={(rowData) => {
+                      if (!rowData.session_time) return "N/A";
+                      return new Date(rowData.session_time).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      });
+                    }}
+                  ></Column>
+                  <Column
+                    field="total_time"
+                    header="Session Duration"
+                    body={(rowData) => `${rowData.total_time} mins`}
+                  ></Column>
+                  <Column
+                    field="topic_attend_status"
+                    header="Status"
+                    body={statusBodyTemplate}
+                    className="text-center"
+                  ></Column>
+                </DataTable>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
