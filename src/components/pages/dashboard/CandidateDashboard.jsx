@@ -207,6 +207,32 @@ const CustomTooltip1 = ({ active, payload, label }) => {
   const commWidth = Math.round((commCount / totalType) * 100);
   const techWidth = Math.round((techCount / totalType) * 100);
 
+
+ const getTechIcon = (name) => {
+  switch (name?.toLowerCase()) {
+    case "python": return "/assets/icons/tech_icon/python.svg";
+    case "angular": return "/assets/icons/tech_icon/angular.svg";
+    case "css": return "/assets/icons/tech_icon/css.svg";
+    case "html": return "/assets/icons/tech_icon/html.svg";
+    case "javascript": return "/assets/icons/tech_icon/javascript.svg";
+    case "pandas": return "/assets/icons/tech_icon/pandas.svg";
+    case "pyspark": return "/assets/icons/tech_icon/pyspark.svg";
+    case "react": return "/assets/icons/tech_icon/react.svg";
+    case "streamlit": return "/assets/icons/tech_icon/streamlit.svg";
+    case "tensorflow": return "/assets/icons/tech_icon/tensorflow.svg";
+    case "angular": return "/assets/icons/tech_icon/angular.svg";
+    case "c++": return "/assets/icons/tech_icon/cpp.svg";
+    case "c": return "/assets/icons/tech_icon/c.svg";
+    case "java": return "/assets/icons/tech_icon/java.svg";
+    case "php": return "/assets/icons/tech_icon/php.svg";
+    case "mysql": return "/assets/icons/tech_icon/mysql.svg";
+    case "oracle": return "/assets/icons/tech_icon/oracle.svg";
+    case "swift": return "/assets/icons/tech_icon/swift.svg";
+    default: return "/assets/icons/tech_icon/default.svg";
+  }
+};
+
+
   return (
     <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
       {/* Header */}
@@ -316,38 +342,51 @@ const CustomTooltip1 = ({ active, payload, label }) => {
           </div>
 
           {/* Mostly Asked Tech */}
-          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-            <h2 style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 400,           // Regular
-              fontStyle: "normal",       // Regular style
-              fontSize: "15px",
-              verticalAlign: "middle",
-              display: "inline-block",
-              padding: "2px 6px",
-              borderRadius: "4px",
-              color: "#8F96A9",
-            }}>
-              Mostly Asked Technology
-            </h2>
-            {mostAskedTechnologies.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                {mostAskedTechnologies.map((tech, idx) => (
-                  <span
-                    key={`${tech}-${idx}`}
-                    className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
-                    title={tech}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                no data found
-              </div>
-            )}
+<div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
+  <h2
+    style={{
+      fontFamily: "Inter, sans-serif",
+      fontWeight: 400,
+      fontStyle: "normal",
+      fontSize: "15px",
+      verticalAlign: "middle",
+      display: "inline-block",
+      padding: "2px 6px",
+      borderRadius: "4px",
+      color: "#8F96A9",
+    }}
+  >
+    Mostly Asked Technology
+  </h2>
+
+  {mostAskedTechnologies.length > 0 ? (
+    <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
+      {mostAskedTechnologies.map((tech, idx) => {
+        const iconSrc = getTechIcon(tech);
+        return (
+          <div
+            key={`${tech}-${idx}`}
+            className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100 transition"
+            title={tech}
+          >
+            <img
+              src={iconSrc}
+              alt={tech}
+              className="w-5 h-5 object-contain"
+              onError={(e) => (e.currentTarget.style.display = "none")}
+            />
+            <span>{tech}</span>
           </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+      No data found
+    </div>
+  )}
+</div>
+
         </div>
 
         {/* CENTER + RIGHT SECTION */}
