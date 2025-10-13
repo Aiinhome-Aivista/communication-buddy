@@ -275,7 +275,7 @@ const HrDashboard = () => {
             </div>
 
             {/* Mostly Asked Tech */}
-            <div className="bg-white rounded-xl shadow-sm p-4 w-full h-[374px]">
+            <div className="bg-white rounded-xl shadow-sm p-4 w-full h-full">
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
@@ -406,12 +406,12 @@ const HrDashboard = () => {
             {/* Bottom Row */}
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div className="flex flex-col gap-6 w-full md:w-2/3">
-                <div className="bg-[#DFB916] rounded-xl shadow-sm p-5 h-[198px] flex flex-col">
+                <div className="bg-[#DFB916] rounded-xl shadow-sm p-4 h-[200px] flex flex-col">
                   <h2 className="font-normal mb-3 text-[#3D5B81]">
                     Annually Hiring Process
                   </h2>
                   <div className="flex-1">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer>
                       <BarChart data={barData}>
                         <XAxis dataKey="name" hide />
                         <YAxis
@@ -436,7 +436,7 @@ const HrDashboard = () => {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm p-4 h-[200px] overflow-hidden">
-                  <h2 className="font-normal text-[#8F96A9] mb-3">
+                  <h2 className="font-normal text-[#8F96A9]">
                     Language Usage
                   </h2>
 
@@ -445,15 +445,15 @@ const HrDashboard = () => {
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                           data={lineData}
-                          margin={{ top: 10, right: 10, left: 10, bottom: 0 }} 
+                          margin={{ top: 10, right: 10, left: 10, bottom: 10 }} 
                         >
                           <XAxis dataKey="name" hide />
                           <YAxis hide />
                           <Tooltip
-                            cursor={false} // ✅ Removes the long hover line
+                            cursor={false} 
                             content={({ active, payload }) =>
                               active && payload && payload.length ? (
-                                <div className="bg-[#FEEFC3] px-3 py-1 rounded-xl text-[#DFB916] font-semibold text-sm shadow-md">
+                                <div className="bg-[#FEEFC3] px-4 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
                                   {`${payload[0].payload.name} ${payload[0].value}`}
                                 </div>
                               ) : null
