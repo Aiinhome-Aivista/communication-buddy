@@ -67,13 +67,15 @@ export default function PracticeTest() {
   const chatContainerRef = useRef(null);
 
   // Speech recognition hook
+  // Speech-to-text language, defaults to English (India); will sync with selectedLanguage
+  const [sttLanguage, setSttLanguage] = useState("en-IN");
   const {
     startRecording,
     stopRecording,
     isRecording,
     transcript,
     resetTranscript,
-  } = useCustomSpeechRecognition({ language: "en-IN" }) || {};
+  } = useCustomSpeechRecognition({ language: sttLanguage }) || {};
   const speechTimerRef = useRef(null);
 
   // Persist chat meta for logout-based review save
@@ -503,6 +505,14 @@ export default function PracticeTest() {
     }
   };
 
+  // Keep STT language aligned with selected chat language so mic input is transcribed correctly (e.g., Hindi -> Devanagari)
+  useEffect(() => {
+    try {
+      const code = getLangCode(selectedLanguage);
+      setSttLanguage(code);
+    } catch {}
+  }, [selectedLanguage]);
+
   const getReadableLanguage = (text) => {
     const t = (text || "").trim().toLowerCase();
     if (t.includes("हिंदी") || t.includes("hindi")) return "Hindi";
@@ -894,6 +904,12 @@ export default function PracticeTest() {
 
       // Check if we're waiting for language selection
       if (waitingForLanguage) {
+        // Auto-detect spoken language and set it before starting the session
+        const autoReadable = getReadableLanguage(text);
+        if (autoReadable && autoReadable !== selectedLanguage) {
+          setSelectedLanguage(autoReadable);
+          setSttLanguage(getLangCode(autoReadable));
+        }
         // Call start_session with language input
         startSessionWithLanguage(text);
       } else if (languageSelected) {
