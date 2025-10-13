@@ -943,7 +943,7 @@ export default function PracticeTest() {
         stopRecording?.();
         // The transcript will be processed by the previous useEffect
       }
-    }, 2000);
+    }, 4000);
 
     return () => {
       if (speechTimerRef.current) {
