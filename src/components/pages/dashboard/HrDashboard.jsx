@@ -19,6 +19,8 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 
+
+
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
@@ -138,6 +140,9 @@ const HrDashboard = () => {
   const commWidth = `${Math.round((commRaw / totalType) * 100)}%`;
   const techWidth = `${Math.round((techRaw / totalType) * 100)}%`;
 
+
+
+
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
@@ -186,6 +191,7 @@ const HrDashboard = () => {
                     innerRadius={30}
                     outerRadius={55}
                     paddingAngle={4}
+                  cornerRadius={5}
                     dataKey="value"
                   >
                     {pieData.map((_, i) => (
@@ -238,6 +244,7 @@ const HrDashboard = () => {
             <div className="bg-white rounded-2xl shadow-sm p-1 px-4 w-full h-[220px]">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
+                 
                 <div className="flex flex-col items-start">
                   <div className="flex items-center gap-2">
                     <img src={groupLogo} alt="Group" className="w-5 h-5" />
@@ -248,8 +255,12 @@ const HrDashboard = () => {
                   <span className="text-[12px] text-[#8F96A9] -ml-7">
                     Active participant
                   </span>
+                
                 </div>
               </div>
+                <div className="font-inter font-normal text-[13px] leading-none tracking-normal align-middle text-[#8F96A9] mb-3">
+              Session type
+            </div>
 
               {/* Bars */}
          <div className="space-y-3">
@@ -298,17 +309,17 @@ const HrDashboard = () => {
               {/* Bottom Stats */}
               <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
                 <div className="flex flex-col items-center">
-                  <div className="font-normal text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
-                  <div className="text-[12px] text-[#8F96A9]">Average Session Duration</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-normal text-[20px] text-[#8F96A9]">{sessionCreated}</div>
-                  <div className="text-[12px] text-[#8F96A9]">Session Created</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{sessionCreated}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Session Created</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1 font-normal text-[#8F96A9]">
+                  <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
                       {Math.round(Number(userTraffic) || 0)}
                     </div>
@@ -318,12 +329,12 @@ const HrDashboard = () => {
                       <img src={trending_down} alt="Down" className="w-5 h-5" />
                     ) : null}
                   </div>
-                  <div className="text-[12px] text-[#8F96A9]">User Traffic</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">User Traffic</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-normal text-[20px] text-[#8F96A9]">{averageScore}</div>
-                  <div className="text-[12px] text-[#8F96A9]">Average Score</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{averageScore}</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
                 </div>
               </div>
             </div>
@@ -390,7 +401,7 @@ const HrDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-sm p-5 rounded-[10px] w-full md:w-1/3 h-[374px] flex-shrink-0">
+              <div className="bg-white shadow-sm p-5 rounded-[10px] w-full md:w-1/3 h-full flex-shrink-0">
                 <h2 className="font-normal text-[#8F96A9] mb-6">
                   Mostly Asked Technical Skill
                 </h2>
