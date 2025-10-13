@@ -196,20 +196,20 @@ const HrDashboard = () => {
               </ResponsiveContainer>
 
               <div className="flex justify-center gap-8 mt-2 text-xs font-medium">
-                <div className="flex flex-col items-center text-slate-900">
+                <div className="flex flex-col items-center">
                   <div className="font-bold text-[20px]">{completedPct}%</div>
-                  <div className="text-[12px]">Completed</div>
+                  <div className="text-[12px]text-[#8F96A9] ">Completed</div>
                 </div>
                 <div className="flex flex-col items-center text-[#DFB916]">
                   <div className="font-bold text-[20px]">{pendingPct}%</div>
-                  <div className="text-[12px] text-black">Pending</div>
+                  <div className="text-[12px] text-[#8F96A9]">Pending</div>
                 </div>
               </div>
             </div>
 
             {/* Mostly Asked Tech */}
             <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-              <h2 className="font-semibold text-gray-700 mb-6">
+              <h2 className="font-semibold text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
               {mostAskedTechnologies.length > 0 ? (
@@ -358,7 +358,7 @@ const HrDashboard = () => {
                 </div>
 
                 <div className="bg-white rounded-[10px] shadow-sm p-5 h-[150px]">
-                  <h2 className="font-semibold text-gray-700 mb-3">
+                  <h2 className="font-semibold text-[#8F96A9] mb-3">
                     Language Usage
                   </h2>
                   {lineData.length > 0 ? (
