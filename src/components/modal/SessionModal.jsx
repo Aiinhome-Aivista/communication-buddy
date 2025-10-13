@@ -140,7 +140,7 @@ export default function SessionModal({
         isSuccess={true}
       />
 
-      <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
         <div className="bg-white rounded-2xl w-[50%] max-w-full h-[90%] max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
