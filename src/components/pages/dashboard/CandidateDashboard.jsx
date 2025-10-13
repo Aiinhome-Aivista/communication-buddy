@@ -16,25 +16,7 @@ import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code
 import { useState, useEffect, useMemo } from "react";
 
 import personImage from "../../../assets/logo/person.jpg";
-import {
-  SiPython,
-  SiReact,
-  SiAngular,
-  SiCss3,
-  SiHtml5,
-  SiJavascript,
-  SiPandas,
-  SiApachespark,
-  SiStreamlit,
-  SiTensorflow,
-  SiCplusplus,
-  SiC,
-  SiJava,
-  SiPhp,
-  SiMysql,
-  SiOracle,
-  SiSwift,
-} from "react-icons/si";
+
 
 
 import {
@@ -232,26 +214,7 @@ const CandidateDashboard = () => {
   // Map technology names to Material UI icon components
   const getTechIconComp = (name) => {
     const key = (name || "").toLowerCase();
-    const mapping = {
-      python: SiPython,
-      react: SiReact,
-      angular: SiAngular,
-      css: SiCss3,
-      html: SiHtml5,
-      javascript: SiJavascript,
-      pandas: SiPandas,
-      pyspark: SiApachespark,
-      streamlit: SiStreamlit,
-      tensorflow: SiTensorflow,
-      "c++": SiCplusplus,
-      c: SiC,
-      java: SiJava,
-      php: SiPhp,
-      mysql: SiMysql,
-      oracle: SiOracle,
-      swift: SiSwift,
-    };
-
+    const mapping = { python: Code, react: Bolt, angular: IntegrationInstructions, css: Css, html: Html, javascript: Javascript, pandas: TableChart, pyspark: DataObject, streamlit: ShowChart, tensorflow: Science, "c++": Code, c: Code, java: Code, php: Code, mysql: TableChart, oracle: TableChart, swift: Code, };
     return mapping[key] || null;
   };
 
