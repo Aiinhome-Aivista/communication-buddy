@@ -5,7 +5,7 @@ const SuccessModal = ({ open, onClose }) => {
         if (open) {
             const timer = setTimeout(() => {
                 onClose();
-            }, 5000); // Auto close after 5 seconds
+            }, 1000); // Auto close after 1 seconds
             return () => clearTimeout(timer);
         }
     }, [open, onClose]);
