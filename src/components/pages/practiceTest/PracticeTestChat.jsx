@@ -1034,7 +1034,7 @@ export default function PracticeTest() {
     setShowTimeUpPopup(false);
     setSessionExpired(false);
   }}
-  className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
+  className="absolute top-1 right-1 text-[#DFB916] transition"
 >
   <CancelIcon className="w-10 h-10" />
 </button>
@@ -1247,7 +1247,7 @@ export default function PracticeTest() {
           try { window.speechSynthesis.cancel(); } catch { }
           setShowTimeUpPopup(false);
         }}
-        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
+        className="absolute top-1 right-1 text-[#DFB916] transition"
       >
         <CancelIcon className="w-10 h-10" />
       </button>
@@ -1282,7 +1282,7 @@ export default function PracticeTest() {
       {/* Close Icon */}
       <button
         onClick={closePopup}
-        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#f1df79] transition"
+        className="absolute top-1 right-1 text-[#DFB916] transition"
       >
        <CancelIcon className="w-10 h-10" />
       </button>
