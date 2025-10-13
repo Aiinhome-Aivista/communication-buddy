@@ -292,12 +292,12 @@ export default function PracticeTest() {
                   field="session_time"
                   header="Session Time"
                   body={(rowData) => {
-                    if (!rowData.session_time) return "";
-                    const date = new Date(rowData.session_time);
-                    const day = String(date.getDate()).padStart(2, "0");
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const year = date.getFullYear();
-                    return `${day}/${month}/${year}`;
+                    if (!rowData.session_time) return "N/A";
+                    return new Date(rowData.session_time).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    });
                   }}
                 ></Column>
                 <Column
