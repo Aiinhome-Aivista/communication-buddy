@@ -18,12 +18,10 @@ import {
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
-
-
-
-
-
-
+import * as SIIcons from "react-icons/si";
+import { FaCode } from "react-icons/fa";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
@@ -165,6 +163,173 @@ const HrDashboard = () => {
   const commRaw = sessionReport?.session_type?.communication ?? 0;
   const techRaw = sessionReport?.session_type?.technology ?? 0;
 
+  // Ensure both bars share the same base width using percentage of total
+  const totalType = Math.max(1, Number(commRaw) + Number(techRaw));
+  const commWidthPct = `${Math.round((Number(commRaw) / totalType) * 100)}%`;
+  const techWidthPct = `${Math.round((Number(techRaw) / totalType) * 100)}%`;
+
+  const getTechIcon = (name) => {
+    const key = (name || "").toLowerCase();
+    switch (key) {
+      // Frontend Technologies
+      case "react":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+      case "angular":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg";
+      case "vue":
+      case "vue.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg";
+      case "svelte":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg";
+      case "nextjs":
+      case "next.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg";
+
+      // Web Technologies
+      case "html":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg";
+      case "css":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg";
+      case "javascript":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg";
+      case "typescript":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg";
+      case "jsx":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+      case "sass":
+      case "scss":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg";
+      case "tailwind":
+      case "tailwindcss":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg";
+
+      // Backend Technologies
+      case "nodejs":
+      case "node.js":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg";
+      case "express":
+      case "expressjs":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg";
+      case "nestjs":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-plain.svg";
+      case "fastapi":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg";
+      case "flask":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg";
+      case "django":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg";
+
+      // Programming Languages
+      case "python":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg";
+      case "java":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg";
+      case "c++":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg";
+      case "c":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg";
+      case "c#":
+      case "csharp":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg";
+      case "php":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg";
+      case "ruby":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg";
+      case "go":
+      case "golang":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg";
+      case "rust":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-plain.svg";
+      case "swift":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg";
+      case "kotlin":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg";
+      case "scala":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scala/scala-original.svg";
+
+      // Databases
+      case "mysql":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg";
+      case "postgresql":
+      case "postgres":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg";
+      case "mongodb":
+      case "mongo":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg";
+      case "redis":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg";
+      case "sqlite":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg";
+      case "oracle":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg";
+
+      // Cloud & DevOps
+      case "aws":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg";
+      case "azure":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg";
+      case "gcp":
+      case "google cloud":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg";
+      case "docker":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg";
+      case "kubernetes":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg";
+      case "jenkins":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg";
+
+      // Data Science & AI
+      case "tensorflow":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg";
+      case "pytorch":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg";
+      case "pandas":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg";
+      case "numpy":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg";
+      case "jupyter":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg";
+      case "streamlit":
+        return "https://streamlit.io/images/brand/streamlit-mark-color.svg";
+
+      // Tools & Others
+      case "git":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg";
+      case "github":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg";
+      case "gitlab":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg";
+      case "vscode":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg";
+      case "apache kafka":
+      case "kafka":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg";
+      case "elasticsearch":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg";
+      case "nginx":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg";
+      case "apache":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg";
+      case "pyspark":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg";
+      case "dash":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg";
+      case "dom":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg";
+
+      // Mobile Development
+      case "android":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg";
+      case "flutter":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg";
+      case "react native":
+        return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
+
+      default:
+        return "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F"; // Gray placeholder with question mark
+    }
+  };
+
   useEffect(() => {
     if (!loading && data) {
       // Delay to allow smooth entry animation
@@ -197,8 +362,44 @@ const HrDashboard = () => {
     return null;
   };
 
- 
 
+  // const getTechIcon = (name) => {
+  //   if (!name) return FaCode; // fallback
+  //   const key = name
+  //     .toLowerCase()
+  //     .replace(/\+/g, "plus")
+  //     .replace(/\s/g, ""); // normalize key
+
+  //   // Map normalized names to actual icon names
+  //   const mapping = {
+  //     python: "SiPython",
+  //     angular: "SiAngular",
+  //     "apache kafka": "SiApachKafka", // Apache Kafka
+  //     css: "SiCss3",
+  //     dash: "SiPlotly", // Dash is from Plotly
+  //     dom: "SiJavascript", // Closest icon for DOM
+  //     elasticsearch: "SiElasticsearch",
+  //     html: "SiHtml5",
+  //     javascript: "SiJavascript",
+  //     jsx: "SiReact", // JSX is used in React
+  //     react: "SiReact",
+  //     pandas: "SiPandas",
+  //     pyspark: "SiApachespark",
+  //     streamlit: "SiStreamlit",
+  //     tensorflow: "SiTensorflow",
+  //     "c++": "SiCplusplus",
+  //     c: "SiC",
+  //     java: "SiJava",
+  //     php: "SiPhp",
+  //     mysql: "SiMysql",
+  //     oracle: "SiOracle",
+  //     swift: "SiSwift",
+  //   };
+
+
+  //   const iconName = mapping[key];
+  //   return iconName && SIIcons[iconName] ? SIIcons[iconName] : FaCode;
+  // };
 
 
 
@@ -276,31 +477,42 @@ const HrDashboard = () => {
               </div>
             </div>
 
+           
             {/* Mostly Asked Tech */}
             <div className="bg-white rounded-xl shadow-sm p-4 w-full h-full">
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
-               {mostAskedTechnologies.length > 0 ? (
-                       <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
-                         {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
-                           // function returning a React Icon or fallback
-                           return (
-                             <div
-                               key={`${tech}-${idx}`}
-                               className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
-                                title={tech}
-                             >
-                              
-                             </div>
-                           );
-                         })}
-                       </div>
-              ) : (
-                <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
-                  no data found
+            {mostTopTechnologies.length > 0 ? (
+              <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
+                {mostTopTechnologies.slice(0, 16).map((tech, idx) => {
+                  const iconSrc = getTechIcon(tech);
+                  return (
+                    <div
+                      key={`${tech}-${idx}`}
+                      className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                      title={tech}
+                    >
+                      <img
+                        src={iconSrc}
+                        alt={tech || "Technology"}
+                        className="w-[40px] h-[40px] object-contain"
+                        onError={(e) => {
+                          // If image fails to load, show placeholder
+                          e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                        }}
+                      />
+                    </div>
+                    
+                  );
+                })}
                 </div>
-              )}
+                
+            ) : (
+              <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
+                No data found
+              </div>
+            )}
             </div>
           </div>
 
@@ -507,12 +719,12 @@ const HrDashboard = () => {
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                           data={lineData}
-                          margin={{ top: 10, right: 10, left: 10, bottom: 10 }} 
+                          margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
                         >
                           <XAxis dataKey="name" hide />
                           <YAxis hide />
                           <Tooltip
-                            cursor={false} 
+                            cursor={false}
                             content={({ active, payload }) =>
                               active && payload && payload.length ? (
                                 <div className="bg-[#FEEFC3] px-4 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
@@ -531,9 +743,9 @@ const HrDashboard = () => {
                               fill: "#DFB916",
                               stroke: "#DFB916",
                               strokeWidth: 2,
-                              opacity: 0.9, 
+                              opacity: 0.9,
                             }}
-                            
+
                             activeDot={{
                               r: 8,
                               fill: "#DFB916",
@@ -558,22 +770,45 @@ const HrDashboard = () => {
                   Mostly Asked Technical Skill
                 </h2>
                 {mostAskedTechnologies.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
+                  <Stack
+                    direction="row"
+                    flexWrap="wrap"
+                    spacing={1.5}
+                    useFlexGap
+                    justifyContent="center"
+                    mt={2}
+                  >
                     {mostAskedTechnologies.map((skill, i) => (
-                      <span
+                      <Chip
                         key={`${skill}-${i}`}
-                        className="bg-[#D9D9D933] px-4 py-2 border-[#3D5B81] border-1 items-center  rounded-4xl text-[#8F96A9]"
+                        label={skill}
                         title={skill}
-                      >
-                        {skill}
-                      </span>
+                        variant="outlined"
+                        sx={{
+                          bgcolor: "#D9D9D933",
+                          color: "#8F96A9",
+                          borderColor: "#3D5B81",
+                          borderWidth: 1,
+                          borderRadius: "25px",
+                          px:2,
+                          "& .MuiChip-label": {
+                            fontSize: "0.61rem",
+                            fontWeight: 400,
+                          },
+                          "&:hover": {
+                            bgcolor: "#ECEFF2",
+                          },
+                        }}
+                      />
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                     no data found
                   </div>
                 )}
+
+
               </div>
             </div>
           </div>
