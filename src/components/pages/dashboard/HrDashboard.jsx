@@ -23,7 +23,7 @@ const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(15);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
 
@@ -141,7 +141,7 @@ const HrDashboard = () => {
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
-    <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
+  <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
