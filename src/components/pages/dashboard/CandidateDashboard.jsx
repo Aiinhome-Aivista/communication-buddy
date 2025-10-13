@@ -95,19 +95,28 @@ const CandidateDashboard = () => {
 
 
 
-  const lineData = useMemo(() => {
-    const list = Array.isArray(dashboardData?.language_usage)
-      ? dashboardData.language_usage
-      : [];
-    return list.map((it, idx) => ({
-      name: it.name || it.lang || String(idx + 1),
-      uv: Number(it.uv ?? it.value ?? 0),
-    }));
-  }, [dashboardData]);
-
-  const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
-    ? dashboardData.most_asked_technologies
+const lineData = useMemo(() => {
+  const list = Array.isArray(dashboardData?.language_usage)
+    ? dashboardData.language_usage
     : [];
+
+  return list.map((item, idx) => {
+    // Each item is an object with one key-value pair
+    const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
+    return {
+      name: key, // language name
+      uv: Number(value ?? 0), // count
+    };
+  });
+}, [dashboardData]);
+
+
+const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
+  ? dashboardData.most_asked_technologies
+  : Array.isArray(dashboardData?.top_technologies)
+  ? dashboardData.top_technologies
+  : [];
+
 
   const mostDiscussedSkills = Array.isArray(
     dashboardData?.most_discussed_technical_skills
@@ -143,6 +152,37 @@ const CandidateDashboard = () => {
 
 
 
+const CustomTooltip1 = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: "#DFB91614", // light transparent background
+          padding: "6px 10px",
+          borderRadius: "8px",
+          border: "1px solid #DFB91633",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{// solid background for text
+            color: "#DFB916", // readable dark text
+            fontWeight: 600,
+            fontSize: "13px",
+            padding: "3px 8px",
+            borderRadius: "4px",
+            textTransform: "capitalize",
+          }}
+        >
+          {label} : {payload[0].value}
+        </span>
+      </div>
+    );
+  }
+  return null;
+};
 
 
 
@@ -341,20 +381,20 @@ const CandidateDashboard = () => {
                     alt="Group Icon"
                     className="w-5 h-5 object-contain"
                   />
-                  <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
+                  <span className="font-bold text-[20px] text-[#8F96A9]">
                     {sessionReport.assigned_test ?? "562"}
                   </span>
                 </div>
 
                 {/* Second line: label */}
-                <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
-                  Active participant
+                <span className="text-[12px] text-[#8F96A9] -ml-7">
+                  Assigned_Test
                 </span>
               </div>
             </div>
 
             {/* Session Type Label */}
-            <div className="font-inter font-normal text-[12px] leading-none tracking-normal align-middle text-gray-500 mb-3">
+            <div className="font-inter font-normal text-[12px] leading-none tracking-normal align-middle text-gray-500 mb-1">
               Session type
             </div>
 
@@ -411,73 +451,38 @@ const CandidateDashboard = () => {
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.average_session_duration ?? "15 minutes"}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Session Duration
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.test_attempted ?? 1256}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
-                  Session Created
+<div className="text-[12px] text-[#8F96A9] font-normal">
+                  Test Attempted
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 font-semibold">
                   {/* Score */}
-                  <div
-                    style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 700,
-                      fontStyle: "normal",
-                      fontSize: "20px",
-                    }}
-                  >
-                    {Math.round(Number(sessionReport.average_score) || 0)}
+<div className="font-bold text-[20px] text-[#8F96A9]">
+                    {Math.round(Number(sessionReport.highest_score) || 0)}
                   </div>
 
                   {/* Check indicator first, then show icon */}
-                  {sessionReport?.progress_indicator === "up" ? (
+                  {sessionReport?.highest_score === "up" ? (
                     <img
                       src={trending_up}
                       alt="Trending Up"
                       className="w-5 h-5 object-contain"
                     />
-                  ) : sessionReport?.progress_indicator === "down" ? (
+                  ) : sessionReport?.highest_score === "down" ? (
                     <img
                       src={trending_down}
                       alt="Trending Down"
@@ -487,37 +492,16 @@ const CandidateDashboard = () => {
                 </div>
 
                 {/* Label */}
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
-                  User Traffic
+<div className="text-[12px] text-[#8F96A9] font-normal">
+                  Highest Score
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {Math.round(sessionReport.average_score) ?? 64}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Score
                 </div>
               </div>
@@ -595,19 +579,19 @@ const CandidateDashboard = () => {
                     <LineChart data={lineData}>
                       <XAxis dataKey="name" hide />
                       <YAxis hide />
-                      <Tooltip />
+                      <Tooltip content={<CustomTooltip1 />} cursor={false} />
                       <Line
                         type="monotone"
                         dataKey="uv"
                         stroke="#DFB916"
-                        strokeWidth={3}
+                        strokeWidth={2}
                         dot={{
-                          r: 5,
+                          r: 4,
                           fill: "#DFB916",
                           stroke: "#0f172a",
                           strokeWidth: 1,
                         }}
-                        activeDot={{ r: 7, fill: "#DFB916" }}
+                        activeDot={{ r: 4, fill: "#DFB916" }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
@@ -655,7 +639,7 @@ const CandidateDashboard = () => {
                     topScores.map((item, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
+                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
                       >
                         {/* Left content */}
                         <div className="flex items-start gap-3">
