@@ -511,7 +511,9 @@ const CandidateDashboard = () => {
 
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[20px] text-[#8F96A9]">
-                  {sessionReport.test_attempted ?? 1256}
+                                    {Number.isFinite(Number(sessionReport.test_attempted))
+                    ? Number(sessionReport.test_attempted).toFixed(1)
+                    : "0.0"}
                 </div>
                 <div className="text-[12px] text-[#8F96A9] font-normal">
                   Test Attempted
@@ -522,7 +524,11 @@ const CandidateDashboard = () => {
                 <div className="flex items-center gap-1 font-semibold">
                   {/* Score */}
                   <div className="font-bold text-[20px] text-[#8F96A9]">
-                    {Math.round(Number(sessionReport.highest_score) || 0)}
+                    {Math.round(
+                      Number.isFinite(Number(sessionReport.highest_score))
+                        ? Number(sessionReport.highest_score)
+                        : 0
+                    ).toFixed(1)}
                   </div>
 
                   {/* Check indicator first, then show icon */}

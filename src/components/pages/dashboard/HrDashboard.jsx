@@ -378,14 +378,20 @@ const HrDashboard = () => {
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px] text-[#8F96A9]">{sessionCreated}</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">                  {Number.isFinite(Number(sessionReport.totalSessionsCreated))
+                    ? Number(sessionReport.totalSessionsCreated).toFixed(1)
+                    : "0.0"}</div>
                   <div className="text-[12px] text-[#8F96A9] font-normal">Session Created</div>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
-                      {Math.round(Number(userTraffic) || 0)}
+                                          {Math.round(
+                      Number.isFinite(Number(sessionReport.userTraffic))
+                        ? Number(sessionReport.userTraffic)
+                        : 0
+                    ).toFixed(1)}
                     </div>
                     {sessionReport?.progress_indicator === "up" ? (
                       <img src={trending_up} alt="Up" className="w-5 h-5" />
