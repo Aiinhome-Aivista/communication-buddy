@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchHrDashboard } from "../../../services/ApiService";
+import { fetchHrDashboard,fatchedPostRequest, postURL } from "../../../services/ApiService";
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import {
@@ -25,10 +25,12 @@ const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(15);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const [topics, setTopics] = useState([]);
 
 
   const hrId =
@@ -64,6 +66,27 @@ const HrDashboard = () => {
     };
     load();
   }, [hrId]);
+
+  //session modal data fetch
+    useEffect(() => {
+    const fetchUserAndTopics = async () => {
+      if (!hrId) return;
+      try {
+        const JsonBody = { hr_id: hrId };
+        const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
+        if (response.success === true || response.status === 200) {
+          setUserData(response.candidates || []);
+          setTopics(response.topics || []);
+        }
+      } catch (error) {
+        console.error('Error fetching modal data', error.message);
+      }
+    };
+    if (modalOpen) {
+      fetchUserAndTopics();
+    }
+  }, [modalOpen, hrId]);
+
   const sessionCompletion = data?.session_completion || {};
   const completionTotal =
     (Number(sessionCompletion.completed) || 0) +
@@ -146,7 +169,30 @@ const HrDashboard = () => {
     }
   }, [loading, data]);
 
-
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#182938", // dark background
+            color: "#fff",               // white text
+            padding: "6px 10px",
+            borderRadius: "6px",
+            fontSize: "12px",
+            fontWeight: "600",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            pointerEvents: "none",       // prevents mouse interference
+            transform: "translateY(-8px)", // lifts above the bar
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div>
+            {` ${payload[0].value}`}</div>
+        </div>
+      );
+    }
+    return null;
+  };
 
 
 
@@ -157,7 +203,7 @@ const HrDashboard = () => {
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
-    <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
+  <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -372,7 +418,7 @@ const HrDashboard = () => {
                           tickLine={false}
                           tick={{ fill: "#182938", fontSize: 12 }}
                         />
-                        <Tooltip />
+                       <Tooltip content={<CustomTooltip />} cursor={false} />
                         <Bar
                           dataKey="uv"
                           fill="#182938"
@@ -447,11 +493,13 @@ const HrDashboard = () => {
         </div>
       )}
 
-      <SessionModal
+     <SessionModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
         setSessionDuration={setSessionDuration}
+        userData={userData}
+        topics={topics}
         onSave={() => setModalOpen(false)}
       />
     </div>

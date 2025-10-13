@@ -67,25 +67,20 @@ export default function Sidebar() {
               to={item.path}
               end={item.end}
               className={({ isActive }) =>
-                `group flex items-center gap-1 w-full rounded-lg py-2 my-1 text-sm font-medium transition-colors ${isActive
+                `group flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActive
                   ? "bg-[#182938] text-[#FEFEFE] active-link"
                   : "text-[#182938] hover:bg-[#182938]/15 hover:text-[#182938]"
-                } ${collapsed ? "justify-center px-0" : "pl-2"}`
+                } ${collapsed ? "h-10 w-10 justify-center" : "w-full py-2 pl-2"}`
               }>
               {({ isActive }) => (
                 <>
-                  {item.icon(isActive ? '#FEFEFE' : 'var(--icon-color)')}
+                  <div className="group-hover:text-[#3B4A5A]">
+                    {item.icon(isActive ? '#FEFEFE' : '#7E8489')}
+                  </div>
                   {!collapsed && item.name}
-                  <style>
-                    {`
-                      .group:not(.active-link):hover svg {
-                        color: #3B4A5A;
-                      }
-                    `}
-                  </style>
                 </>
               )}
-            </NavLink >
+            </NavLink>
           ))}
         </nav>
       </div>

@@ -229,11 +229,10 @@ export default function ScheduleSession() {
         };
     }, [dropdownRef]);
 
-
     const filteredData = sessionData
         .filter((session) => {
             // Tab filtering logic
-            const status = session.status?.toLowerCase();
+            const status = session.topic_attend_status?.toLowerCase();
             const tab = activeTab.toLowerCase();
 
             if (tab === "upcoming") {
@@ -258,7 +257,6 @@ export default function ScheduleSession() {
     // Helper to get status styles
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
-            case "assigned": // Map 'assigned' to the 'upcoming' style
             case "upcoming":
                 return "bg-blue-100 text-blue-600"; // Blue for upcoming
             case "ongoing":
@@ -272,27 +270,35 @@ export default function ScheduleSession() {
 
     // Custom template for status badge
     const statusBodyTemplate = (rowData) => {
-        const status = rowData.status;
+        const status = rowData.topic_attend_status;
         return (
             <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyles(status)}`}>
-                {status}
+                {status || 'N/A'}
             </span>
         );
     };
 
     // Custom template for the empty message
     const emptyMessageTemplate = (
-        <div className="flex flex-col items-center justify-center p-5 text-center">
-            <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
-            <p className="mt-4 text-lg text-gray-500">No data found</p>
-            <p className="text-sm text-gray-400">There are no tests matching your criteria.</p>
+        <div className="flex flex-col items-center justify-center p-5 text-center text-gray-500">
+            {loading || loadingTable ? (
+                <p>Loading sessions...</p>
+            ) : (
+                <>
+                    <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
+                    <p className="mt-4 text-lg">No data found</p>
+                    <p className="text-sm text-gray-400">
+                        There are no sessions matching your criteria.
+                    </p>
+                </>
+            )}
         </div>
     );
 
     return (
         <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
             <div className="flex-grow flex flex-col">
-                <div className="pt-4 px-4">
+                <div className="pt-3 px-4">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold text-[#2C2E42]">
                             Schedule Session
@@ -423,7 +429,7 @@ export default function ScheduleSession() {
                                     header="Session Time"
                                 ></Column>
                                 <Column
-                                    field="status"
+                                    field="topic_attend_status"
                                     header="Status"
                                     body={statusBodyTemplate}
                                     className="text-center"
