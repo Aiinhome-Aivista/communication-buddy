@@ -496,17 +496,17 @@ const CustomTooltip = ({ active, payload, label }) => {
                       fontSize: "20px",
                     }}
                   >
-                    {Math.round(Number(sessionReport.average_score) || 0)}
+                    {Math.round(Number(sessionReport.highest_score) || 0)}
                   </div>
 
                   {/* Check indicator first, then show icon */}
-                  {sessionReport?.progress_indicator === "up" ? (
+                  {sessionReport?.highest_score === "up" ? (
                     <img
                       src={trending_up}
                       alt="Trending Up"
                       className="w-5 h-5 object-contain"
                     />
-                  ) : sessionReport?.progress_indicator === "down" ? (
+                  ) : sessionReport?.highest_score === "down" ? (
                     <img
                       src={trending_down}
                       alt="Trending Down"
@@ -524,7 +524,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                     fontSize: "12px",
                   }}
                 >
-                  User Traffic
+                  Highest Score
                 </div>
               </div>
 
