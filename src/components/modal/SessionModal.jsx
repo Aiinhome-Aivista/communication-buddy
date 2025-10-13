@@ -223,8 +223,7 @@ export default function SessionModal({
                 </label>
                 <div className="w-full cursor-pointer">
                   <input
-                    type="text"
-                    placeholder="DD-MM-YYYY"
+                    type="datetime-local"
                     value={date}
                     onChange={(e) => {
                       setDate(e.target.value);
