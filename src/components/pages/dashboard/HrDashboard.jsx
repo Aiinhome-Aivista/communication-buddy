@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchHrDashboard,fatchedPostRequest, postURL } from "../../../services/ApiService";
+import { fetchHrDashboard, fatchedPostRequest, postURL } from "../../../services/ApiService";
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import {
@@ -70,7 +70,7 @@ const HrDashboard = () => {
   }, [hrId]);
 
   //session modal data fetch
-    useEffect(() => {
+  useEffect(() => {
     const fetchUserAndTopics = async () => {
       if (!hrId) return;
       try {
@@ -126,14 +126,13 @@ const HrDashboard = () => {
   }, [data]);
 
   const lineData = useMemo(() => {
-    const list = Array.isArray(data?.language_usage)
-      ? data.language_usage
-      : [];
-    return list.map((it, idx) => ({
-      name: it.name || it.lang || String(idx + 1),
-      uv: Number(it.uv ?? it.value ?? 0),
-    }));
+    const list = Array.isArray(data?.language_usage) ? data.language_usage : [];
+    return list.map((obj) => {
+      const [name, uv] = Object.entries(obj)[0]; // extract language and value
+      return { name, uv };
+    });
   }, [data]);
+
 
   const mostAskedTechnologies = Array.isArray(data?.top_technical_skills)
     ? data.top_technical_skills
@@ -205,7 +204,7 @@ const HrDashboard = () => {
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
-  <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
+    <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -276,7 +275,7 @@ const HrDashboard = () => {
             </div>
 
             {/* Mostly Asked Tech */}
-            <div className="bg-white rounded-xl shadow-sm p-5 w-full h-[374px]">
+            <div className="bg-white rounded-xl shadow-sm p-4 w-full h-[374px]">
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
@@ -421,7 +420,7 @@ const HrDashboard = () => {
                           tickLine={false}
                           tick={{ fill: "#182938", fontSize: 12 }}
                         />
-                       <Tooltip content={<CustomTooltip />} cursor={false} />
+                        <Tooltip content={<CustomTooltip />} cursor={false} />
                         <Bar
                           dataKey="uv"
                           fill="#182938"
@@ -436,31 +435,54 @@ const HrDashboard = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-5 h-[150px]">
+                <div className="bg-white rounded-xl shadow-sm p-4 h-[200px] overflow-hidden">
                   <h2 className="font-normal text-[#8F96A9] mb-3">
                     Language Usage
                   </h2>
+
                   {lineData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={80}>
-                      <LineChart data={lineData}>
-                        <XAxis dataKey="name" hide />
-                        <YAxis hide />
-                        <Tooltip />
-                        <Line
-                          type="monotone"
-                          dataKey="uv"
-                          stroke="#DFB916"
-                          strokeWidth={3}
-                          dot={{
-                            r: 5,
-                            fill: "#DFB916",
-                            stroke: "#0f172a",
-                            strokeWidth: 1,
-                          }}
-                          activeDot={{ r: 7, fill: "#DFB916" }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    <div className="w-full h-[100px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={lineData}
+                          margin={{ top: 10, right: 10, left: 10, bottom: 0 }} 
+                        >
+                          <XAxis dataKey="name" hide />
+                          <YAxis hide />
+                          <Tooltip
+                            cursor={false} // ✅ Removes the long hover line
+                            content={({ active, payload }) =>
+                              active && payload && payload.length ? (
+                                <div className="bg-[#FEEFC3] px-3 py-1 rounded-xl text-[#DFB916] font-semibold text-sm shadow-md">
+                                  {`${payload[0].payload.name} ${payload[0].value}`}
+                                </div>
+                              ) : null
+                            }
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="uv"
+                            stroke="#DFB916"
+                            strokeWidth={3}
+                            dot={{
+                              r: 5,
+                              fill: "#DFB916",
+                              stroke: "#DFB916",
+                              strokeWidth: 2,
+                              opacity: 0.9, 
+                            }}
+                            
+                            activeDot={{
+                              r: 8,
+                              fill: "#DFB916",
+                              stroke: "#fff",
+                              strokeWidth: 3,
+                            }}
+                            isAnimationActive={true}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center h-[80px] text-[#8F96A9] text-sm">
                       no data found
@@ -478,7 +500,7 @@ const HrDashboard = () => {
                     {mostAskedTechnologies.map((skill, i) => (
                       <span
                         key={`${skill}-${i}`}
-                        className="bg-[#D9D9D933] px-4 py-2 border-[#3D5B81] border-1  rounded-3xl text-[#8F96A9]"
+                        className="bg-[#D9D9D933] px-4 py-2 border-[#3D5B81] border-1 items-center  rounded-4xl text-[#8F96A9]"
                         title={skill}
                       >
                         {skill}
@@ -496,7 +518,7 @@ const HrDashboard = () => {
         </div>
       )}
 
-     <SessionModal
+      <SessionModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
