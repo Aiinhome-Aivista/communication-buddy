@@ -117,38 +117,38 @@ const CandidateDashboard = () => {
     oracleLogo,
   ];
 
-  const fallbackTopScores = [
-    {
-      name: "Debasish Sahoo",
-      assignedBy: "Admin",
-      topic: "Discuss about current impact of AI ...",
-      score: 78,
-    },
-    {
-      name: "Sanchari Karmakar",
-      assignedBy: "Admin",
-      topic: "Discuss about Datasince",
-      score: 75,
-    },
-    {
-      name: "Sayan Mitra",
-      assignedBy: "Admin",
-      topic: "Discuss about Neural Networking ...",
-      score: 65,
-    },
-    {
-      name: "Debasish Sahoo",
-      assignedBy: "Admin",
-      topic: "Discuss about Cloud Infrastructure ...",
-      score: 63,
-    },
-    {
-      name: "Priya Ghosh",
-      assignedBy: "Admin",
-      topic: "Discuss about Machine Learning ...",
-      score: 61,
-    },
-  ];
+  // const fallbackTopScores = [
+  //   {
+  //     name: "Debasish Sahoo",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about current impact of AI ...",
+  //     score: 78,
+  //   },
+  //   {
+  //     name: "Sanchari Karmakar",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Datasince",
+  //     score: 75,
+  //   },
+  //   {
+  //     name: "Sayan Mitra",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Neural Networking ...",
+  //     score: 65,
+  //   },
+  //   {
+  //     name: "Debasish Sahoo",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Cloud Infrastructure ...",
+  //     score: 63,
+  //   },
+  //   {
+  //     name: "Priya Ghosh",
+  //     assignedBy: "Admin",
+  //     topic: "Discuss about Machine Learning ...",
+  //     score: 61,
+  //   },
+  // ];
 
   const topScores = dashboardData?.top_five_test_scores
     ? dashboardData.top_five_test_scores.map((s) => ({
@@ -156,7 +156,7 @@ const CandidateDashboard = () => {
         topic: s.topic || "-",
         score: s.score || "-",
       }))
-    : fallbackTopScores;
+    : "no data found";
 
   const sessionReport = dashboardData?.session_report || {};
   const lastTwelveScores = dashboardData?.last_twelve_test_scores || [];
@@ -256,7 +256,9 @@ const CandidateDashboard = () => {
                     color: " #DFB916",
                   }}
                 >
-                  30%
+                  {dashboardData?.session_completion
+                    ? `${dashboardData.session_completion.pending}%`
+                    : "0%"}
                 </div>
 
                 <div

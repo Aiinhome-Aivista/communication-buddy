@@ -5,7 +5,7 @@ export const saveChatSession = async ({
   fullConversation,
 }) => {
   try {
-    await fetch("https://aiinhome.com/communication/chat-session-review", {
+    await fetch("http://122.163.121.176:3004/chat-session-review", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -25,18 +25,15 @@ export const saveChatSession = async ({
 
 export const greettingMessage = async ({ username, topic, userinput }) => {
   try {
-    const response = await fetch(
-      "https://aiinhome.com/communication/start_session",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: username,
-          topic_name: topic,
-          user_input: userinput,
-        }),
-      }
-    );
+    const response = await fetch("http://122.163.121.176:3004/start_session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: username,
+        topic_name: topic,
+        user_input: userinput,
+      }),
+    });
     console.log("✅ Final conversation saved");
     return response;
   } catch (error) {
