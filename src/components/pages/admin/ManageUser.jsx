@@ -11,6 +11,7 @@ import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
 import LoaderNew from "../../ui/LoaderNew";
+import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
@@ -26,6 +27,7 @@ export default function ManageUser() {
   const dropdownRef = useRef(null);
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   const [loading, setLoading] = useState(true);
+  const showLoader = useMinLoaderTime(loading, 3000);
 
   const navigate = useNavigate();
 
@@ -153,7 +155,7 @@ export default function ManageUser() {
             {/* Dropdown */}
             <div className="relative w-80" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10"
+                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10 cursor-pointer"
                 style={{ color: "#8F96A9" }}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -204,7 +206,7 @@ export default function ManageUser() {
           </div>
 
           {/* Table */}
-          {loading ? (
+          {showLoader ? (
             <LoaderNew />
           ) : (
             <div
@@ -216,8 +218,8 @@ export default function ManageUser() {
                   value={filteredData}
                   paginator
                   rows={5}
-                  rowsPerPageOptions={[5, 10, 25]}
-                  paginatorClassName="!m-0 !border-t"
+                  rowsPerPageOptions={[5, 7]}
+                  paginatorClassName="!m-0"
                   rowHover={filteredData.length > 0}
                   emptyMessage={emptyMessageTemplate}
                 >
