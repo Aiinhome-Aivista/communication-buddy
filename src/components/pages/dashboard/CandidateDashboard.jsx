@@ -354,7 +354,7 @@ const CandidateDashboard = () => {
             </div>
 
             {/* Session Type Label */}
-            <div className="font-inter font-normal text-[12px] leading-none tracking-normal align-middle text-gray-500 mb-3">
+            <div className="font-inter font-normal text-[12px] leading-none tracking-normal align-middle text-gray-500 mb-1">
               Session type
             </div>
 
