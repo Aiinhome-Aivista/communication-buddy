@@ -1,11 +1,11 @@
 import React from 'react';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function LogoutModal({ isOpen, onClose, onConfirm }) {
     if (!isOpen) {
         return null;
     }
-
     return (
         <div
             className="fixed inset-0 flex items-center justify-center z-50"
@@ -14,9 +14,21 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
                 backdropFilter: "blur(6px)"
             }}
         >
-            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[320px] text-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[320px] text-center relative">
+                {/* Cancel icon at top right */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-1 right-1 text-[#DFB916] hover:text-[#f1df79] transition"
+                    aria-label="Close"
+                >
+                    <CancelIcon className="w-7 h-7" />
+                </button>
                 <WarningRoundedIcon sx={{ color: "#DFB916", fontSize: 48 }} />
-                <h2 className="text-lg font-semibold my-4 text-[#2C2E42]">Logout</h2>
+                <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+                    A<span className="text-[#DFB916]">ii</span>nhome
+                    <span className="px-1">|</span>
+                    <span className="font-bold">CB</span>
+                </h3>
                 <p className="mb-6 text-[#7E8489]">Are you sure you want to logout?</p>
                 <div className="flex justify-center gap-4">
                     <button
@@ -29,7 +41,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
                         Yes
                     </button>
                     <button
-                        className="px-6 py-2 rounded-lg bg-gray-200 text-[#272727] font-semibold cursor-pointer"
+                        className="px-6 py-2 rounded-lg bg-gray-200 text-[#272727] font-semibold cursor-pointer hover:bg-[#DFB916] transition"
                         onClick={onClose}
                     >
                         No

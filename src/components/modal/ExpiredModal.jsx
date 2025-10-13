@@ -28,7 +28,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
 
         <div className="flex justify-center mb-3">
         <div className="flex items-center justify-center">
-          <WarningIcon className="text-[#DFB916] text-[32px]" />
+            <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
         </div>
       </div>
 

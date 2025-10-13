@@ -55,7 +55,7 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
         >
            <CancelIcon className="w-10 h-10" />
         </button>
-         <WarningIcon className="text-[#DFB916] text-[32px]" />
+         <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
           <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
             A<span className="text-[#DFB916]">ii</span>nhome
             <span className="px-1">|</span>

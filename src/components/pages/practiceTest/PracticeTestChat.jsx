@@ -1027,18 +1027,20 @@ export default function PracticeTest() {
            <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
     <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
      {/* Close Button */}
-      <button
-        onClick={() => {
-          try { window.speechSynthesis.cancel(); } catch { }
-          setShowTimeUpPopup(false);
-        }}
-        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
-      >
-        <CancelIcon className="w-10 h-10" />
-      </button> 
+    <button
+  onClick={() => {
+    try { window.speechSynthesis.cancel(); } catch { }
+    setUserStatus(null); // <-- Add this to hide the expired popup
+    setShowTimeUpPopup(false);
+    setSessionExpired(false);
+  }}
+  className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
+>
+  <CancelIcon className="w-10 h-10" />
+</button>
      <div className="flex justify-center mb-3">
         <div className="flex items-center justify-center">
-          <WarningIcon className="text-[#DFB916] text-[32px]" />
+         <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
         </div>
       </div>
 
@@ -1253,7 +1255,7 @@ export default function PracticeTest() {
       {/* Warning Icon */}
       <div className="flex justify-center mb-3">
         <div className="flex items-center justify-center">
-          <WarningIcon className="text-[#DFB916] text-[32px]" />
+            <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
         </div>
       </div>
 
@@ -1285,7 +1287,7 @@ export default function PracticeTest() {
        <CancelIcon className="w-10 h-10" />
       </button>
 
-      <ErrorIcon className="w-10 h-10 text-[#7E848945] mb-4" />    
+      <ErrorIcon sx={{ color: "#7E848945", fontSize: 48 }} />
       <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
             A<span className="text-[#DFB916]">ii</span>nhome
             <span className="px-1">|</span>
