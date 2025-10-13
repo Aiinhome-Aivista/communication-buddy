@@ -175,18 +175,18 @@ function Login() {
           <button
             className="
               w-full 
-              text-[#7E8489] 
-              bg-[#182938C2] 
+              text-[#D9D9D9] 
+              bg-[#182938] 
               rounded-lg 
               border border-[#182938] 
               py-2 mt-5 
               cursor-pointer 
               text-sm md:text-base
-              disabled:bg-[#182938] diasabled:text-[#D9D9D9] disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:text-[#D9D9D9] hover:bg-[#182938] hover:border-[#182938]"
+              disabled:bg-[#182938C2] disabled:text-[#D9D9D9] disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:text-[#D9D9D9] hover:bg-[#182938] hover:border-[#182938]"
             onClick={() => handleOnLogin()}
             type="button"
             id="login-button"
-            disabled={loading}
+            disabled={loading || !userInfo.email || !userInfo.password}
           >
             {loading ? (
               <>

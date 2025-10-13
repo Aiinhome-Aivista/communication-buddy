@@ -13,7 +13,6 @@ import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { useState, useEffect } from "react";
-import Loader from "../../ui/Loader";
 import personImage from "../../../assets/logo/person.jpg";
 
 import {
@@ -172,7 +171,6 @@ const CandidateDashboard = () => {
 
   return (
     <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
-      <Loader show={loading} />
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>

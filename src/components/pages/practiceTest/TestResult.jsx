@@ -213,7 +213,6 @@ export default function TestResult() {
             <div key={`${search}-${testType}`}>
               <DataTable
                 value={filteredData}
-                loading={loading || loadingTable}
                 paginator
                 rows={5}
                 rowsPerPageOptions={[3, 5]}
