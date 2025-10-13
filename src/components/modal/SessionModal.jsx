@@ -363,8 +363,8 @@ const filteredCandidates = userData.filter(
                   if (e.target.value.trim()) clearError("sessionTopic");
                 }}
                 placeholder="Write session topic..."
-                rows="4"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
+                rows="4.5"
+                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#BCC7D2] ${
                   errors.sessionTopic
                     ? "border-red-500"
                     : "border-[#E5E7EB]"

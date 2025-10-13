@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CancelIcon from '@mui/icons-material/Cancel';
-
+import WarningIcon from '@mui/icons-material/Warning';
 export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
   const [countdown, setCountdown] = useState("");
 
@@ -47,17 +47,24 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-         <h2 className="text-lg font-semibold text-[#2C2E42]">
-          Upcoming Test
-        </h2>
+         
         {/* Close Button */}
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-[#DFB916]"
+          className="absolute top-1 right-1 text-[#DFB916] hover:text-[#DFB916]"
           onClick={onClose}
         >
            <CancelIcon className="w-10 h-10" />
         </button>
-        <InfoOutlinedIcon sx={{ fontSize: "2.5rem", color: "#7E848945" }} />
+         <WarningIcon className="text-[#DFB916] text-[32px]" />
+          <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+            A<span className="text-[#DFB916]">ii</span>nhome
+            <span className="px-1">|</span>
+            <span className="font-bold">CB</span>
+       
+      </h3>
+      <h2 className="text-lg font-semibold text-[#2C2E42]">
+          Upcoming Session
+        </h2>
         <h2 className="text-lg font-semibold text-[#2C2E42] mt-2">
           {selectedTestItem.topic_name}
         </h2>

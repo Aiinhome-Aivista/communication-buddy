@@ -1223,7 +1223,7 @@ export default function PracticeTest() {
           try { window.speechSynthesis.cancel(); } catch { }
           setShowTimeUpPopup(false);
         }}
-        className="absolute top-4 right-4 text-[#DFB916] hover:text-[#C6A800] transition"
+        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
       >
         <CancelIcon className="w-10 h-10" />
       </button>
@@ -1237,8 +1237,9 @@ export default function PracticeTest() {
 
       {/* Aiihome | CB Title */}
      <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
-        <span className="text-[#DFB916]">Aii</span>
-        <span className="text-[#2C2E42]">nhome</span> | <span className="font-bold">CB</span>
+            A<span className="text-[#DFB916]">ii</span>nhome
+            <span className="px-1">|</span>
+            <span className="font-bold">CB</span>
       </h3>
 
       {/* Message */}
@@ -1246,18 +1247,7 @@ export default function PracticeTest() {
         Your session is expired!
       </p>
 
-      {/* OK Button */}
-      <div className="flex justify-center">
-        <button
-          className="px-8 py-2 rounded-md bg-[#DFB916] text-[#2C2E42] font-semibold hover:bg-[#E5C300] transition"
-          onClick={() => {
-            try { window.speechSynthesis.cancel(); } catch { }
-            setShowTimeUpPopup(false);
-          }}
-        >
-          OK
-        </button>
-      </div>
+    
     </div>
   </div>
 )}
@@ -1268,19 +1258,17 @@ export default function PracticeTest() {
       {/* Close Icon */}
       <button
         onClick={closePopup}
-        className="absolute top-4 right-4 text-[#DFB916] hover:text-[#f1df79] transition"
+        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#f1df79] transition"
       >
        <CancelIcon className="w-10 h-10" />
       </button>
 
-      {/* Alert Icon */}
-      <ErrorIcon className="text-[#7E848945] mb-4" />
-
-      {/* Logo Text */}
-    
+      <ErrorIcon className="w-10 h-10 text-[#7E848945] mb-4" />    
       <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
-        <span className="text-[#DFB916]">Aii</span>
-        <span className="text-[#2C2E42]">nhome</span> | <span className="font-bold">CB</span>
+            A<span className="text-[#DFB916]">ii</span>nhome
+            <span className="px-1">|</span>
+            <span className="font-bold">CB</span>
+        
       </h3>
 
       {/* Message */}
@@ -1292,7 +1280,7 @@ export default function PracticeTest() {
       <div className="flex justify-center gap-4">
         <button
           onClick={confirmAction}
-          className="px-8 py-2 rounded-md border border-[#DFB916] text-[#2C2E42] font-semibold hover:bg-[#F5F5F5] transition"
+          className="px-8 py-2 rounded-md border border-[#DFB916] text-[#2C2E42] font-semibold  hover:bg-[#DFB916] transition"
         >
           Yes
         </button>

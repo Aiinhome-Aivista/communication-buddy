@@ -20,7 +20,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
       >
         {/* Close Button */}
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-[#DFB916]"
+          className="absolute top-1 right-1 text-[#DFB916] hover:text-[#DFB916]"
           onClick={onClose}
         >
             <CancelIcon className="w-10 h-10" />
@@ -34,8 +34,10 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
 
       {/* Aiihome | CB Title */}
      <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
-        <span className="text-[#DFB916]">Aii</span>
-        <span className="text-[#2C2E42]">nhome</span> | <span className="font-bold">CB</span>
+            A<span className="text-[#DFB916]">ii</span>nhome
+            <span className="px-1">|</span>
+            <span className="font-bold">CB</span>
+       
       </h3>
 
       {/* Message */}
