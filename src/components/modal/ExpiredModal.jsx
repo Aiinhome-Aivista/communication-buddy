@@ -1,6 +1,6 @@
 import React from "react";
 import CancelIcon from '@mui/icons-material/Cancel';
-import WarningIcon from '@mui/icons-material/Warning';
+import WarningIcon from '@mui/icons-material/WarningRounded';
 
 export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
   if (!isOpen) return null;
@@ -28,7 +28,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
 
         <div className="flex justify-center mb-3">
         <div className="flex items-center justify-center">
-          <WarningIcon className="text-[#DFB916] text-[32px]" />
+            <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
         </div>
       </div>
 
