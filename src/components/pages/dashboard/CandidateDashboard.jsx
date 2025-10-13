@@ -16,6 +16,8 @@ import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code
 import { useState, useEffect, useMemo } from "react";
 
 import personImage from "../../../assets/logo/person.jpg";
+import * as SIIcons from "react-icons/si";
+import { FaCode } from "react-icons/fa";
 
 
 
@@ -212,11 +214,38 @@ const CandidateDashboard = () => {
 
 
   // Map technology names to Material UI icon components
-  const getTechIconComp = (name) => {
-    const key = (name || "").toLowerCase();
-    const mapping = { python: Code, react: Bolt, angular: IntegrationInstructions, css: Css, html: Html, javascript: Javascript, pandas: TableChart, pyspark: DataObject, streamlit: ShowChart, tensorflow: Science, "c++": Code, c: Code, java: Code, php: Code, mysql: TableChart, oracle: TableChart, swift: Code, };
-    return mapping[key] || null;
+  const getTechIcon = (name) => {
+    if (!name) return FaCode; // fallback
+    const key = name
+      .toLowerCase()
+      .replace(/\+/g, "plus")
+      .replace(/\s/g, ""); // normalize key
+
+    // Map normalized names to actual icon names
+    const mapping = {
+      python: "SiPython",
+      react: "SiReact",
+      angular: "SiAngular",
+      css: "SiCss3",
+      html: "SiHtml5",
+      javascript: "SiJavascript",
+      pandas: "SiPandas",
+      pyspark: "SiApachespark", // note correct export
+      streamlit: "SiStreamlit",
+      tensorflow: "SiTensorflow",
+      "c++": "SiCplusplus",
+      c: "SiC",
+      java: "SiJava",
+      php: "SiPhp",
+      mysql: "SiMysql",
+      oracle: "SiOracle",
+      swift: "SiSwift",
+    };
+
+    const iconName = mapping[key];
+    return iconName && SIIcons[iconName] ? SIIcons[iconName] : FaCode;
   };
+
 
 
   return (
@@ -348,13 +377,16 @@ const CandidateDashboard = () => {
             {mostAskedTechnologies.length > 0 ? (
               <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
                 {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
-                  const IconComp = getTechIconComp(tech);
+                  const IconComp = getTechIcon(tech); // function returning a React Icon or fallback
                   return (
-                    <div key={`${tech}-${idx}`} className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded">
+                    <div
+                      key={`${tech}-${idx}`}
+                      className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                    >
                       {IconComp ? (
-                        <IconComp sx={{ fontSize: 40, color: '#2C2E42' }} />
+                        <IconComp size={40} color="#2C2E42" />
                       ) : (
-                        <Code sx={{ fontSize: 40, color: '#2C2E42' }} />
+                        <FaCode size={40} color="#2C2E42" />
                       )}
                     </div>
                   );
@@ -366,7 +398,6 @@ const CandidateDashboard = () => {
               </div>
             )}
           </div>
-
         </div>
 
         {/* CENTER + RIGHT SECTION */}
