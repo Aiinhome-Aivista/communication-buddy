@@ -21,6 +21,8 @@ import trending_down from "../../../assets/logo/trending_down.png";
 
 
 
+
+
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
@@ -133,13 +135,13 @@ const HrDashboard = () => {
     }));
   }, [data]);
 
-  const mostAskedTechnologies = Array.isArray(data?.most_asked_technologies)
-    ? data.most_asked_technologies
+  const mostAskedTechnologies = Array.isArray(data?.top_technical_skills)
+    ? data.top_technical_skills
     : [];
-  const mostDiscussedSkills = Array.isArray(
-    data?.most_discussed_technical_skills
+  const mostTopTechnologies = Array.isArray(
+    data?.top_technologies
   )
-    ? data.most_discussed_technical_skills
+    ? data.top_technologies
     : [];
 
   const sessionReport = data?.session_report || {};
@@ -174,7 +176,7 @@ const HrDashboard = () => {
       return (
         <div
           style={{
-            backgroundColor: "#182938", // dark background
+            backgroundColor: "#182938C2", // dark background
             color: "#fff",               // white text
             padding: "6px 10px",
             borderRadius: "6px",
@@ -278,9 +280,10 @@ const HrDashboard = () => {
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
-              {mostAskedTechnologies.length > 0 ? (
+              <img src="" alt="" />
+              {mostTopTechnologies.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                  {mostAskedTechnologies.map((tech, idx) => (
+                  {mostTopTechnologies.map((tech, idx) => (
                     <span
                       key={`${tech}-${idx}`}
                       className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
@@ -466,16 +469,16 @@ const HrDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-sm p-5 rounded-xl w-full md:w-1/3 h-full flex-shrink-0">
+              <div className="bg-white shadow-sm p-4 rounded-xl w-full md:w-1/3 h-full flex-shrink-0">
                 <h2 className="font-normal text-[#8F96A9] mb-6">
                   Mostly Asked Technical Skill
                 </h2>
-                {mostDiscussedSkills.length > 0 ? (
+                {mostAskedTechnologies.length > 0 ? (
                   <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                    {mostDiscussedSkills.map((skill, i) => (
+                    {mostAskedTechnologies.map((skill, i) => (
                       <span
                         key={`${skill}-${i}`}
-                        className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
+                        className="bg-[#D9D9D933] px-4 py-2 border-[#3D5B81] border-1  rounded-3xl text-[#8F96A9]"
                         title={skill}
                       >
                         {skill}
