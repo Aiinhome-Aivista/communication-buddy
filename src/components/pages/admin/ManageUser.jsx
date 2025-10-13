@@ -202,7 +202,6 @@ export default function ManageUser() {
                 paginatorClassName="!m-0 !border-t"
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}
-                loading={loading}
               >
                 <Column
                   field="name"

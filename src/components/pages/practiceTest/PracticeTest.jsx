@@ -236,7 +236,6 @@ export default function PracticeTest() {
                 paginatorClassName="!m-0 !border-t"
                 rowHover={filteredData.length > 0}
                 emptyMessage={emptyMessageTemplate}
-                loading={loading}
                 onRowClick={(e) => {
                   const status = e.data.topic_attend_status?.toLowerCase();
                   if (status === "ongoing") {
