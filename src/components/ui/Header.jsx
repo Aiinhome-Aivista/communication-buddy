@@ -5,6 +5,8 @@ import { useAuth } from "../../provider/AuthProvider";
 import { useTopic } from "../../provider/TopicProvider";
 import { saveChatSession } from "../../utils/saveChatSessionReview";
 import { UserContext } from "../../context/Context";
+import Tooltip from '@mui/material/Tooltip';
+import LogoutModal from '../modal/LogoutModal';
 
 export default function Header() {
   const [formattedDate, setFormattedDate] = useState('');
@@ -45,7 +47,7 @@ export default function Header() {
       const topic = sessionStorage.getItem("topic");
       const conversation = JSON.parse(sessionStorage.getItem("fullConversation"));
       const aiResponse = sessionStorage.getItem("aiResponse");
-      if (!aiResponse.includes("time is up")) {
+      if (aiResponse && !aiResponse.includes("time is up")) {
         await saveChatSession({
           userId,
           hrId,
@@ -72,44 +74,20 @@ export default function Header() {
             <p className='p-0 m-0 text-[#2C2E42] text-sm'>{formattedDate}</p>
             <p className='p-0 m-0 text-[#7E8489] text-xs'>{formattedTime}</p>
           </div>
-          <LogoutRoundedIcon
-            sx={{ color: "#7E8489" }}
-            className='cursor-pointer'
-            onClick={() => setShowLogoutPopup(true)}
-          />
+          <Tooltip title="Logout" arrow>
+            <LogoutRoundedIcon
+              sx={{ color: "#7E8489" }}
+              className='cursor-pointer'
+              onClick={() => setShowLogoutPopup(true)}
+            />
+          </Tooltip>
         </div>
       </div>
-     {showLogoutPopup && (
-  <div
-    className="fixed inset-0 flex items-center justify-center z-50"
-    style={{
-      background: "rgba(0,0,0,0.18)",
-      backdropFilter: "blur(6px)"
-    }}
-  >
-    <div className="bg-white rounded-xl shadow-lg p-8 min-w-[320px] text-center">
-      <h2 className="text-lg font-semibold mb-4 text-[#2C2E42]">Logout</h2>
-      <p className="mb-6 text-[#7E8489]">Are you sure you want to logout?</p>
-      <div className="flex justify-center gap-4">
-        <button
-          className="px-6 py-2 rounded-lg bg-[#E5B800] text-[#272727] font-semibold"
-          onClick={async () => {
-            setShowLogoutPopup(false);
-            await handleLogout();
-          }}
-        >
-          Yes
-        </button>
-        <button
-          className="px-6 py-2 rounded-lg bg-gray-200 text-[#272727] font-semibold"
-          onClick={() => setShowLogoutPopup(false)}
-        >
-          No
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      <LogoutModal
+        isOpen={showLogoutPopup}
+        onClose={() => setShowLogoutPopup(false)}
+        onConfirm={handleLogout}
+      />
     </header>
   );
 }

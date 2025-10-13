@@ -2,8 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import ManageSchedule from "../pages/admin/ManageScheduleOld";
-import ScheduleSession from "../pages/scheduleSession/ScheduleSession";
-import Settings from "../pages/setting/Settings";
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
@@ -14,13 +12,14 @@ const Reports = lazy(() => import("../pages/dashboard/Reports"));
 const PracticeAndTest = lazy(() => import("../pages/users/PracticeAndTest"));
 const PracticeTest = lazy(() => import("../pages/practiceTest/PracticeTest"));
 const PracticeTestChat = lazy(() => import("../pages/practiceTest/PracticeTestChat"));
-const TestResult = lazy(() => import("../pages/practiceTest/TestResult"));
+const TestResultPage = lazy(() => import("../pages/practiceTest/TestResultPage"));
 const RequestNotification = lazy(() =>
   import("../pages/dashboard/RequestNotification")
 );
 const TopicList = lazy(() => import("../pages/users/TopicList"));
-const scheduleSession = lazy(() => import("../pages/scheduleSession/ScheduleSession"));
+const ScheduleSession = lazy(() => import("../pages/scheduleSession/ScheduleSession"));
 const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
+const Settings = lazy(() => import("../pages/setting/Settings"));
 // Loader component for fallback UI
 const Loader = () => (
   <div className="text-center text-teal-300 py-6"></div>
@@ -37,10 +36,12 @@ export const router = createBrowserRouter(
       ),
     },
     {
-      path: "/dashboard",
+      // This is now the main layout route for all protected pages
       element: (
         <Suspense fallback={<Loader />}>
-          <AppLayout />
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
         </Suspense>
       ),
       children: [
@@ -48,15 +49,13 @@ export const router = createBrowserRouter(
           path: "/dashboard",
           element: (
             <Suspense fallback={<Loader />}>
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
+              <Dashboard />
             </Suspense>
           ),
           errorElement: <div>Error loading dashboard</div>,
           children: [
             {
-              path: "/dashboard/",
+              index: true, // Default child for /dashboard
               element: (
                 <Suspense fallback={<Loader />}>
                   <Default />
@@ -64,7 +63,7 @@ export const router = createBrowserRouter(
               ),
             },
             {
-              path: "/dashboard/test/:id?",
+              path: "test/:id?",
               element: (
                 <Suspense fallback={<Loader />}>
                   <PracticeAndTest />
@@ -72,7 +71,7 @@ export const router = createBrowserRouter(
               ),
             },
             {
-              path: "/dashboard/reports",
+              path: "reports",
               element: (
                 <Suspense fallback={<Loader />}>
                   <Reports />
@@ -80,7 +79,7 @@ export const router = createBrowserRouter(
               ),
             },
             {
-              path: "/dashboard/notifications",
+              path: "notifications",
               element: (
                 <Suspense fallback={<Loader />}>
                   <RequestNotification />
@@ -88,39 +87,29 @@ export const router = createBrowserRouter(
               ),
             },
             {
-              path: "/dashboard/topics",
+              path: "topics",
               element: (
                 <Suspense fallback={<Loader />}>
-                  <ProtectedRoute>
-                    <TopicList />
-                  </ProtectedRoute>
+                  <TopicList />
                 </Suspense>
               ),
             },
             {
-              path: "/dashboard/user",
+              path: "user",
               element: <UserDashboard />,
             },
             {
-              path: "/dashboard/schedule",
-              element: <ManageSchedule />,
+              path: "schedule",
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <ManageSchedule />
+                </Suspense>
+              ),
             },
           ],
         },
-      ],
-    },
-    {
-      path: "/test",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </Suspense>
-      ),
-      children: [
         {
-          index: true,
+          path: "/test",
           element: (
             <Suspense fallback={<Loader />}>
               <PracticeTest />
@@ -128,7 +117,7 @@ export const router = createBrowserRouter(
           ),
         },
         {
-          path: "chat", // This will match /test/childpath
+          path: "/test/chat",
           element: (
             <Suspense fallback={<Loader />}>
               <PracticeTestChat />
@@ -136,67 +125,27 @@ export const router = createBrowserRouter(
           ),
         },
         {
-          path: "result", // This will match /test/childpath
+          path: "/test/result",
           element: (
             <Suspense fallback={<Loader />}>
-              <TestResult />
+              <TestResultPage />
             </Suspense>
           ),
         },
-      ],
-    },
-    {
-      path: "/schedule",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </Suspense>
-      ),
-      children: [
         {
-          index: true,
+          path: "/settings",
+          element: <Settings />,
+        },
+        {
+          path: "/schedule",
           element: (
             <Suspense fallback={<Loader />}>
               <ScheduleSession />
             </Suspense>
           ),
         },
-      ],
-    },
-    {
-      path: "/settings",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </Suspense>
-      ),
-      children: [
         {
-          index: true,
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Settings />
-            </Suspense>
-          ),
-        },
-      ],
-    },
-    {
-      path: "/manage-users",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </Suspense>
-      ),
-      children: [
-        {
-          index: true,
+          path: "/manage-users",
           element: (
             <Suspense fallback={<Loader />}>
               <ManageUser />

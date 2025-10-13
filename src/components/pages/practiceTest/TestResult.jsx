@@ -49,8 +49,9 @@ export default function TestResult() {
         if (response && response.sessions) {
           const processedData = (response.sessions || []).map((session) => ({
             ...session,
+            original_session_time: session.session_time, // Keep original for sorting
             session_date: getDate(session.session_time),
-            session_time: getTime(session.session_time),
+            session_time_formatted: getTime(session.session_time),
           }));
           setSessionData(processedData);
 
@@ -150,8 +151,8 @@ export default function TestResult() {
           </div>
 
           {/* Tabs + Search + Dropdown */}
-          <div className="flex flex-row items-center justify-end mt-6 gap-4">
-            <div className="relative w-80">
+          <div className="flex flex-row items-center justify-between mt-6 gap-4">
+            <div className="relative flex-1">
               <input
                 type="text"
                 placeholder="Search content"
@@ -235,14 +236,15 @@ export default function TestResult() {
                   sortable
                 ></Column>
                 <Column
-                  field="session_date"
+                  field="original_session_time" // Sort using the original date
                   header="Session Date"
                   sortable
+                  body={(rowData) => rowData.session_date} // Display the formatted date
                 ></Column>
                 <Column
-                  field="session_time"
+                  field="original_session_time" // Sort using the original date
                   header="Session Time"
-                  sortable
+                  body={(rowData) => rowData.session_time_formatted} // Display the formatted time
                 ></Column>
                 <Column
                   field="score"
