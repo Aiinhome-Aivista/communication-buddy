@@ -146,7 +146,30 @@ const HrDashboard = () => {
     }
   }, [loading, data]);
 
-
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#182938", // dark background
+            color: "#fff",               // white text
+            padding: "6px 10px",
+            borderRadius: "6px",
+            fontSize: "12px",
+            fontWeight: "600",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            pointerEvents: "none",       // prevents mouse interference
+            transform: "translateY(-8px)", // lifts above the bar
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div>
+            {` ${payload[0].value}`}</div>
+        </div>
+      );
+    }
+    return null;
+  };
 
 
 
@@ -372,7 +395,7 @@ const HrDashboard = () => {
                           tickLine={false}
                           tick={{ fill: "#182938", fontSize: 12 }}
                         />
-                        <Tooltip />
+                       <Tooltip content={<CustomTooltip />} cursor={false} />
                         <Bar
                           dataKey="uv"
                           fill="#182938"
