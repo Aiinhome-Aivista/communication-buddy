@@ -29,7 +29,8 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
                 <p className="mb-6 text-[#7E8489]">Are you sure you want to logout?</p>
                 <div className="flex justify-center gap-4">
                     <button
-                        className="px-6 py-2 rounded-lg bg-[#E5B800] text-[#272727] font-semibold cursor-pointer"
+                       className="h-10 w-15 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                
                         onClick={async () => {
                             await onConfirm();
                             onClose();
@@ -38,7 +39,8 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
                         Yes
                     </button>
                     <button
-                        className="px-6 py-2 rounded-lg bg-gray-200 text-[#272727] font-semibold cursor-pointer hover:bg-[#DFB916] transition"
+                       className="h-10 w-15 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+        
                         onClick={onClose}
                     >
                         No

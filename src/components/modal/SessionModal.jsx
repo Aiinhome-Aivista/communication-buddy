@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
@@ -140,7 +139,7 @@ export default function SessionModal({
         isSuccess={true}
       />
 
-      <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
         <div className="bg-white rounded-2xl w-[50%] max-w-full h-[90%] max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
@@ -231,10 +230,11 @@ export default function SessionModal({
                       setDate(e.target.value);
                       if (e.target.value) clearError("date");
                     }}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${errors.date
+                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${
+                      errors.date
                         ? "border-red-500"
                         : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                      } text-[#1F2937]`}
+                    } text-[#1F2937]`}
                   />
                 </div>
                 {errors.date && (
@@ -320,28 +320,28 @@ export default function SessionModal({
                   {/* Smooth Range Slider */}
                   <div className="flex-1 relative flex flex-col items-stretch">
                     <div className="relative">
-                     <input
-  type="range"
-  min={5}
-  max={50}
-  step={1}
-  value={sessionDuration?.value ?? 15}
-  onChange={(e) =>
-    setSessionDuration({
-      value: Number(e.target.value),
-      direction: "up",
-    })
-  }
-  className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
-  style={{
-    background: `linear-gradient(to right, #29324173 0%, #29324173 ${
-      (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-    }%, #e5e7eb ${
-      (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-    }%, #e5e7eb 100%)`,
-    transition: "background 0.2s linear",
-  }}
-/>
+                      <input
+                        type="range"
+                        min={5}
+                        max={50}
+                        step={1}
+                        value={sessionDuration?.value ?? 15}
+                        onChange={(e) =>
+                          setSessionDuration({
+                            value: Number(e.target.value),
+                            direction: "up",
+                          })
+                        }
+                        className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+                        style={{
+                          background: `linear-gradient(to right, #29324173 0%, #29324173 ${
+                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                          }%, #e5e7eb ${
+                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                          }%, #e5e7eb 100%)`,
+                          transition: "background 0.2s linear",
+                        }}
+                      />
                       <div
                         className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
                         style={{
@@ -393,8 +393,7 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-               className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-                   
+              className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
               onClick={handleReset}
             >
               Reset
@@ -403,8 +402,7 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-               className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-                  
+                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
                 onClick={onClose}
               >
                 Cancel
@@ -412,7 +410,6 @@ export default function SessionModal({
               <button
                 type="button"
                 className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-               
                 onClick={handleSave}
                 disabled={isSaving}
               >
