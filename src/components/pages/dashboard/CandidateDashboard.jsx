@@ -256,7 +256,9 @@ const CandidateDashboard = () => {
                     color: " #DFB916",
                   }}
                 >
-                  30%
+                  {dashboardData?.session_completion
+                    ? `${dashboardData.session_completion.pending}%`
+                    : "0%"}
                 </div>
 
                 <div
