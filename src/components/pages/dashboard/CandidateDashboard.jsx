@@ -149,13 +149,13 @@ const CandidateDashboard = () => {
   //   },
   // ];
 
-  const topScores = dashboardData?.top_five_test_scores
-    ? dashboardData.top_five_test_scores.map((s) => ({
-        name: s.hr_name || "-",
-        topic: s.topic || "-",
-        score: s.score || "-",
-      }))
-    : "no data found";
+  const topScores = (dashboardData?.top_five_test_scores || []).map(
+    (s) => ({
+      name: s.hr_name || "-",
+      topic: s.topic || "-",
+      score: s.score || "-",
+    })
+  );
 
   const sessionReport = dashboardData?.session_report || {};
   const lastTwelveScores = dashboardData?.last_twelve_test_scores || [];
@@ -338,7 +338,7 @@ const CandidateDashboard = () => {
                       width: `${commWidth}%`,
                       backgroundColor: "#0f172a",
                       whiteSpace: "nowrap",
-                    
+
                       textOverflow: "ellipsis",
                       transition: "width 0.3s ease",
                     }}
@@ -571,53 +571,57 @@ const CandidateDashboard = () => {
                     Top 5 Session Score
                   </h2>
                   <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
-                    {topScores.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
-                      >
-                        {/* Left content */}
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                            <span className="material-icons text-gray-400 text-[18px]">
-                              <img
-                                src={personImage}
-                                alt="Person"
-                                className="w-8 h-8 rounded-full"
-                              />
-                            </span>
-                          </div>
+                    {topScores.length > 0 ? (
+                      topScores.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
+                        >
+                          {/* Left content */}
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                              <span className="material-icons text-gray-400 text-[18px]">
+                                <img
+                                  src={personImage}
+                                  alt="Person"
+                                  className="w-8 h-8 rounded-full"
+                                />
+                              </span>
+                            </div>
 
-                          <div className="flex flex-col">
-                            <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-                              Assigned by
+                            <div className="flex flex-col">
+                              <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+                                Assigned by
+                              </span>
+                              <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
+                                {item.name}
+                              </span>
+                              <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
+                                Topic: {item.topic}
+                              </span>
+                            </div>
+                          </div>
+                          {/* Right side */}
+                          <div className="flex flex-col items-end">
+                            <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
+                              {item.score}
                             </span>
-                            <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
-                              {item.name}
+                            <span className="text-[10px] text-gray-400">
+                              Score
                             </span>
-                            <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
-                              Topic: {item.topic}
-                            </span>
+                            <KeyboardArrowDown
+                              style={{
+                                fontSize: "16px",
+                                color: "#B0B3B8",
+                                marginTop: "2px",
+                              }}
+                            />
                           </div>
                         </div>
-                        {/* Right side */}
-                        <div className="flex flex-col items-end">
-                          <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
-                            {item.score}
-                          </span>
-                          <span className="text-[10px] text-gray-400">
-                            Score
-                          </span>
-                          <KeyboardArrowDown
-                            style={{
-                              fontSize: "16px",
-                              color: "#B0B3B8",
-                              marginTop: "2px",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-center text-gray-500 pt-10">No top scores found.</p>
+                    )}
                   </div>
                 </div>
               </div>
