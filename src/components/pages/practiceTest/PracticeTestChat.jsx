@@ -1025,7 +1025,7 @@ export default function PracticeTest() {
         ) : userStatus === "expired" ? (
           // Expired session
            <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+    <div className="bg-white rounded-2xl shadow-xl p-8 min-w-[420px]  min-h-[220px] text-center relative">
      {/* Close Button */}
     <button
   onClick={() => {
@@ -1240,7 +1240,7 @@ export default function PracticeTest() {
 
     {showTimeUpPopup && (
   <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+    <div className="bg-white rounded-2xl shadow-xl p-8 min-w-[420px] min-h-[220px]  text-center relative">
       {/* Close Button */}
       <button
         onClick={() => {
@@ -1278,7 +1278,7 @@ export default function PracticeTest() {
 
 {popupType && (
   <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+    <div className="bg-white rounded-2xl shadow-xl p-8 min-w-[420px]  min-h-[220px] text-center relative">
       {/* Close Icon */}
       <button
         onClick={closePopup}

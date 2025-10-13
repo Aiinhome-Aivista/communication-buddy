@@ -11,11 +11,8 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
       onClick={onClose} // close when clicking outside modal
     >
       <div
-        className="bg-[#FEFEFE] rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center shadow-xl relative"
-        style={{
-          minWidth: "min(400px, 90vw)",
-          minHeight: "min(200px, 60vh)",
-        }}
+        className="bg-[#FEFEFE] rounded-2xl p-8 min-w-[420px]  min-h-[220px]  sm:p-10 flex flex-col items-center justify-center shadow-xl relative"
+      
         onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
       >
         {/* Close Button */}

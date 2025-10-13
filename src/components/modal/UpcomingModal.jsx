@@ -39,7 +39,7 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
       onClick={onClose}
     >
       <div
-        className="bg-[#FEFEFE] rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center shadow-xl relative"
+        className="bg-[#FEFEFE] rounded-2xl p-8 min-w-[420px]  min-h-[220px]  sm:p-10 flex flex-col items-center justify-center shadow-xl relative"
       
         style={{
           minWidth: "min(350px, 90vw)",

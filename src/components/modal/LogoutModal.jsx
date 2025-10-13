@@ -8,13 +8,10 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
     }
     return (
         <div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            style={{
-                background: "rgba(0,0,0,0.18)",
-                backdropFilter: "blur(6px)"
-            }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm"
+        
         >
-            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[320px] text-center relative">
+            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] text-center relative">
                 {/* Cancel icon at top right */}
                 <button
                     onClick={onClose}
