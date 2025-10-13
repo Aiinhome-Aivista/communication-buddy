@@ -377,7 +377,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
                 {/* Second line: label */}
                 <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
-                  Active participant
+                  Assigned_Test
                 </span>
               </div>
             </div>
@@ -481,7 +481,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                     fontSize: "12px",
                   }}
                 >
-                  Session Created
+                  Test Attempted
                 </div>
               </div>
 
