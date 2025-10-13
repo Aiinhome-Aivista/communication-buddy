@@ -549,8 +549,11 @@ const CandidateDashboard = () => {
 
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[20px] text-[#8F96A9]">
-                  {Math.round(sessionReport.average_score) ?? 64}
-                </div>
+                  {Number.isFinite(Number(sessionReport.average_score))
+                    ? Number(sessionReport.average_score).toFixed(1)
+                    : "0.0"}
+
+                                </div>
                 <div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Score
                 </div>
