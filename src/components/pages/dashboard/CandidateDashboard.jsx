@@ -16,6 +16,7 @@ import { useState, useEffect, useMemo } from "react";
 
 import personImage from "../../../assets/logo/person.jpg";
 
+
 import {
   BarChart,
   Bar,
@@ -358,55 +359,50 @@ const CandidateDashboard = () => {
               Session type
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 max-w-[500px]">
               {/* Communication Bar */}
-              <div className="flex items-center gap-3">
-                {/* Bar with label inside */}
-                <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 bg-slate-200 h-6 rounded-sm overflow-hidden relative">
                   <div
-                    className="h-6 rounded-sm flex items-center pl-2"
+                    className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                     style={{
                       width: `${commWidth}%`,
                       backgroundColor: "#0f172a",
                       whiteSpace: "nowrap",
-
+                      overflow: "hidden",
                       textOverflow: "ellipsis",
-                      transition: "width 0.3s ease",
                     }}
                   >
-                    <span className="text-xs text-[#8F96A9]">Communication</span>
+                    <span className="text-xs text-white">Communication</span>
                   </div>
                 </div>
-                {/* Count outside the bar */}
-                <span className="text-xs text-gray-700 font-medium w-8 text-right">
-                  {commCount}
-                </span>
+                <div className="w-10 text-right">
+                  <span className="text-xs text-gray-700 font-medium">{commCount}</span>
+                </div>
               </div>
 
               {/* Technology Bar */}
-              <div className="flex items-center gap-3">
-                {/* Bar with label inside */}
-                <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 bg-slate-200 h-6 rounded-sm overflow-hidden relative">
                   <div
-                    className="h-6 rounded-sm flex items-center pl-2"
+                    className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                     style={{
                       width: `${techWidth}%`,
-                      backgroundColor: "#DFB916",
+                      background: "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      transition: "width 0.3s ease",
                     }}
                   >
                     <span className="text-xs text-gray-900">Technology</span>
                   </div>
                 </div>
-                {/* Count outside the bar */}
-                <span className="text-xs text-gray-700 font-medium w-8 text-right">
-                  {techCount}
-                </span>
+                <div className="w-10 text-right">
+                  <span className="text-xs text-gray-700 font-medium">{techCount}</span>
+                </div>
               </div>
             </div>
+
 
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
