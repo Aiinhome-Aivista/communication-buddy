@@ -7,7 +7,7 @@ import Footer from '../ui/Footer'
 export default function AppLayout() {
   return (
     <>
-      <div className="flex h-screen bg-slate-900">
+      <div className="flex h-screen">
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header />
