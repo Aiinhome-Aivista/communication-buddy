@@ -7,8 +7,8 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PasswordRoundedIcon from "@mui/icons-material/PasswordRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
-import Loader from "../../ui/Loader";
 import "../../style/login.css";
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 
 function Login() {
   const { login } = useAuth();
@@ -112,12 +112,15 @@ function Login() {
           {/* Inputs */}
           <div className="input-fields flex flex-col gap-3 w-full mt-4">
             <div
-              className={`input-wrapper w-full py-2 px-3 border rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 ${userInfo.email
-                  ? "border-[#3D5B81] focus-within:ring-[#3D5B81]/50"
-                  : "border-[#BCC7D2] focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]"
+              className={`input-wrapper group w-full py-2 px-3 border rounded-lg flex items-center gap-3 transition-all duration-200 hover:border-[#3D5B81] ${userInfo.email
+                ? "border-[#3D5B81]"
+                : "border-[#BCC7D2]"
                 }`}
             >
-              <PersonRoundedIcon sx={{ color: userInfo.email ? "#3D5B81" : "#BCC7D2" }} />
+              <PersonRoundedIcon
+                className="text-[#BCC7D2] group-hover:text-[#3D5B81]"
+                sx={{ color: userInfo.email ? "#3D5B81" : "" }}
+              />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type="email"
@@ -130,12 +133,15 @@ function Login() {
             </div>
 
             <div
-              className={`input-wrapper w-full py-2 px-3 border rounded-lg flex items-center gap-3 bg-white/50 transition-all duration-200 focus-within:ring-1 ${userInfo.password
-                  ? "border-[#3D5B81] focus-within:ring-[#3D5B81]/50"
-                  : "border-[#BCC7D2] focus-within:ring-[#8F96A9]/50 focus-within:border-[#8F96A9]"
+              className={`input-wrapper group w-full py-2 px-3 border rounded-lg flex items-center gap-3 transition-all duration-200 hover:border-[#3D5B81] ${userInfo.password
+                ? "border-[#3D5B81]"
+                : "border-[#BCC7D2]"
                 }`}
             >
-              <PasswordRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
+              <PasswordRoundedIcon
+                className="text-[#BCC7D2] group-hover:text-[#3D5B81]"
+                sx={{ color: userInfo.password ? "#3D5B81" : "" }}
+              />
               <input
                 className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
                 type={showPassword ? "text" : "password"}
@@ -151,9 +157,15 @@ function Login() {
                 className="focus:outline-none"
               >
                 {showPassword ? (
-                  <VisibilityOffRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
+                  <VisibilityOffRoundedIcon
+                    className="text-[#BCC7D2] group-hover:text-[#3D5B81]"
+                    sx={{ color: userInfo.password ? "#3D5B81" : "" }}
+                  />
                 ) : (
-                  <VisibilityRoundedIcon sx={{ color: userInfo.password ? "#3D5B81" : "#BCC7D2" }} />
+                  <VisibilityRoundedIcon
+                    className="text-[#BCC7D2] group-hover:text-[#3D5B81]"
+                    sx={{ color: userInfo.password ? "#3D5B81" : "" }}
+                  />
                 )}
               </button>
             </div>
@@ -164,20 +176,24 @@ function Login() {
             className="
               w-full 
               text-[#7E8489] 
-              bg-[#182938] 
+              bg-[#182938C2] 
               rounded-lg 
               border border-[#182938] 
               py-2 mt-5 
               cursor-pointer 
               text-sm md:text-base
-              disabled:opacity-80 disabled:cursor-not-allowed
-            "
+              disabled:bg-[#182938] diasabled:text-[#D9D9D9] disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:text-[#D9D9D9] hover:bg-[#182938] hover:border-[#182938]"
             onClick={() => handleOnLogin()}
             type="button"
             id="login-button"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <>
+                Logging in...
+                <AutorenewRoundedIcon className="animate-spin text-[#D9D9D9]" />
+              </>
+            ) : "Login"}
           </button>
         </div>
       </div>
@@ -186,7 +202,6 @@ function Login() {
       <p className="text-[#2C2E42] text-xs md:text-sm py-2 text-center">
         @2020 Aiinhome Technologies Pvt. Ltd. All rights reserved
       </p>
-      <Loader show={loading} />
     </div>
   );
 }

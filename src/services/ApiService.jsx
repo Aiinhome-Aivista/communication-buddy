@@ -27,6 +27,7 @@ export const postURL = {
   getSessionStatus: `${BASE_URL}get_session_status`,
   startSession: `${BASE_URL}start_session`,
   chat: `${BASE_URL}chat`,
+  hrSessions: `${BASE_URL}hr-sessions`,
 };
 
 // Convenience helper: fetch HR dashboard with { hr_id }
@@ -56,13 +57,15 @@ export const startChatSession = async (name, topicName, userInput = "") => {
   });
 };
 
-export const sendChatMessage = async (sessionId, topic, time, userInput, language = "English") => {
+export const sendChatMessage = async (sessionId, topic, time, userInput, language = "English", userId, hrId) => {
   return fatchedPostRequest(postURL.chat, {
     session_id: sessionId?.toString(),
     topic: topic,
     time: time?.toString() || "10",
     user_input: userInput,
-    language: language
+    language: language,
+    user_id: userId,
+    hr_id: hrId,
   });
 };
 

@@ -1,8 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
-import ManageSchedule from "../pages/admin/ManageSchedule";
-import ManageUser from "../pages/admin/ManageUser";
+import ManageSchedule from "../pages/admin/ManageScheduleOld";
 import ScheduleSession from "../pages/scheduleSession/ScheduleSession";
 import Settings from "../pages/setting/Settings";
 // Lazy-loaded components improve performance by splitting code into smaller chunks
@@ -21,6 +20,7 @@ const RequestNotification = lazy(() =>
 );
 const TopicList = lazy(() => import("../pages/users/TopicList"));
 const scheduleSession = lazy(() => import("../pages/scheduleSession/ScheduleSession"));
+const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
 // Loader component for fallback UI
 const Loader = () => (
   <div className="text-center text-teal-300 py-6"></div>
@@ -180,6 +180,26 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={<Loader />}>
               <Settings />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/manage-users",
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        </Suspense>
+      ),
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={<Loader />}>
+              <ManageUser />
             </Suspense>
           ),
         },

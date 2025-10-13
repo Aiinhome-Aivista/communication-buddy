@@ -1,173 +1,247 @@
-import React, { useState, useEffect } from 'react'
-import { FaFileExport } from 'react-icons/fa'
-import ReportTable from '../../ui/ReportTable'
-import Pagination from '../../ui/Pagination'
-import { Paginate } from '../../../utils/Paginate';
-import { Plus, Search } from 'lucide-react';
-import AddUserModal from '../../ui/AddUserModal';
-import { fatchedGetRequest, fatchedPostRequest, getURL, postURL } from '../../../services/ApiService';
-import { getDate } from '../../../utils/Timer';
-import CustomTooltip from '../../ui/CustomTooltip';
-import { FaRotate } from 'react-icons/fa6';
-import Loader from '../../ui/Loader';
+import React, { useState, useEffect, useRef } from "react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import SearchIcon from "@mui/icons-material/Search";
+import CheckIcon from "@mui/icons-material/Check";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { fatchedGetRequest, getURL } from "../../../services/ApiService";
+import { useNavigate } from "react-router-dom";
+import { getDate } from "../../../utils/Timer";
 
-function ManageUser() {
-    const userId = parseInt(sessionStorage.getItem("user_id"), 10);
-    const userRole = sessionStorage.getItem("userRole");
-    const headers = ["Sl. No.", "Name", "Email", "Phone", "DOB", "User Type"];
-    const keys = ["id", "name", "email", "phone_number", "dob", "userType"];
 
-    const [hrData, setHrData] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    // State for pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [loading, setLoading] = useState(false); // Full page loader
-    const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
-    const [rotation, setRotation] = useState(false);
-    // Paginate the reports data
-    const { currentItems, totalPages } = Paginate(
-        hrData,
-        currentPage,
-        itemsPerPage
-    );
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
-    // Handle items per page change
-    const handleItemsPerPageChange = (e) => {
-        setItemsPerPage(Number(e.target.value));
-        setCurrentPage(1);
-    };
-    const handleExport = () => {
-        alert("Exporting to Excel...");
-    };
-    const handleNewHR = () => {
-        // alert("Add New HR clicked!");
-        setShowModal(true);
-    }
-    const handleCloseModal = () => {
-        setShowModal(false);
-    }
-    // useEffect(() => {
-    //     if (userRole === "hr") {
-    //         fetchUserData();
-    //     }
-    // }, []);
+export default function ManageUser() {
+  const [activeTab, setActiveTab] = useState("Upcoming");
+  const [search, setSearch] = useState("");
+  const [testType, setTestType] = useState("Test Type");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const [testTypeOptions, setTestTypeOptions] = useState(["All"]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const dropdownRef = useRef(null);
+  const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+  const [loading, setLoading] = useState(true);
 
-    // Fetch user data and return processed list
+  const navigate = useNavigate();
+
+  // Fetch user data
+  useEffect(() => {
     const fetchUserData = async () => {
-        try {
-            const response = await fatchedGetRequest(getURL.GetAllUser);
-            if (response.Success === true || response.status === 200) {
-                return (response.data || []).map((session) => ({
-                    ...session,
-                    dob: getDate(session.dob),
-                }));
-            }
-            return [];
-        } catch (error) {
-            console.error('Error fetching Data', error.message);
-            return [];
+      setLoading(true);
+      try {
+        const response = await fatchedGetRequest(getURL.GetAllUser);
+        if (response.Success === true || response.status === 200) {
+          const processedData = (response.data || []).map((user) => ({
+            ...user,
+            dob: getDate(user.dob),
+          }));
+          setUserData(processedData);
+
+          const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
+          setTestTypeOptions(userTypes);
+          if (userTypes.length > 0) setTestType(userTypes[0]);
         }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchUserData();
+  }, []);
 
-    // First load
-    useEffect(() => {
-        if (userRole === 'hr') {
-            const loadData = async () => {
-                setLoading(true);
-                const processed = await fetchUserData();
-                setHrData(processed);
-                setLoading(false);
-            };
-            loadData();
-        }
-    }, [userRole]);
+  // Filter animation
+  useEffect(() => {
+    setIsAnimating(true);
+    const timer = setTimeout(() => setIsAnimating(false), 300);
+    return () => clearTimeout(timer);
+  }, [search, testType]);
 
-    // Reload data (sync button)
-    const ReloadGridData = async () => {
-        try {
-            setRotation(true);
-            setLoadingTable(true);
-            const processed = await fetchUserData();
-            setHrData(processed);
-        } catch (error) {
-            console.error('Error fetching Data', error.message);
-        } finally {
-            setLoadingTable(false);
-            setTimeout(() => setRotation(false), 500);
-        }
-    };
+  // Handle click outside dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return (
-        <div className="text-teal-100 p-2">
-            <div className="flex justify-between items-center mb-6">
-                {/* Left side: Title + Sync */}
-                <div className="flex items-center">
-                    <h1 className="text-2xl font-bold text-white">Manage User</h1>
-                    <span className="inline-block w-4"></span>
-                    <CustomTooltip content="Sync Data" type="reload">
-                        <span
-                            onClick={ReloadGridData}
-                            className="sync-icon cursor-pointer align-middle"
-                            style={{ position: "relative", top: "2px" }}
-                        >
-                            <FaRotate className={`${rotation ? "rotate" : ""}`} />
-                        </span>
-                    </CustomTooltip>
-                </div>
-
-                {/* Right side: Search + Add Button */}
-                <div className="flex items-center space-x-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-300" />
-                        <input
-                            type="text"
-                            placeholder="Search User"
-                            className="pl-10 pr-3 py-2 rounded-lg bg-teal-700 text-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        />
-                    </div>
-
-                    <button
-                        onClick={handleNewHR}
-                        className="flex items-center bg-teal-700 hover:bg-teal-600 text-teal-100 py-2 px-4 rounded-lg transition-colors"
-                    >
-                        <Plus className="mr-2" />
-                        Add New User
-                    </button>
-                </div>
-            </div>
-
-            <ReportTable
-                tableData={currentItems}
-                headers={headers}
-                keys={keys}
-                isShowAction={true}
-                loadingTable={loadingTable}
-
-            />
-            <div className="mt-4">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    itemsPerPage={itemsPerPage}
-                    onPageChange={paginate}
-                    onItemsPerPageChange={handleItemsPerPageChange}
-                />
-            </div>
-
-            <AddUserModal
-                isOpen={showModal}
-                title="Add New User"
-                onClose={handleCloseModal}
-                defaultRole={{ id: 1, name: "HR" }}
-            // onSave={handleSaveCandidate}
-            />
-
-            {/* Full page loader */}
-            <Loader show={loading} />
-        </div>
+  // Filter logic
+  const filteredData = userData
+    .filter((user) =>
+      [user.name, user.email, user.phone_number, user.userType].some((value) =>
+        value?.toString().toLowerCase().includes(search.toLowerCase())
+      )
     )
-}
+    .filter((user) =>
+      testType === "All" ||
+      user.userType?.toLowerCase() === testType.toLowerCase()
+    );
 
-export default ManageUser
+  // Status badge
+  const getStatusStyles = (status) => {
+    switch (status?.toLowerCase()) {
+      case "hr":
+        return "bg-[#35FF021A] text-[#46BA2F]";
+      case "candidate":
+        return "bg-blue-100 text-blue-600";
+      default:
+        return "bg-gray-100 text-gray-500";
+    }
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    const status = rowData.userType;
+    return (
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyles(
+          status
+        )}`}
+      >
+        {status}
+      </span>
+    );
+  };
+
+  // Empty message
+  const emptyMessageTemplate = (
+    <div className="flex flex-col items-center justify-center p-5 text-center">
+      {loading ? (
+        <p>Loading Users...</p>
+      ) : (
+        <>
+          <InfoOutlinedIcon sx={{ fontSize: "3rem", color: "#BCC7D2" }} />
+          <p className="mt-4 text-lg text-gray-500">No Users Found</p>
+          <p className="text-sm text-gray-400">
+            There are no users matching your criteria.
+          </p>
+        </>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
+      <div className="flex-grow flex flex-col">
+        <div className="pt-4 px-4">
+          <h1 className="text-2xl font-bold text-[#2C2E42]">Manage Users</h1>
+          {/* Tabs + Search + Dropdown */}
+          <div className="flex flex-row items-center justify-end mt-6 gap-4">
+            {/* Search */}
+            <div className="relative w-80">
+              <input
+                type="text"
+                placeholder="Search content"
+                className="w-full h-10 pl-10 pr-4 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2]"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <SearchIcon
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
+                sx={{ fontSize: "1.25rem" }}
+              />
+            </div>
+
+            {/* Dropdown */}
+            <div className="relative w-80" ref={dropdownRef}>
+              <button
+                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10"
+                style={{ color: "#8F96A9" }}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                {testType}
+                {dropdownOpen ? (
+                  <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9]" />
+                ) : (
+                  <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9]" />
+                )}
+              </button>
+              {dropdownOpen && (
+                <ul className="absolute mt-1 left-0 w-80 bg-[#BCC7D2] rounded-xl shadow-md z-10 overflow-hidden">
+                  {testTypeOptions.map((option) => (
+                    <li
+                      key={option}
+                      onClick={() => {
+                        setTestType(option);
+                        setDropdownOpen(false);
+                      }}
+                      className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${testType === option
+                        ? "bg-[#D9D9D9] font-bold"
+                        : "hover:bg-[#D9D9D9]/50"
+                        }`}
+                    >
+                      {option}
+                      {testType === option && (
+                        <CheckIcon
+                          sx={{ fontSize: "1.25rem", color: "#182938" }}
+                        />
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Table */}
+          <div
+            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+              }`}
+          >
+            <div key={`${search}-${testType}`}>
+              <DataTable
+                value={filteredData}
+                paginator
+                rows={5}
+                rowsPerPageOptions={[5, 10, 25]}
+                paginatorClassName="!m-0 !border-t"
+                rowHover={filteredData.length > 0}
+                emptyMessage={emptyMessageTemplate}
+                loading={loading}
+              >
+                <Column
+                  field="name"
+                  header="Name"
+                  body={(rowData) => (
+                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                      {rowData.name}
+                    </span>
+                  )}
+                ></Column>
+                <Column
+                  field="email"
+                  header="Email"
+                  body={(rowData) => (
+                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                      {rowData.email}
+                    </span>
+                  )}
+                ></Column>
+                <Column
+                  field="phone_number"
+                  header="Phone"
+                ></Column>
+                <Column
+                  field="dob"
+                  header="DOB"
+                ></Column>
+                <Column
+                  field="userType"
+                  header="User Type"
+                  body={statusBodyTemplate}
+                  className="text-center"
+                ></Column>
+              </DataTable>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
