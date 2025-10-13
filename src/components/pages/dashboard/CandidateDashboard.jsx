@@ -111,9 +111,12 @@ const lineData = useMemo(() => {
 }, [dashboardData]);
 
 
-  const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
-    ? dashboardData.most_asked_technologies
-    : [];
+const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
+  ? dashboardData.most_asked_technologies
+  : Array.isArray(dashboardData?.top_technologies)
+  ? dashboardData.top_technologies
+  : [];
+
 
   const mostDiscussedSkills = Array.isArray(
     dashboardData?.most_discussed_technical_skills
