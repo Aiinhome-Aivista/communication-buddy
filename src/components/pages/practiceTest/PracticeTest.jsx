@@ -155,9 +155,9 @@ export default function PracticeTest() {
               {tabOptions.map((tab) => (
                 <button
                   key={tab}
-                  className={`px-6 py-2 text-sm font-medium rounded-xl cursor-pointer ${activeTab === tab
-                    ? "bg-[#FEFEFE] text-[#2C2E42]"
-                    : "bg-[#ECEFF2] text-[#8F96A9]"
+                  className={`px-6 py-2 text-sm rounded-xl cursor-pointer ${activeTab === tab
+                    ? "bg-[#FEFEFE] text-[#2C2E42] font-bold"
+                    : "bg-[#ECEFF2] text-[#8F96A9] font-medium"
                     }`}
                   onClick={() => setActiveTab(tab)}
                 >
@@ -224,7 +224,13 @@ export default function PracticeTest() {
               className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
               onClick={fetchAllTopics}
             >
-              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`} />
+              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`}
+                sx={{
+                  transition: "color 0.2s ease-in-out",
+                  "&:hover": {
+                    color: "#4a4e51ff", // Darker color on hover
+                  },
+                }} />
             </div>
           </div>
 
