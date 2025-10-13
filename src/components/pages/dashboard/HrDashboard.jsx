@@ -23,6 +23,8 @@ import trending_down from "../../../assets/logo/trending_down.png";
 
 
 
+
+
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
   const [modalOpen, setModalOpen] = useState(false);
@@ -195,7 +197,7 @@ const HrDashboard = () => {
     return null;
   };
 
-
+ 
 
 
 
@@ -279,19 +281,21 @@ const HrDashboard = () => {
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
-              <img src="" alt="" />
-              {mostTopTechnologies.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                  {mostTopTechnologies.map((tech, idx) => (
-                    <span
-                      key={`${tech}-${idx}`}
-                      className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
-                      title={tech}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+               {mostAskedTechnologies.length > 0 ? (
+                       <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
+                         {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
+                           // function returning a React Icon or fallback
+                           return (
+                             <div
+                               key={`${tech}-${idx}`}
+                               className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                                title={tech}
+                             >
+                              
+                             </div>
+                           );
+                         })}
+                       </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                   no data found
