@@ -198,7 +198,7 @@ const HrDashboard = () => {
               <div className="flex justify-center gap-8 mt-2 text-xs font-medium">
                 <div className="flex flex-col items-center">
                   <div className="font-bold text-[20px]">{completedPct}%</div>
-                  <div className="text-[12px]text-[#8F96A9] ">Completed</div>
+                  <div className="text-[12px] text-[#8F96A9] ">Completed</div>
                 </div>
                 <div className="flex flex-col items-center text-[#DFB916]">
                   <div className="font-bold text-[20px]">{pendingPct}%</div>
@@ -209,7 +209,7 @@ const HrDashboard = () => {
 
             {/* Mostly Asked Tech */}
             <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-              <h2 className="font-semibold text-[#8F96A9] mb-6">
+              <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
               {mostAskedTechnologies.length > 0 ? (
@@ -225,7 +225,7 @@ const HrDashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                   no data found
                 </div>
               )}
@@ -241,11 +241,11 @@ const HrDashboard = () => {
                 <div className="flex flex-col items-start">
                   <div className="flex items-center gap-2">
                     <img src={groupLogo} alt="Group" className="w-5 h-5" />
-                    <span className="font-bold text-[20px] text-gray-700">
+                    <span className="font-bold text-[20px] text-[#8F96A9]">
                       {activeParticipant}
                     </span>
                   </div>
-                  <span className="text-[12px] text-gray-500 mt-1 -ml-7">
+                  <span className="text-[12px] text-[#8F96A9] -ml-7">
                     Active participant
                   </span>
                 </div>
@@ -270,7 +270,7 @@ const HrDashboard = () => {
         <span className="text-xs text-white">Communication</span>
       </div>
     </div>
-    <span className="text-xs text-gray-700 font-medium w-8 text-right">{commRaw}</span>
+    <span className="text-xs text-[#8F96A9] font-medium w-8 text-right">{commRaw}</span>
   </div>
 
   {/* Technology Bar */}
@@ -290,7 +290,7 @@ const HrDashboard = () => {
         <span className="text-xs text-gray-900">Technology</span>
       </div>
     </div>
-    <span className="text-xs text-gray-700 font-medium w-8 text-right">{techRaw}</span>
+    <span className="text-xs text-[#8F96A9] font-medium w-8 text-right">{techRaw}</span>
   </div>
 </div>
 
@@ -298,17 +298,17 @@ const HrDashboard = () => {
               {/* Bottom Stats */}
               <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{avgSessionDuration}</div>
-                  <div className="text-[12px]">Average Session Duration</div>
+                  <div className="font-normal text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
+                  <div className="text-[12px] text-[#8F96A9]">Average Session Duration</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{sessionCreated}</div>
-                  <div className="text-[12px]">Session Created</div>
+                  <div className="font-normal text-[20px] text-[#8F96A9]">{sessionCreated}</div>
+                  <div className="text-[12px] text-[#8F96A9]">Session Created</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1 font-semibold">
+                  <div className="flex items-center gap-1 font-normal text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
                       {Math.round(Number(userTraffic) || 0)}
                     </div>
@@ -318,12 +318,12 @@ const HrDashboard = () => {
                       <img src={trending_down} alt="Down" className="w-5 h-5" />
                     ) : null}
                   </div>
-                  <div className="text-[12px]">User Traffic</div>
+                  <div className="text-[12px] text-[#8F96A9]">User Traffic</div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px]">{averageScore}</div>
-                  <div className="text-[12px]">Average Score</div>
+                  <div className="font-normal text-[20px] text-[#8F96A9]">{averageScore}</div>
+                  <div className="text-[12px] text-[#8F96A9]">Average Score</div>
                 </div>
               </div>
             </div>
@@ -332,7 +332,7 @@ const HrDashboard = () => {
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div className="flex flex-col gap-6 w-full md:w-2/3">
                 <div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 h-[198px] flex flex-col">
-                  <h2 className="font-semibold mb-3 text-[#182938]">
+                  <h2 className="font-normal mb-3 text-[#3D5B81]">
                     Annually Hiring Process
                   </h2>
                   <div className="flex-1">
@@ -358,7 +358,7 @@ const HrDashboard = () => {
                 </div>
 
                 <div className="bg-white rounded-[10px] shadow-sm p-5 h-[150px]">
-                  <h2 className="font-semibold text-[#8F96A9] mb-3">
+                  <h2 className="font-normal text-[#8F96A9] mb-3">
                     Language Usage
                   </h2>
                   {lineData.length > 0 ? (
@@ -383,7 +383,7 @@ const HrDashboard = () => {
                       </LineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-[80px] text-gray-500 text-sm">
+                    <div className="flex items-center justify-center h-[80px] text-[#8F96A9] text-sm">
                       no data found
                     </div>
                   )}
@@ -391,7 +391,7 @@ const HrDashboard = () => {
               </div>
 
               <div className="bg-white shadow-sm p-5 rounded-[10px] w-full md:w-1/3 h-[374px] flex-shrink-0">
-                <h2 className="font-semibold text-gray-700 mb-6">
+                <h2 className="font-normal text-[#8F96A9] mb-6">
                   Mostly Asked Technical Skill
                 </h2>
                 {mostDiscussedSkills.length > 0 ? (
@@ -407,7 +407,7 @@ const HrDashboard = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                  <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                     no data found
                   </div>
                 )}
