@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchHrDashboard } from "../../../services/ApiService";
+import { fetchHrDashboard,fatchedPostRequest, postURL } from "../../../services/ApiService";
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import {
@@ -26,6 +26,8 @@ const HrDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
+    const [userData, setUserData] = useState([]);
+  const [topics, setTopics] = useState([]);
 
   const hrId =
     typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
@@ -60,6 +62,27 @@ const HrDashboard = () => {
     };
     load();
   }, [hrId]);
+
+  //session modal data fetch
+    useEffect(() => {
+    const fetchUserAndTopics = async () => {
+      if (!hrId) return;
+      try {
+        const JsonBody = { hr_id: hrId };
+        const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
+        if (response.success === true || response.status === 200) {
+          setUserData(response.candidates || []);
+          setTopics(response.topics || []);
+        }
+      } catch (error) {
+        console.error('Error fetching modal data', error.message);
+      }
+    };
+    if (modalOpen) {
+      fetchUserAndTopics();
+    }
+  }, [modalOpen, hrId]);
+
   const sessionCompletion = data?.session_completion || {};
   const completionTotal =
     (Number(sessionCompletion.completed) || 0) +
@@ -417,11 +440,13 @@ const HrDashboard = () => {
         </div>
       )}
 
-      <SessionModal
+     <SessionModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
         setSessionDuration={setSessionDuration}
+        userData={userData}
+        topics={topics}
         onSave={() => setModalOpen(false)}
       />
     </div>

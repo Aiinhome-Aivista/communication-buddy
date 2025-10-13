@@ -7,10 +7,11 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
   return (
     <Dialog
       header="Session Expired"
+         className="custom-dialog"
       visible={isOpen}
       onHide={onClose}
       style={{ width: "350px"}}
-      className="custom-dialog"
+   
      
     
 
@@ -23,7 +24,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
           className="w-10 h-10 mb-2"
         />
 
-        <h2 className="text-lg font-semibold text-[#2C2E42]">
+        <h2 className="text-lg flex items-center font-semibold text-[#2C2E42]">
           Your session has expired
         </h2>
 

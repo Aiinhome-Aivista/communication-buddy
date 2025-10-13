@@ -7,7 +7,9 @@ import useCustomSpeechRecognition from "../../../hooks/useSpeechRecognition";
 import { useTopic } from "../../../provider/TopicProvider";
 import { saveChatSession, greettingMessage } from "../../../utils/saveChatSessionReview";
 import { checkSessionStatus, startChatSession, sendChatMessage } from "../../../services/ApiService";
-
+import ErrorIcon from '@mui/icons-material/Error';
+import CancelIcon from '@mui/icons-material/Cancel';
+import WarningIcon from '@mui/icons-material/Warning';
 export default function PracticeTest() {
   const [messages, setMessages] = useState([]);
 
@@ -1179,91 +1181,99 @@ export default function PracticeTest() {
         )}
       </div>
 
-      {/* Enhanced Time Up Popup (from textReader) */}
-      {showTimeUpPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg text-center w-[350px] space-y-4">
-            {sessionExpired ? (
-              <>
-                <p className="text-lg font-medium">Your session time has expired.</p>
-                <div className="flex justify-center">
-                  <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                      // Close popup, keep sessionExpired true so inputs remain disabled.
-                      try { window.speechSynthesis.cancel(); } catch { }
-                      setShowTimeUpPopup(false);
-                    }}
-                  >
-                    OK
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p className="text-lg font-medium">Do you want to start a new session?</p>
-                <div className="flex justify-center gap-4">
-                  <button
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                      setShowTimeUpPopup(false);
-                      // Reset for new session
-                      setMessages([]);
-                      setFullConversation([]);
-                      setSessionStarted(false);
-                      setSessionId(null);
-                      setLanguageSelected(false);
-                      setWaitingForLanguage(false);
-                      setSessionExpired(false);
-                      setUserStatus(null);
-                      checkSessionStatusAPI();
-                    }}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                      setShowTimeUpPopup(false);
-                      navigate("/test");
-                    }}
-                  >
-                    No
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+    {showTimeUpPopup && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+      {/* Close Button */}
+      <button
+        onClick={() => {
+          try { window.speechSynthesis.cancel(); } catch { }
+          setShowTimeUpPopup(false);
+        }}
+        className="absolute top-4 right-4 text-[#DFB916] hover:text-[#C6A800] transition"
+      >
+        <CancelIcon className="w-10 h-10" />
+      </button>
+
+      {/* Warning Icon */}
+      <div className="flex justify-center mb-3">
+        <div className="flex items-center justify-center">
+          <WarningIcon className="text-[#DFB916] text-[32px]" />
         </div>
-      )}
-      {popupType && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-8 min-w-[300px] max-w-[90vw] text-center">
-            <h2 className="text-xl font-semibold text-[#2C2E42] mb-3">
-              {popupType === "back" ? "Confirm Navigation" : "End Session"}
-            </h2>
-            <p className="text-[#7E8489] mb-6">
-              {popupType === "back"
-                ? "Are you sure you want to go back? Unsaved changes may be lost."
-                : "Are you sure you want to end the session? Unsaved changes may be lost."}
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                className="px-5 py-2 rounded bg-[#DFB916] text-white font-semibold"
-                onClick={closePopup}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-5 py-2 rounded bg-[#E53E3E] text-white font-semibold"
-                onClick={confirmAction}
-              >
-                Yes, Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
+
+      {/* Aiihome | CB Title */}
+     <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+        <span className="text-[#DFB916]">Aii</span>
+        <span className="text-[#2C2E42]">nhome</span> | <span className="font-bold">CB</span>
+      </h3>
+
+      {/* Message */}
+      <p className="text-[20px] font-bold text-[#2C2E42] mb-6">
+        Your session is expired!
+      </p>
+
+      {/* OK Button */}
+      <div className="flex justify-center">
+        <button
+          className="px-8 py-2 rounded-md bg-[#DFB916] text-[#2C2E42] font-semibold hover:bg-[#E5C300] transition"
+          onClick={() => {
+            try { window.speechSynthesis.cancel(); } catch { }
+            setShowTimeUpPopup(false);
+          }}
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{popupType && (
+  <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+      {/* Close Icon */}
+      <button
+        onClick={closePopup}
+        className="absolute top-4 right-4 text-[#DFB916] hover:text-[#f1df79] transition"
+      >
+       <CancelIcon className="w-10 h-10" />
+      </button>
+
+      {/* Alert Icon */}
+      <ErrorIcon className="text-[#7E848945] mb-4" />
+
+      {/* Logo Text */}
+    
+      <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+        <span className="text-[#DFB916]">Aii</span>
+        <span className="text-[#2C2E42]">nhome</span> | <span className="font-bold">CB</span>
+      </h3>
+
+      {/* Message */}
+      <p className="text-[20px] font-bold text-[#2C2E42] mb-6">
+        Do you want to close the session?
+      </p>
+
+      {/* Buttons */}
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={confirmAction}
+          className="px-8 py-2 rounded-md border border-[#DFB916] text-[#2C2E42] font-semibold hover:bg-[#F5F5F5] transition"
+        >
+          Yes
+        </button>
+        <button
+          onClick={closePopup}
+          className="px-8 py-2 rounded-md bg-[#DFB916] text-[#2C2E42] font-semibold hover:bg-[#E5C300] transition"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
