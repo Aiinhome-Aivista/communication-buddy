@@ -1,4 +1,5 @@
 import pythonLogo from "../../../assets/logo/python.svg";
+import reactSvg from "../../../assets/react.svg";
 import { postURL, fatchedPostRequest } from "../../../services/ApiService";
 // import cppLogo from "../../../assets/logo/cpp.svg";
 // import reactLogo from "../../../assets/logo/react.svg";
@@ -11,10 +12,14 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code, TableChart, Bolt, ShowChart, Science, DataObject } from "@mui/icons-material";
 import { useState, useEffect, useMemo } from "react";
 
 import personImage from "../../../assets/logo/person.jpg";
+import * as SIIcons from "react-icons/si";
+import { FaCode } from "react-icons/fa";
+
+
 
 
 import {
@@ -96,27 +101,27 @@ const CandidateDashboard = () => {
 
 
 
-const lineData = useMemo(() => {
-  const list = Array.isArray(dashboardData?.language_usage)
-    ? dashboardData.language_usage
-    : [];
+  const lineData = useMemo(() => {
+    const list = Array.isArray(dashboardData?.language_usage)
+      ? dashboardData.language_usage
+      : [];
 
-  return list.map((item, idx) => {
-    // Each item is an object with one key-value pair
-    const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
-    return {
-      name: key, // language name
-      uv: Number(value ?? 0), // count
-    };
-  });
-}, [dashboardData]);
+    return list.map((item, idx) => {
+      // Each item is an object with one key-value pair
+      const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
+      return {
+        name: key, // language name
+        uv: Number(value ?? 0), // count
+      };
+    });
+  }, [dashboardData]);
 
 
-const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
-  ? dashboardData.most_asked_technologies
-  : Array.isArray(dashboardData?.top_technologies)
-  ? dashboardData.top_technologies
-  : [];
+  const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
+    ? dashboardData.most_asked_technologies
+    : Array.isArray(dashboardData?.top_technologies)
+      ? dashboardData.top_technologies
+      : [];
 
 
   const mostDiscussedSkills = Array.isArray(
@@ -153,37 +158,37 @@ const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologi
 
 
 
-const CustomTooltip1 = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: "#DFB91614", // light transparent background
-          padding: "6px 10px",
-          borderRadius: "8px",
-          border: "1px solid #DFB91633",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <span
-          style={{// solid background for text
-            color: "#DFB916", // readable dark text
-            fontWeight: 600,
-            fontSize: "13px",
-            padding: "3px 8px",
-            borderRadius: "4px",
-            textTransform: "capitalize",
+  const CustomTooltip1 = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#DFB91614", // light transparent background
+            padding: "6px 10px",
+            borderRadius: "8px",
+            border: "1px solid #DFB91633",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {label} : {payload[0].value}
-        </span>
-      </div>
-    );
-  }
-  return null;
-};
+          <span
+            style={{// solid background for text
+              color: "#DFB916", // readable dark text
+              fontWeight: 600,
+              fontSize: "13px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              textTransform: "capitalize",
+            }}
+          >
+            {label} : {payload[0].value}
+          </span>
+        </div>
+      );
+    }
+    return null;
+  };
 
 
 
@@ -207,6 +212,42 @@ const CustomTooltip1 = ({ active, payload, label }) => {
   const totalType = commCount + techCount || 1;
   const commWidth = Math.round((commCount / totalType) * 100);
   const techWidth = Math.round((techCount / totalType) * 100);
+
+
+  // Map technology names to Material UI icon components
+  const getTechIcon = (name) => {
+    if (!name) return FaCode; // fallback
+    const key = name
+      .toLowerCase()
+      .replace(/\+/g, "plus")
+      .replace(/\s/g, ""); // normalize key
+
+    // Map normalized names to actual icon names
+    const mapping = {
+      python: "SiPython",
+      react: "SiReact",
+      angular: "SiAngular",
+      css: "SiCss3",
+      html: "SiHtml5",
+      javascript: "SiJavascript",
+      pandas: "SiPandas",
+      pyspark: "SiApachespark", // note correct export
+      streamlit: "SiStreamlit",
+      tensorflow: "SiTensorflow",
+      "c++": "SiCplusplus",
+      c: "SiC",
+      java: "SiJava",
+      php: "SiPhp",
+      mysql: "SiMysql",
+      oracle: "SiOracle",
+      swift: "SiSwift",
+    };
+
+    const iconName = mapping[key];
+    return iconName && SIIcons[iconName] ? SIIcons[iconName] : FaCode;
+  };
+
+
 
   return (
     <div className="w-[100%] h-[100%] overflow-auto bg-gray-50 p-6">
@@ -318,34 +359,43 @@ const CustomTooltip1 = ({ active, payload, label }) => {
 
           {/* Mostly Asked Tech */}
           <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
-            <h2 style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 400,           // Regular
-              fontStyle: "normal",       // Regular style
-              fontSize: "15px",
-              verticalAlign: "middle",
-              display: "inline-block",
-              padding: "2px 6px",
-              borderRadius: "4px",
-              color: "#8F96A9",
-            }}>
+            <h2
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                fontStyle: "normal",
+                fontSize: "15px",
+                verticalAlign: "middle",
+                display: "inline-block",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                color: "#8F96A9",
+              }}
+            >
               Mostly Asked Technology
             </h2>
+
             {mostAskedTechnologies.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                {mostAskedTechnologies.map((tech, idx) => (
-                  <span
-                    key={`${tech}-${idx}`}
-                    className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
-                    title={tech}
-                  >
-                    {tech}
-                  </span>
-                ))}
+              <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
+                {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
+                  const IconComp = getTechIcon(tech); // function returning a React Icon or fallback
+                  return (
+                    <div
+                      key={`${tech}-${idx}`}
+                      className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                    >
+                      {IconComp ? (
+                        <IconComp size={40} color="#2C2E42" />
+                      ) : (
+                        <FaCode size={40} color="#2C2E42" />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                no data found
+                No data found
               </div>
             )}
           </div>
@@ -447,19 +497,21 @@ const CustomTooltip1 = ({ active, payload, label }) => {
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
+                <div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.average_session_duration ?? "15 minutes"}
                 </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Session Duration
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
-                  {sessionReport.test_attempted ?? 1256}
+                <div className="font-bold text-[20px] text-[#8F96A9]">
+                                    {Number.isFinite(Number(sessionReport.test_attempted))
+                    ? Number(sessionReport.test_attempted).toFixed(1)
+                    : "0.0"}
                 </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Test Attempted
                 </div>
               </div>
@@ -467,8 +519,12 @@ const CustomTooltip1 = ({ active, payload, label }) => {
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 font-semibold">
                   {/* Score */}
-<div className="font-bold text-[20px] text-[#8F96A9]">
-                    {Math.round(Number(sessionReport.highest_score) || 0)}
+                  <div className="font-bold text-[20px] text-[#8F96A9]">
+                    {Math.round(
+                      Number.isFinite(Number(sessionReport.highest_score))
+                        ? Number(sessionReport.highest_score)
+                        : 0
+                    ).toFixed(1)}
                   </div>
 
                   {/* Check indicator first, then show icon */}
@@ -488,16 +544,19 @@ const CustomTooltip1 = ({ active, payload, label }) => {
                 </div>
 
                 {/* Label */}
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Highest Score
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-<div className="font-bold text-[20px] text-[#8F96A9]">
-                  {Math.round(sessionReport.average_score) ?? 64}
-                </div>
-<div className="text-[12px] text-[#8F96A9] font-normal">
+                <div className="font-bold text-[20px] text-[#8F96A9]">
+                  {Number.isFinite(Number(sessionReport.average_score))
+                    ? Number(sessionReport.average_score).toFixed(1)
+                    : "0.0"}
+
+                                </div>
+                <div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Score
                 </div>
               </div>
