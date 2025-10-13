@@ -17,8 +17,11 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
     >
       <div className="flex flex-col items-center justify-center text-center">
 
-        <WarningAmberIcon sx={{ fontSize: "2.5rem", color: "#DFB916" }} />
-        
+         <img
+          src="public/assets/icons/warning.png"
+          alt="Warning"
+          className="w-10 h-10 mb-2"
+        />
 
         <h2 className="text-lg font-semibold text-[#2C2E42]">
           Your session has expired
