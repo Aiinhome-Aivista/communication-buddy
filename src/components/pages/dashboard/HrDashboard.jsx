@@ -593,26 +593,58 @@ const HrDashboard = () => {
 
               {/* Bottom Stats */}
               <div className="flex justify-between items-center mt-4 text-sm font-medium text-slate-900">
-                <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
-                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
-                </div>
+<div className="flex flex-col items-center">
+  <div className="text-[#8F96A9] text-[20px]">
+    {/* Integer part - Bold */}
+    <span
+      style={{
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 700,   // Bold
+        fontStyle: "normal",
+        fontSize: "20px",
+        lineHeight: "100%",
+        letterSpacing: "0%",
+        textAlign: "center",
+        verticalAlign: "middle",
+      }}
+    >
+      {String(avgSessionDuration).split(".")[0]}
+    </span>
+
+    {/* Decimal part - Light */}
+    <span
+      style={{
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 300,   // Light
+        fontStyle: "normal",
+        fontSize: "20px",
+        lineHeight: "100%",
+        letterSpacing: "0%",
+        textAlign: "center",
+        verticalAlign: "middle",
+      }}
+    >
+      .{String(avgSessionDuration).split(".")[1] || "00"}
+    </span>
+  </div>
+
+  {/* Label text - Medium */}
+<div className="text-[12px] text-[#8F96A9] font-normal"
+  >
+    Average Session Duration
+  </div>
+</div>
+
 
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px] text-[#8F96A9]">                  {Number.isFinite(Number(sessionReport.totalSessionsCreated))
-                    ? Number(sessionReport.totalSessionsCreated).toFixed(1)
-                    : "0.0"}</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">{sessionReport.totalSessionsCreated}</div>
                   <div className="text-[12px] text-[#8F96A9] font-normal">Session Created</div>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
-                      {Math.round(
-                        Number.isFinite(Number(sessionReport.userTraffic))
-                          ? Number(sessionReport.userTraffic)
-                          : 0
-                      ).toFixed(1)}
+       {sessionReport.userTraffic}
                     </div>
                     {sessionReport?.progress_indicator === "up" ? (
                       <img src={trending_up} alt="Up" className="w-5 h-5" />
@@ -623,10 +655,25 @@ const HrDashboard = () => {
                   <div className="text-[12px] text-[#8F96A9] font-normal">User Traffic</div>
                 </div>
 
-                <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px] text-[#8F96A9]">{averageScore}</div>
-                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
-                </div>
+<div className="flex flex-col items-center">
+  <div className="flex text-[20px] text-[#8F96A9]">
+    {(() => {
+      const score = Number(averageScore);
+      const rounded = Number.isFinite(score) ? score.toFixed(2) : "0.00";
+      const [intPart, decPart] = rounded.split(".");
+      return (
+        <>
+          <span className="font-bold">{intPart}</span>
+          <span className="font-light" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
+            .{decPart}
+          </span>
+        </>
+      );
+    })()}
+  </div>
+  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
+</div>
+
               </div>
             </div>
 
