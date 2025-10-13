@@ -599,7 +599,7 @@ const CandidateDashboard = () => {
                     topScores.map((item, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
+                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
                       >
                         {/* Left content */}
                         <div className="flex items-start gap-3">
