@@ -95,15 +95,21 @@ const CandidateDashboard = () => {
 
 
 
-  const lineData = useMemo(() => {
-    const list = Array.isArray(dashboardData?.language_usage)
-      ? dashboardData.language_usage
-      : [];
-    return list.map((it, idx) => ({
-      name: it.name || it.lang || String(idx + 1),
-      uv: Number(it.uv ?? it.value ?? 0),
-    }));
-  }, [dashboardData]);
+const lineData = useMemo(() => {
+  const list = Array.isArray(dashboardData?.language_usage)
+    ? dashboardData.language_usage
+    : [];
+
+  return list.map((item, idx) => {
+    // Each item is an object with one key-value pair
+    const [key, value] = Object.entries(item)[0] || [`Language ${idx + 1}`, 0];
+    return {
+      name: key, // language name
+      uv: Number(value ?? 0), // count
+    };
+  });
+}, [dashboardData]);
+
 
   const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
     ? dashboardData.most_asked_technologies
@@ -143,6 +149,37 @@ const CandidateDashboard = () => {
 
 
 
+const CustomTooltip1 = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: "#DFB91614", // light transparent background
+          padding: "6px 10px",
+          borderRadius: "8px",
+          border: "1px solid #DFB91633",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{// solid background for text
+            color: "#DFB916", // readable dark text
+            fontWeight: 600,
+            fontSize: "13px",
+            padding: "3px 8px",
+            borderRadius: "4px",
+            textTransform: "capitalize",
+          }}
+        >
+          {label} : {payload[0].value}
+        </span>
+      </div>
+    );
+  }
+  return null;
+};
 
 
 
@@ -539,7 +576,7 @@ const CandidateDashboard = () => {
                     <LineChart data={lineData}>
                       <XAxis dataKey="name" hide />
                       <YAxis hide />
-                      <Tooltip />
+                      <Tooltip content={<CustomTooltip1 />} cursor={false} />
                       <Line
                         type="monotone"
                         dataKey="uv"
