@@ -1,18 +1,19 @@
 import pythonLogo from "../../../assets/logo/python.svg";
 import { postURL, fatchedPostRequest } from "../../../services/ApiService";
-import cppLogo from "../../../assets/logo/cpp.svg";
-import reactLogo from "../../../assets/logo/react.svg";
-import appleLogo from "../../../assets/logo/apple.svg";
-import phpLogo from "../../../assets/logo/php.svg";
-import javaLogo from "../../../assets/logo/java.svg";
-import mysqlLogo from "../../../assets/logo/mysql.svg";
-import oracleLogo from "../../../assets/logo/oracle.svg";
+// import cppLogo from "../../../assets/logo/cpp.svg";
+// import reactLogo from "../../../assets/logo/react.svg";
+// import appleLogo from "../../../assets/logo/apple.svg";
+// import phpLogo from "../../../assets/logo/php.svg";
+// import javaLogo from "../../../assets/logo/java.svg";
+// import mysqlLogo from "../../../assets/logo/mysql.svg";
+// import oracleLogo from "../../../assets/logo/oracle.svg";
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "../../../../public/assets/icons/assignment.png"; // <-- ADDED THIS LINE
 import { KeyboardArrowDown } from "@mui/icons-material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+
 import personImage from "../../../assets/logo/person.jpg";
 
 import {
@@ -82,72 +83,69 @@ const CandidateDashboard = () => {
     { name: "Pending", value: session_completion?.pending || 0 },
   ];
 
-  const barData = [
-    { name: "Jan", uv: 4 },
-    { name: "Feb", uv: 2 },
-    { name: "Mar", uv: 6 },
-    { name: "Apr", uv: 3 },
-    { name: "May", uv: 5 },
-    { name: "Jun", uv: 4 },
-    { name: "Jul", uv: 7 },
-    { name: "Aug", uv: 6 },
-    { name: "Sep", uv: 8 },
-    { name: "Oct", uv: 9 },
-    { name: "Nov", uv: 9 },
-    { name: "Dec", uv: 9 },
-  ];
+  const barData = useMemo(() => {
+    const list = Array.isArray(dashboardData?.last_twelve_test_scores)
+      ? dashboardData.last_twelve_test_scores
+      : [];
+    return list.map((score, idx) => ({
+      name: `T${idx + 1}`,
+      uv: Number(score) || 0,
+    }));
+  }, [dashboardData]);
 
-  const lineData = [
-    { name: "English", uv: 80 },
-    { name: "Hindi", uv: 60 },
-    { name: "French", uv: 40 },
-    { name: "Spanish", uv: 88 },
-    { name: "German", uv: 45 },
-  ];
 
-  const technologyLogos = [
-    pythonLogo,
-    cppLogo,
-    reactLogo,
-    appleLogo,
-    phpLogo,
-    javaLogo,
-    mysqlLogo,
-    oracleLogo,
-  ];
 
-  // const fallbackTopScores = [
-  //   {
-  //     name: "Debasish Sahoo",
-  //     assignedBy: "Admin",
-  //     topic: "Discuss about current impact of AI ...",
-  //     score: 78,
-  //   },
-  //   {
-  //     name: "Sanchari Karmakar",
-  //     assignedBy: "Admin",
-  //     topic: "Discuss about Datasince",
-  //     score: 75,
-  //   },
-  //   {
-  //     name: "Sayan Mitra",
-  //     assignedBy: "Admin",
-  //     topic: "Discuss about Neural Networking ...",
-  //     score: 65,
-  //   },
-  //   {
-  //     name: "Debasish Sahoo",
-  //     assignedBy: "Admin",
-  //     topic: "Discuss about Cloud Infrastructure ...",
-  //     score: 63,
-  //   },
-  //   {
-  //     name: "Priya Ghosh",
-  //     assignedBy: "Admin",
-  //     topic: "Discuss about Machine Learning ...",
-  //     score: 61,
-  //   },
-  // ];
+  const lineData = useMemo(() => {
+    const list = Array.isArray(dashboardData?.language_usage)
+      ? dashboardData.language_usage
+      : [];
+    return list.map((it, idx) => ({
+      name: it.name || it.lang || String(idx + 1),
+      uv: Number(it.uv ?? it.value ?? 0),
+    }));
+  }, [dashboardData]);
+
+  const mostAskedTechnologies = Array.isArray(dashboardData?.most_asked_technologies)
+    ? dashboardData.most_asked_technologies
+    : [];
+
+  const mostDiscussedSkills = Array.isArray(
+    dashboardData?.most_discussed_technical_skills
+  )
+    ? dashboardData.most_discussed_technical_skills
+    : [];
+
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#182938", // dark background
+            color: "#fff",               // white text
+            padding: "6px 10px",
+            borderRadius: "6px",
+            fontSize: "12px",
+            fontWeight: "600",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            pointerEvents: "none",       // prevents mouse interference
+            transform: "translateY(-8px)", // lifts above the bar
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div>
+            {` ${payload[0].value}`}</div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+
+
+
+
+
 
   const topScores = (dashboardData?.top_five_test_scores || []).map(
     (s) => ({
@@ -188,16 +186,18 @@ const CandidateDashboard = () => {
         {/* LEFT COLUMN */}
         <div className="col-span-12 md:col-span-3 flex flex-col space-y-6">
           {/* Session Completion */}
-          <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-[220px]">
+          <div className="bg-white rounded-2xl shadow-sm p-3 w-full h-[220px]">
             <h2
-              className="text-gray-700 mb-2"
               style={{
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
+                fontFamily: "Inter",
+                fontWeight: 400,             // Regular
+                fontStyle: "normal",         // Regular style
                 fontSize: "15px",
-                lineHeight: "100%",
-                letterSpacing: "0%",
-                verticalAlign: "middle",
+                verticalAlign: "middle",  // Added background
+                display: "inline-block",     // Ensures padding and background behave correctly
+                padding: "2px 6px",          // Optional: add padding to make background visible
+                borderRadius: "4px",         // Optional: rounded corners for design
+                color: "#8F96A9",              // Assuming white text on colored background
               }}
             >
               Session Completion
@@ -212,6 +212,7 @@ const CandidateDashboard = () => {
                   innerRadius={30}
                   outerRadius={55}
                   paddingAngle={4}
+                  cornerRadius={6}
                   dataKey="value"
                 >
                   {pieData.map((_, index) => (
@@ -239,6 +240,7 @@ const CandidateDashboard = () => {
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
                     fontSize: "12px",
+                    color: "#8F96A9",
                   }}
                 >
                   Completed
@@ -264,8 +266,7 @@ const CandidateDashboard = () => {
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
                     fontSize: "12px",
-
-                    color: "black",
+                    color: "#8F96A9",
                   }}
                 >
                   Pending
@@ -274,31 +275,61 @@ const CandidateDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[30%]">
-            <h2 className="font-semibold text-gray-700 mb-6 text-left">
+          {/* Mostly Asked Tech */}
+          <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-[374px]">
+            <h2 style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 400,           // Regular
+              fontStyle: "normal",       // Regular style
+              fontSize: "15px",
+              verticalAlign: "middle",
+              display: "inline-block",
+              padding: "2px 6px",
+              borderRadius: "4px",
+              color: "#8F96A9",
+            }}>
               Mostly Asked Technology
             </h2>
-            <div className="grid grid-cols-4 gap-4 justify-items-center mt-4">
-              {technologyLogos.map((logo, index) => (
-                <div key={index} className="flex items-center justify-center">
-                  <img
-                    src={logo}
-                    alt={`tech-${index}`}
-                    className="w-[40px] h-[40px]"
-                  />
-                </div>
-              ))}
-            </div>
+            {mostAskedTechnologies.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
+                {mostAskedTechnologies.map((tech, idx) => (
+                  <span
+                    key={`${tech}-${idx}`}
+                    className="bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-yellow-100"
+                    title={tech}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                no data found
+              </div>
+            )}
           </div>
         </div>
 
         {/* CENTER + RIGHT SECTION */}
         <div className="col-span-12 md:col-span-9 flex flex-col space-y-6">
           {/* Session Report */}
-          <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-[220px]">
+          <div className="bg-white rounded-2xl shadow-sm p-3 w-full h-[220px]">
             {/* Header */}
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="font-inter font-normal text-[15px] leading-none tracking-normal align-middle text-gray-700">
+            <div className="flex justify-between items-start mb-2">
+              <h2
+                className="mb-4"
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 400,           // Regular
+                  fontStyle: "normal",       // Regular style
+                  fontSize: "15px",
+                  verticalAlign: "middle",
+                  display: "inline-block",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  color: "#8F96A9",
+                }}
+              >
                 Session Report
               </h2>
 
@@ -331,9 +362,9 @@ const CandidateDashboard = () => {
               {/* Communication Bar */}
               <div className="flex items-center gap-3">
                 {/* Bar with label inside */}
-                <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
+                <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
                   <div
-                    className="h-5 rounded-full flex items-center pl-2"
+                    className="h-6 rounded-sm flex items-center pl-2"
                     style={{
                       width: `${commWidth}%`,
                       backgroundColor: "#0f172a",
@@ -355,9 +386,9 @@ const CandidateDashboard = () => {
               {/* Technology Bar */}
               <div className="flex items-center gap-3">
                 {/* Bar with label inside */}
-                <div className="bg-slate-200 w-full h-5 rounded-full overflow-hidden relative">
+                <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
                   <div
-                    className="h-5 rounded-full flex items-center pl-2"
+                    className="h-6 rounded-sm flex items-center pl-2"
                     style={{
                       width: `${techWidth}%`,
                       backgroundColor: "#DFB916",
@@ -499,56 +530,92 @@ const CandidateDashboard = () => {
             <div className="flex flex-col gap-6 w-full md:w-2/3">
               {/* Annually Hiring Process */}
               <div className="bg-[#DFB916] rounded-[10px] shadow-sm p-5 w-full h-[198px] flex flex-col">
-                <h2 className="font-semibold mb-3" style={{ color: "#182938" }}>
-                  Annually Hiring Process
+                <h2 style={{
+                  fontFamily: "Inter",
+                  fontWeight: 400,           // Regular
+                  fontStyle: "normal",       // Regular style
+                  fontSize: "15px",
+                  verticalAlign: "middle",
+                  display: "inline-block",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  color: "#3D5B81",
+
+                }}>
+                  Last 12 Test Score
                 </h2>
-                <div className="flex-1">
+
+                <div className="flex-1 -ml-8"> {/* optional: move slightly left for alignment */}
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={barData}>
+                    <BarChart
+                      data={barData}
+                      margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                      barCategoryGap="2%"
+                    >
                       <XAxis dataKey="name" hide />
                       <YAxis
                         stroke="#182938"
                         axisLine={true}
                         tickLine={false}
-                        tick={{ fill: "#182938", fontSize: 12 }}
+                        tick={{ fill: "#182938", fontSize: 18 }}
                       />
-                      <Tooltip />
+                      {/* Use custom tooltip */}
+                      <Tooltip content={<CustomTooltip />} cursor={false} />
                       <Bar
                         dataKey="uv"
                         fill="#182938"
-                        barSize={25}
-                        radius={[6, 6, 0, 0]}
+                        barSize={Math.max(12, 45 - barData.length * 2)} // dynamic size
+                        radius={[6, 6, 6, 6]}
                       />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
+
+
+
               {/* Language Usage */}
-              <div className="bg-white rounded-[10px] shadow-sm p-5 w-full h-40">
-                <h2 className="font-semibold text-gray-700 mb-3">
+              <div className="bg-white rounded-[10px] shadow-sm p-5 h-[150px]">
+                <h2 style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 400,           // Regular
+                  fontStyle: "normal",       // Regular style
+                  fontSize: "15px",
+                  verticalAlign: "middle",
+                  display: "inline-block",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  color: "#8F96A9",
+                }}>
                   Language Usage
                 </h2>
-                <ResponsiveContainer width="100%" height={80}>
-                  <LineChart data={lineData}>
-                    <XAxis dataKey="name" hide />
-                    <YAxis hide />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="uv"
-                      stroke=" #DFB916"
-                      strokeWidth={3}
-                      dot={{
-                        r: 5,
-                        fill: " #DFB916",
-                        stroke: "#0f172a",
-                        strokeWidth: 1,
-                      }}
-                      activeDot={{ r: 7, fill: " #DFB916" }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {lineData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={80}>
+                    <LineChart data={lineData}>
+                      <XAxis dataKey="name" hide />
+                      <YAxis hide />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="uv"
+                        stroke="#DFB916"
+                        strokeWidth={3}
+                        dot={{
+                          r: 5,
+                          fill: "#DFB916",
+                          stroke: "#0f172a",
+                          strokeWidth: 1,
+                        }}
+                        activeDot={{ r: 7, fill: "#DFB916" }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[80px] text-gray-500 text-sm">
+                    no data found
+                  </div>
+                )}
               </div>
             </div>
 
@@ -566,63 +633,75 @@ const CandidateDashboard = () => {
                 style={{ height: "400px", overflowY: "auto" }}
                 className="scrollbar-hide w-full md:w-1/2"
               >
-                <div className="bg-[#F7F9FB] p-6 rounded-2xl shadow-sm max-w-xl">
-                  <h2 className="font-semibold text-[#5A5F6B] text-[15px] mb-4">
-                    Top 5 Session Score
-                  </h2>
-                  <div className="space-y-3 h-72 overflow-y-auto scrollbar-hide">
-                    {topScores.length > 0 ? (
-                      topScores.map((item, index) => (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
-                        >
-                          {/* Left content */}
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                              <span className="material-icons text-gray-400 text-[18px]">
-                                <img
-                                  src={personImage}
-                                  alt="Person"
-                                  className="w-8 h-8 rounded-full"
-                                />
-                              </span>
-                            </div>
+                <h2
+                  className="mb-4"
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 400,           // Regular
+                    fontStyle: "normal",       // Regular style
+                    fontSize: "15px",
+                    verticalAlign: "middle",
+                    display: "inline-block",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    color: "#8F96A9",
+                  }}
+                >
 
-                            <div className="flex flex-col">
-                              <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-                                Assigned by
-                              </span>
-                              <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
-                                {item.name}
-                              </span>
-                              <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
-                                Topic: {item.topic}
-                              </span>
-                            </div>
+                  Top 5 Session Score
+                </h2>
+                <div className="space-y-3 h-82 overflow-y-auto scrollbar-hide">
+                  {topScores.length > 0 ? (
+                    topScores.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all "
+                      >
+                        {/* Left content */}
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                            <span className="material-icons text-gray-400 text-[18px]">
+                              <img
+                                src={personImage}
+                                alt="Person"
+                                className="w-8 h-8 rounded-full"
+                              />
+                            </span>
                           </div>
-                          {/* Right side */}
-                          <div className="flex flex-col items-end">
-                            <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
-                              {item.score}
+
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+                              Assigned by
                             </span>
-                            <span className="text-[10px] text-gray-400">
-                              Score
+                            <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
+                              {item.name}
                             </span>
-                            <KeyboardArrowDown
-                              style={{
-                                fontSize: "16px",
-                                color: "#B0B3B8",
-                                marginTop: "2px",
-                              }}
-                            />
+                            <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
+                              Topic: {item.topic}
+                            </span>
                           </div>
                         </div>
-                      ))
-                    ) : (
-                      <p className="text-center text-gray-500 pt-10">No top scores found.</p>
-                    )}
-                  </div>
+                        {/* Right side */}
+                        <div className="flex flex-col items-end">
+                          <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
+                            {item.score}
+                          </span>
+                          <span className="text-[10px] text-gray-400">
+                            Score
+                          </span>
+                          <KeyboardArrowDown
+                            style={{
+                              fontSize: "16px",
+                              color: "#B0B3B8",
+                              marginTop: "2px",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-gray-500 pt-10">No top scores found.</p>
+                  )}
                 </div>
               </div>
             </>

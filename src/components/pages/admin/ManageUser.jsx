@@ -131,9 +131,9 @@ export default function ManageUser() {
         <div className="pt-4 px-4">
           <h1 className="text-2xl font-bold text-[#2C2E42]">Manage Users</h1>
           {/* Tabs + Search + Dropdown */}
-          <div className="flex flex-row items-center justify-end mt-6 gap-4">
+          <div className="flex flex-row items-center justify-between mt-6 gap-4">
             {/* Search */}
-            <div className="relative w-80">
+            <div className="relative flex-1">
               <input
                 type="text"
                 placeholder="Search content"
