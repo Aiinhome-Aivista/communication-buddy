@@ -29,14 +29,14 @@ export default function SessionModal({
   const uniqueCategories = [
     ...new Set(topics.map((topic) => topic.topic_category).filter(Boolean)),
   ];
-  
+
   const [candidateSearch, setCandidateSearch] = useState("");
 
-const filteredCandidates = userData.filter(
-  (candidate) =>
-    candidate.name_email &&
-    candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
-);
+  const filteredCandidates = userData.filter(
+    (candidate) =>
+      candidate.name_email &&
+      candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
+  );
 
   // ✅ Helper function to clear a specific field’s error
   const clearError = (field) => {
@@ -49,7 +49,8 @@ const filteredCandidates = userData.filter(
 
   const validate = () => {
     const newErrors = {};
-    if (!candidateName) newErrors.candidateName = "Candidate Name should not be empty.";
+    if (!candidateName)
+      newErrors.candidateName = "Candidate Name should not be empty.";
     if (!date) newErrors.date = "Date should not be empty.";
     if (!sessionCategory)
       newErrors.sessionCategory = "Session category is required.";
@@ -171,7 +172,7 @@ const filteredCandidates = userData.filter(
               <div>
                 <label className="block text-[#182938] font-medium mb-3 text-base">
                   Candidate Name
-                    <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-red-500 mr-1"> *</span>
                 </label>
                 <div className="relative">
                   <select
@@ -324,17 +325,18 @@ const filteredCandidates = userData.filter(
                         className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
                         style={{
                           background: `linear-gradient(to right, rgba(41, 50, 65, 0.45) 0%, rgba(41, 50, 65, 0.45) ${
-                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
                           }%, rgba(41, 50, 65, 0.05) ${
-                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
                           }%, rgba(41, 50, 65, 0.05) 100%)`,
                         }}
                       />
+
                       <div
                         className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
                         style={{
                           left: `calc(${
-                            ((sessionDuration?.value ?? 15) - 5) / 45 * 100
+                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
                           }% - 12px)`,
                         }}
                       >
@@ -364,10 +366,8 @@ const filteredCandidates = userData.filter(
                 }}
                 placeholder="Write session topic..."
                 rows="4.5"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#BCC7D2] ${
-                  errors.sessionTopic
-                    ? "border-red-500"
-                    : "border-[#E5E7EB]"
+                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
+                  errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
                 } text-[#BCC7D2]`}
               />
               {errors.sessionTopic && (

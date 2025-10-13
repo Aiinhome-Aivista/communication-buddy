@@ -1024,18 +1024,40 @@ export default function PracticeTest() {
           </div>
         ) : userStatus === "expired" ? (
           // Expired session
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#E53E3E] mb-4">Session Expired</h2>
-              <p className="text-lg text-[#7E8489] mb-6">Your session time has expired.</p>
-              <button
-                className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
-                onClick={() => navigate("/test")}
-              >
-                Back to Tests
-              </button>
-            </div>
-          </div>
+           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+    <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-[420px] text-center relative">
+     {/* Close Button */}
+      <button
+        onClick={() => {
+          try { window.speechSynthesis.cancel(); } catch { }
+          setShowTimeUpPopup(false);
+        }}
+        className="absolute top-1 right-1 text-[#DFB916] hover:text-[#C6A800] transition"
+      >
+        <CancelIcon className="w-10 h-10" />
+      </button> 
+     <div className="flex justify-center mb-3">
+        <div className="flex items-center justify-center">
+          <WarningIcon className="text-[#DFB916] text-[32px]" />
+        </div>
+      </div>
+
+      {/* Aiihome | CB Title */}
+     <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+            A<span className="text-[#DFB916]">ii</span>nhome
+            <span className="px-1">|</span>
+            <span className="font-bold">CB</span>
+       
+      </h3>
+      <p className="text-lg text-[#7E8489] mb-6">Your session time has expired.</p>
+      <button
+        className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
+        onClick={() => navigate("/test")}
+      >
+        Back to Tests
+      </button>
+    </div>
+  </div>
         ) : userStatus === "no_session" ? (
           // No session found - allow user to start manually
           <div className="flex-1 flex items-center justify-center">
