@@ -11,6 +11,7 @@ import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
 import LoaderNew from "../../ui/LoaderNew";
+import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 export default function TestResult() {
   const [topics, setTopics] = useState([]);
@@ -21,7 +22,7 @@ export default function TestResult() {
   const [userData, setUserData] = useState([]);
   const [sessionData, setSessionData] = useState([])
   const userRole = sessionStorage.getItem("userRole");
-  const [loading, setLoading] = useState(false); // Full page loader
+  const [loading, setLoading] = useState(true); // Full page loader
   const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
   const [rotation, setRotation] = useState(false);
   const [search, setSearch] = useState("");
@@ -34,6 +35,7 @@ export default function TestResult() {
   const [modalOpen, setModalOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+  const showLoader = useMinLoaderTime(loading, 3000);
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   // setUserData is not defined in this component, so I'm assuming it comes from a context.
   // If not, you might need to import and use the correct context provider.
@@ -170,17 +172,17 @@ export default function TestResult() {
             {/* Test type */}
             <div className="relative w-80" ref={dropdownRef}>
               <button
-                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10"
+                className="border border-[#BCC7D2] rounded-xl px-4 text-sm bg-[#ECEFF2] flex items-center justify-between w-full h-10  cursor-pointer"
                 style={{ color: "#8F96A9" }}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
 
                 {testType}
                 {dropdownOpen ? (
-                  <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
+                  <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9]"
                   />
                 ) : (
-                  <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
+                  <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9]"
                   />
                 )}
 
@@ -224,7 +226,7 @@ export default function TestResult() {
           </div>
 
           {/*DataTable */}
-          {loading ? (
+          {showLoader ? (
             <LoaderNew />
           ) : (
             <div className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
@@ -234,7 +236,7 @@ export default function TestResult() {
                   paginator
                   rows={5}
                   rowsPerPageOptions={[3, 5]}
-                  paginatorClassName="!m-0 !border-t"
+                  paginatorClassName="!m-0"
                   rowHover={filteredData.length > 0}
                   emptyMessage={emptyMessageTemplate}
                 >

@@ -12,6 +12,7 @@ import ExpiredModal from "../../../components/modal/ExpiredModal";
 import UpcomingModal from "../../../components/modal/UpcomingModal";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import LoaderNew from "../../ui/LoaderNew";
+import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -28,6 +29,7 @@ export default function PracticeTest() {
   const [selectedTestItem, setSelectedTestItem] = useState(null);
   const [isUpcomingModalOpen, setIsUpcomingModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const showLoader = useMinLoaderTime(loading, 3000);
 
 
   const navigate = useNavigate();
@@ -236,7 +238,7 @@ export default function PracticeTest() {
           </div>
 
           {/* Table */}
-          {loading ? (
+          {showLoader ? (
             <LoaderNew />
           ) : (
             <div
@@ -249,7 +251,7 @@ export default function PracticeTest() {
                   paginator
                   rows={5}
                   rowsPerPageOptions={[3, 5]}
-                  paginatorClassName="!m-0 !border-t"
+                  paginatorClassName="!m-0"
                   rowHover={filteredData.length > 0}
                   emptyMessage={emptyMessageTemplate}
                   onRowClick={(e) => {
@@ -275,6 +277,9 @@ export default function PracticeTest() {
                     }
 
 
+                  }}
+                  pt={{
+                    bodyRow: { className: 'cursor-pointer' }
                   }}
                 >
                   <Column

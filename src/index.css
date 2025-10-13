@@ -79,7 +79,7 @@ body,
 
 /* :not(:required) hides these rules from IE9 and below */
 .loading:not(:required) {
- 
+  /* hide "loading..." text */
   font: 0/0 a;
   text-shadow: none;
   color: var(--ptin-color-blueice);
@@ -235,7 +235,7 @@ body,
 }
 
 .custom-width-table .p-datatable-tbody > tr:not(.p-highlight):hover {
-  background-color: rgba(250, 250, 250, 0.7);
+  background-color: #eeeeeedd;
 }
 
 /* ====== TABLE COLUMN WIDTHS & SPACING - Adjust for responsiveness ====== */
@@ -278,4 +278,29 @@ body,
   border-bottom-right-radius: 16px !important;
 }
 
+/* === PAGINATOR STYLES === */
 
+/* Style for the paginator container */
+.p-paginator {
+  background-color: #ffffff !important;
+  border: none !important;
+}
+
+/* Style for all paginator buttons (arrows and numbers) */
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last,
+.p-paginator .p-paginator-pages .p-paginator-page {
+  border-radius: 50% !important; /* Make them circular */
+  width: 2.5rem;                 /* Set a fixed width */
+  height: 2.5rem;                /* Set a fixed height */
+  min-width: 2.5rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Style for the active page number */
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #eeeeeedd !important; /* Your theme's yellow color */
+  color: #182938 !important;           /* Dark text for contrast */
+}
