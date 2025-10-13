@@ -13,6 +13,7 @@ import { useContext } from "react";
 import SessionModal from "../../modal/SessionModal";
 import SuccessModal from "./SuccessModal";
 import LoaderNew from "../../ui/LoaderNew";
+import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
@@ -26,7 +27,7 @@ export default function ScheduleSession() {
     const [sessionData, setSessionData] = useState([])
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
     const userRole = sessionStorage.getItem("userRole");
-    const [loading, setLoading] = useState(false); // Full page loader
+    const [loading, setLoading] = useState(true); // Full page loader
     const [loadingTable, setLoadingTable] = useState(false); // Table refresh loader
     const [rotation, setRotation] = useState(false);
     const [activeTab, setActiveTab] = useState("Upcoming");
@@ -40,6 +41,7 @@ export default function ScheduleSession() {
     const [modalOpen, setModalOpen] = useState(false);
     const [successOpen, setSuccessOpen] = useState(false);
     const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+    const showLoader = useMinLoaderTime(loading || loadingTable, 3000);
 
     // setUserData is not defined in this component, so I'm assuming it comes from a context.
     // If not, you might need to import and use the correct context provider.
@@ -300,17 +302,17 @@ export default function ScheduleSession() {
     return (
         <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
             <div className="flex-grow flex flex-col">
-                <div className="pt-3 px-4">
+                <div className="pt-4 px-4">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold text-[#2C2E42]">
                             Schedule Session
                         </h1>
                         <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-[#272727] font-semibold px-5 py-2 rounded-xl shadow-none cursor-pointer"
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
                             <svg
-                                className="w-6 h-6"
+                                className="w-5 h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth={2}
@@ -355,17 +357,16 @@ export default function ScheduleSession() {
                         {/* Test type */}
                         <div className="relative ml-auto" ref={dropdownRef}>
                             <button
-                                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10"
+                                className="border border-[#BCC7D2] rounded-xl px-8 text-sm bg-[#ECEFF2] flex items-center justify-between w-80 h-10 cursor-pointer"
                                 style={{ color: "#8F96A9" }}
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
                             >
 
                                 {testType}
                                 {dropdownOpen ? (
-                                    <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                                        onClick={() => setDropdownOpen(false)} />
+                                    <KeyboardArrowUpIcon className="w-4 h-4 text-[#8F96A9]"/>
                                 ) : (
-                                    <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] cursor-pointer"
-                                        onClick={() => setDropdownOpen(!dropdownOpen)} />
+                                    <KeyboardArrowDownIcon className="w-4 h-4 text-[#8F96A9] "/>
                                 )}
 
                             </button>
@@ -408,7 +409,7 @@ export default function ScheduleSession() {
                     </div>
 
                     {/*DataTable */}
-                    {loading || loadingTable ? (
+                    {showLoader ? (
                         <LoaderNew />
                     ) : (
                         <div className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
@@ -418,7 +419,7 @@ export default function ScheduleSession() {
                                     paginator
                                     rows={5}
                                     rowsPerPageOptions={[3, 5]}
-                                    paginatorClassName="!m-0 !border-t"
+                                    paginatorClassName="!m-0"
                                     rowHover={filteredData.length > 0}
                                     emptyMessage={emptyMessageTemplate}
                                 >

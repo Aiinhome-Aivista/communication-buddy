@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
@@ -13,13 +13,14 @@ import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const fullName = sessionStorage.getItem("userName") || "";
+  const location = useLocation();
   // Determine role - AuthProvider sets sessionStorage.userRole
   const role = (sessionStorage.getItem("userRole") || "candidate").toLowerCase();
 
   // Menu configuration for candidate and hr
   const candidateMenu = [
     { name: "Dashboard", icon: (color) => <GridViewRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/dashboard", end: true },
-    { name: "Practice & Test", icon: (color) => <AssignmentRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test", end: true },
+    { name: "Practice & Test", icon: (color) => <AssignmentRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test" },
     { name: "Test Results", icon: (color) => <BarChartRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/test/result" },
     { name: "Settings", icon: (color) => <SettingsRoundedIcon sx={{ color, fontSize: '1.3rem' }} />, path: "/settings" },
   ];
@@ -66,16 +67,23 @@ export default function Sidebar() {
               key={item.name}
               to={item.path}
               end={item.end}
-              className={({ isActive }) =>
-                `group flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActive
+              className={({ isActive }) => {
+                // Custom active logic for "Practice & Test"
+                let isActuallyActive = isActive;
+                if (item.path === "/test") {
+                  isActuallyActive = location.pathname.startsWith("/test") && !location.pathname.startsWith("/test/result");
+                }
+
+                return `group flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActuallyActive
                   ? "bg-[#182938] text-[#FEFEFE] active-link"
                   : "text-[#182938] hover:bg-[#182938]/15 hover:text-[#182938]"
-                } ${collapsed ? "h-10 w-10 justify-center" : "w-full py-2 pl-2"}`
-              }>
+                  } ${collapsed ? "h-10 w-10 justify-center" : "w-full py-2 pl-2"}`;
+              }}
+            >
               {({ isActive }) => (
                 <>
                   <div className="group-hover:text-[#3B4A5A]">
-                    {item.icon(isActive ? '#FEFEFE' : '#182938')}
+                    {item.icon(isActive && (item.path !== "/test" || (location.pathname.startsWith("/test") && !location.pathname.startsWith("/test/result"))) ? '#FEFEFE' : '#182938')}
                   </div>
                   {!collapsed && item.name}
                 </>
