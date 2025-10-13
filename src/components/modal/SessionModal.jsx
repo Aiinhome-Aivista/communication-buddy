@@ -223,23 +223,24 @@ export default function SessionModal({
                 </label>
                 <div className="w-full cursor-pointer">
                   <input
-                    type="datetime-local"
+                    type="text"
+                    placeholder="DD-MM-YYYY"
                     value={date}
                     onChange={(e) => {
                       setDate(e.target.value);
                       if (e.target.value) clearError("date");
                     }}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${
-                      errors.date
+                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${errors.date
                         ? "border-red-500"
                         : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#1F2937]`}
+                      } text-[#1F2937]`}
                   />
                 </div>
                 {errors.date && (
                   <p className="text-red-500 text-sm mt-1">{errors.date}</p>
                 )}
               </div>
+
 
               {/* Session Category */}
               <div>
