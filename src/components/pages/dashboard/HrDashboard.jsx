@@ -18,9 +18,7 @@ import {
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
-import * as SIIcons from "react-icons/si";
 
-import { FaCode, FaDom } from "react-icons/fa";
 
 
 
@@ -199,41 +197,7 @@ const HrDashboard = () => {
     return null;
   };
 
- const getTechIcon = (name) => {
-  if (!name) return FaCode; // fallback
-  const key = name
-    .toLowerCase()
-    .replace(/\+/g, "plus")
-    .replace(/\s/g, ""); // normalize key
-
-  const mapping = {
-    python: "SiPython",
-    react: "SiReact",
-    angular: "SiAngular",
-    css: "SiCss3",
-    html: "SiHtml5",
-    javascript: "SiJavascript",
-    pandas: "SiPandas",
-    pyspark: "SiApachespark",
-    streamlit: "SiStreamlit",
-    tensorflow: "SiTensorflow",
-    "c++": "SiCplusplus",
-    c: "SiC",
-    java: "SiJava",
-    php: "SiPhp",
-    mysql: "SiMysql",
-    oracle: "SiOracle",
-    swift: "SiSwift",
-    "apachekafka": "SiApachekafka",
-    dash: "SiPlotly", // closest to Dash framework
-    dom: "FaDom", // fallback
-    elasticsearch: "SiElasticsearch",
-    jsx: "SiJavascript", // JSX is part of JS, so JS icon
-  };
-
-  const iconName = mapping[key];
-  return iconName && SIIcons[iconName] ? SIIcons[iconName] : iconName === "FaDom" ? FaDom : FaCode;
-};
+ 
 
 
 
@@ -320,17 +284,14 @@ const HrDashboard = () => {
                {mostAskedTechnologies.length > 0 ? (
                        <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
                          {mostAskedTechnologies.slice(0, 16).map((tech, idx) => {
-                           const IconComp = getTechIcon(tech); // function returning a React Icon or fallback
+                           // function returning a React Icon or fallback
                            return (
                              <div
                                key={`${tech}-${idx}`}
                                className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                                title={tech}
                              >
-                               {IconComp ? (
-                                 <IconComp size={40} color="#2C2E42" />
-                               ) : (
-                                 <FaCode size={40} color="#2C2E42" />
-                               )}
+                              
                              </div>
                            );
                          })}
