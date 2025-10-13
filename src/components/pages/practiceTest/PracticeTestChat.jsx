@@ -943,7 +943,9 @@ export default function PracticeTest() {
         topicName,
         matchedRecord?.total_time || 10,
         userInput,
-        selectedLanguage || "English"
+        selectedLanguage || "English",
+        userId,
+        hrId
       );
 
       const aiMessage = data?.message || "Invalid Message";
