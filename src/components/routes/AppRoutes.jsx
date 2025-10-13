@@ -20,78 +20,58 @@ const TopicList = lazy(() => import("../pages/users/TopicList"));
 const ScheduleSession = lazy(() => import("../pages/scheduleSession/ScheduleSession"));
 const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
 const Settings = lazy(() => import("../pages/setting/Settings"));
-// Loader component for fallback UI
-const Loader = () => (
-  <div className="text-center text-teal-300 py-6"></div>
-);
 
 export const router = createBrowserRouter(
   [
     {
       path: "/",
       element: (
-        <Suspense fallback={<Loader />}>
-          <Login />
-        </Suspense>
+        <Login />
       ),
     },
     {
       // This is now the main layout route for all protected pages
       element: (
-        <Suspense fallback={<Loader />}>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </Suspense>
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
       ),
       children: [
         {
           path: "/dashboard",
           element: (
-            <Suspense fallback={<Loader />}>
-              <Dashboard />
-            </Suspense>
+            <Dashboard />
           ),
           errorElement: <div>Error loading dashboard</div>,
           children: [
             {
               index: true, // Default child for /dashboard
               element: (
-                <Suspense fallback={<Loader />}>
-                  <Default />
-                </Suspense>
+                <Default />
               ),
             },
             {
               path: "test/:id?",
               element: (
-                <Suspense fallback={<Loader />}>
-                  <PracticeAndTest />
-                </Suspense>
+                <PracticeAndTest />
               ),
             },
             {
               path: "reports",
               element: (
-                <Suspense fallback={<Loader />}>
-                  <Reports />
-                </Suspense>
+                <Reports />
               ),
             },
             {
               path: "notifications",
               element: (
-                <Suspense fallback={<Loader />}>
-                  <RequestNotification />
-                </Suspense>
+                <RequestNotification />
               ),
             },
             {
               path: "topics",
               element: (
-                <Suspense fallback={<Loader />}>
-                  <TopicList />
-                </Suspense>
+                <TopicList />
               ),
             },
             {
@@ -101,9 +81,7 @@ export const router = createBrowserRouter(
             {
               path: "schedule",
               element: (
-                <Suspense fallback={<Loader />}>
-                  <ManageSchedule />
-                </Suspense>
+                <ManageSchedule />
               ),
             },
           ],
@@ -111,25 +89,19 @@ export const router = createBrowserRouter(
         {
           path: "/test",
           element: (
-            <Suspense fallback={<Loader />}>
-              <PracticeTest />
-            </Suspense>
+            <PracticeTest />
           ),
         },
         {
           path: "/test/chat",
           element: (
-            <Suspense fallback={<Loader />}>
-              <PracticeTestChat />
-            </Suspense>
+            <PracticeTestChat />
           ),
         },
         {
           path: "/test/result",
           element: (
-            <Suspense fallback={<Loader />}>
-              <TestResultPage />
-            </Suspense>
+            <TestResultPage />
           ),
         },
         {
@@ -139,17 +111,13 @@ export const router = createBrowserRouter(
         {
           path: "/schedule",
           element: (
-            <Suspense fallback={<Loader />}>
-              <ScheduleSession />
-            </Suspense>
+            <ScheduleSession />
           ),
         },
         {
           path: "/manage-users",
           element: (
-            <Suspense fallback={<Loader />}>
-              <ManageUser />
-            </Suspense>
+            <ManageUser />
           ),
         },
       ],
