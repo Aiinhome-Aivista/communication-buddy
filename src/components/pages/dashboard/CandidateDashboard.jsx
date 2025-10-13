@@ -341,13 +341,13 @@ const CandidateDashboard = () => {
                     alt="Group Icon"
                     className="w-5 h-5 object-contain"
                   />
-                  <span className="font-inter font-bold text-[20px] leading-none text-gray-700">
+                  <span className="font-bold text-[20px] text-[#8F96A9]">
                     {sessionReport.assigned_test ?? "562"}
                   </span>
                 </div>
 
                 {/* Second line: label */}
-                <span className="font-inter font-normal text-[12px] leading-none tracking-normal text-gray-500 mt-1 -ml-7">
+                <span className="text-[12px] text-[#8F96A9] -ml-7">
                   Assigned_Test
                 </span>
               </div>
@@ -411,47 +411,19 @@ const CandidateDashboard = () => {
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.average_session_duration ?? "15 minutes"}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Session Duration
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {sessionReport.test_attempted ?? 1256}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Test Attempted
                 </div>
               </div>
@@ -459,14 +431,7 @@ const CandidateDashboard = () => {
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 font-semibold">
                   {/* Score */}
-                  <div
-                    style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 700,
-                      fontStyle: "normal",
-                      fontSize: "20px",
-                    }}
-                  >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                     {Math.round(Number(sessionReport.highest_score) || 0)}
                   </div>
 
@@ -487,37 +452,16 @@ const CandidateDashboard = () => {
                 </div>
 
                 {/* Label */}
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Highest Score
                 </div>
               </div>
 
               <div className="flex flex-col items-center">
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 700,
-                    fontStyle: "normal",
-                    fontSize: "20px",
-                  }}
-                >
+<div className="font-bold text-[20px] text-[#8F96A9]">
                   {Math.round(sessionReport.average_score) ?? 64}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "12px",
-                  }}
-                >
+<div className="text-[12px] text-[#8F96A9] font-normal">
                   Average Score
                 </div>
               </div>
