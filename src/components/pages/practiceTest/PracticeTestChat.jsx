@@ -1063,7 +1063,7 @@ export default function PracticeTest() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-[#2C2E42] mb-4">Ready to Start</h2>
-              <p className="text-lg text-[#7E8489] mb-6">Click below to begin your session</p>
+              {/* <p className="text-lg text-[#7E8489] mb-6">Click below to begin your session</p> */}
               <div className="mb-4">
                 <p className="text-sm text-[#7E8489]">
                   Topic: {topicName || "Loading..."}
@@ -1129,7 +1129,7 @@ export default function PracticeTest() {
             {!sessionStarted ? (
               <div className="flex-1 flex items-center justify-center bg-white">
                 <div className="text-center space-y-4">
-                  <p className="text-lg text-[#7E8489]">Click below to start your interview chat</p>
+                  {/* <p className="text-lg text-[#7E8489]">Click below to start your interview chat</p> */}
                   <button
                     className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
                     onClick={async () => {

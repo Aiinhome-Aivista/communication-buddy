@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchHrDashboard,fatchedPostRequest, postURL } from "../../../services/ApiService";
+import { fetchHrDashboard, fatchedPostRequest, postURL } from "../../../services/ApiService";
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import {
@@ -70,7 +70,7 @@ const HrDashboard = () => {
   }, [hrId]);
 
   //session modal data fetch
-    useEffect(() => {
+  useEffect(() => {
     const fetchUserAndTopics = async () => {
       if (!hrId) return;
       try {
@@ -205,7 +205,7 @@ const HrDashboard = () => {
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
-  <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
+    <div className="w-screen h-screen overflow-auto bg-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -329,44 +329,49 @@ const HrDashboard = () => {
 
               <div className="space-y-3 max-w-[500px]">
                 {/* Communication Bar */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 bg-slate-200 h-6 rounded-sm overflow-hidden relative">
                     <div
-                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700"
+                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                       style={{
-                        width: `${(commRaw / Math.max(1, sessionCreated)) * 500}px`,
+                        width: `${(commRaw / Math.max(1, sessionCreated)) * 100}%`,
                         backgroundColor: "#0f172a",
-
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
-
                       <span className="text-xs text-white">Communication</span>
                     </div>
                   </div>
-                  <span className="text-xs text-[#8F96A9] font-medium text-right">
-                    {commRaw}
-                  </span>
+                  <div className="w-10 text-right">
+                    <span className="text-xs text-[#8F96A9] font-medium">{commRaw}</span>
+                  </div>
                 </div>
 
                 {/* Technology Bar */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-slate-200 w-full h-6 rounded-sm overflow-hidden relative">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 bg-slate-200 h-6 rounded-sm overflow-hidden relative">
                     <div
-                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700"
+                      className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                       style={{
-                        width: `${(techRaw / Math.max(1, sessionCreated)) * 500}px`,
-                        backgroundColor: "#DFB916",
-
+                        width: `${(techRaw / Math.max(1, sessionCreated)) * 100}%`,
+                        background: "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
                       <span className="text-xs text-gray-900">Technology</span>
                     </div>
                   </div>
-                  <span className="text-xs text-[#8F96A9] font-medium text-right">
-                    {techRaw}
-                  </span>
+                  <div className="w-10 text-right">
+                    <span className="text-xs text-[#8F96A9] font-medium">{techRaw}</span>
+                  </div>
                 </div>
               </div>
+
+
 
 
 
@@ -421,7 +426,7 @@ const HrDashboard = () => {
                           tickLine={false}
                           tick={{ fill: "#182938", fontSize: 12 }}
                         />
-                       <Tooltip content={<CustomTooltip />} cursor={false} />
+                        <Tooltip content={<CustomTooltip />} cursor={false} />
                         <Bar
                           dataKey="uv"
                           fill="#182938"
@@ -496,7 +501,7 @@ const HrDashboard = () => {
         </div>
       )}
 
-     <SessionModal
+      <SessionModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
