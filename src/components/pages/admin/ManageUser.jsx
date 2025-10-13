@@ -10,6 +10,7 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
+import LoaderNew from "../../ui/LoaderNew";
 
 
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
@@ -189,69 +190,73 @@ export default function ManageUser() {
               )}
             </div>
             <div
-              className="relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+              className={`relative text-center border border-[#BCC7D2] rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors ${loading ? 'bg-gray-200' : ''}`}
               onClick={fetchUserData}
             >
-              <AutorenewRoundedIcon className={`w-5 h-5 text-[#8F96A9] ${loading ? 'animate-spin' : ''}`}
+              <AutorenewRoundedIcon className={`w-5 h-5 ${loading ? 'animate-spin text-[#2C2E42]' : 'text-[#8F96A9]'}`}
                 sx={{
                   transition: "color 0.2s ease-in-out",
                   "&:hover": {
-                    color: "#4a4e51ff", // Darker color on hover
+                    color: "#2C2E42", // Darker color on hover
                   },
                 }} />
             </div>
           </div>
 
           {/* Table */}
-          <div
-            className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-              }`}
-          >
-            <div key={`${search}-${testType}`}>
-              <DataTable
-                value={filteredData}
-                paginator
-                rows={5}
-                rowsPerPageOptions={[5, 10, 25]}
-                paginatorClassName="!m-0 !border-t"
-                rowHover={filteredData.length > 0}
-                emptyMessage={emptyMessageTemplate}
-              >
-                <Column
-                  field="name"
-                  header="Name"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.name}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="email"
-                  header="Email"
-                  body={(rowData) => (
-                    <span style={{ color: "#3D5B81", fontWeight: "400" }}>
-                      {rowData.email}
-                    </span>
-                  )}
-                ></Column>
-                <Column
-                  field="phone_number"
-                  header="Phone"
-                ></Column>
-                <Column
-                  field="dob"
-                  header="DOB"
-                ></Column>
-                <Column
-                  field="userType"
-                  header="User Type"
-                  body={statusBodyTemplate}
-                  className="text-center"
-                ></Column>
-              </DataTable>
+          {loading ? (
+            <LoaderNew />
+          ) : (
+            <div
+              className={`table-body custom-width-table transition-all duration-300 ease-in-out ${isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                }`}
+            >
+              <div key={`${search}-${testType}`}>
+                <DataTable
+                  value={filteredData}
+                  paginator
+                  rows={5}
+                  rowsPerPageOptions={[5, 10, 25]}
+                  paginatorClassName="!m-0 !border-t"
+                  rowHover={filteredData.length > 0}
+                  emptyMessage={emptyMessageTemplate}
+                >
+                  <Column
+                    field="name"
+                    header="Name"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.name}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="email"
+                    header="Email"
+                    body={(rowData) => (
+                      <span style={{ color: "#3D5B81", fontWeight: "400" }}>
+                        {rowData.email}
+                      </span>
+                    )}
+                  ></Column>
+                  <Column
+                    field="phone_number"
+                    header="Phone"
+                  ></Column>
+                  <Column
+                    field="dob"
+                    header="DOB"
+                  ></Column>
+                  <Column
+                    field="userType"
+                    header="User Type"
+                    body={statusBodyTemplate}
+                    className="text-center"
+                  ></Column>
+                </DataTable>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
