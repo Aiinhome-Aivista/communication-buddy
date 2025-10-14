@@ -41,6 +41,14 @@ export default function ScheduleSession() {
     const [modalOpen, setModalOpen] = useState(false);
     const [successOpen, setSuccessOpen] = useState(false);
     const [sessionDuration, setSessionDuration] = useState({ value: 15, direction: "up" });
+    const [modalState, setModalState] = useState({
+        date: "",
+        sessionTopic: "",
+        candidateName: "",
+        sessionCategory: "",
+        candidateSearch: "",
+    });
+
     const showLoader = useMinLoaderTime(loading || loadingTable, 3000);
 
     // setUserData is not defined in this component, so I'm assuming it comes from a context.
@@ -462,12 +470,22 @@ export default function ScheduleSession() {
                 onClose={() => setModalOpen(false)}
                 sessionDuration={sessionDuration}
                 setSessionDuration={setSessionDuration}
+                modalState={modalState}
+                setModalState={setModalState}
                 userData={userData}
                 topics={topics}
                 onSave={() => {
                     setModalOpen(false);
                     setSuccessOpen(true);
                     fetchSessionData(); // Refresh the data in the table
+                    // Reset modal state after successful save
+                    setModalState({
+                        date: "",
+                        sessionTopic: "",
+                        candidateName: "",
+                        sessionCategory: "",
+                        candidateSearch: "",
+                    });
                 }}
             />
             <SuccessModal

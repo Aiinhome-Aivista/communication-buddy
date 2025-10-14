@@ -2,6 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Custom style for DateTimePicker border-radius */
+.session-datetime-picker .MuiOutlinedInput-root {
+  border-radius: 0.75rem; /* rounded-xl */
+}
+
+
+/* Default placeholder color for the session topic textarea */
+.session-topic-textarea::placeholder {
+  color: #bcc7d2;
+  opacity: 1;
+}
+
+
 
 html,
 body,
