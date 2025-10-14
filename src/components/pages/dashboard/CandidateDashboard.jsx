@@ -562,7 +562,7 @@ const CandidateDashboard = () => {
 
                 {/* Second line: label */}
                 <span className="text-[12px] text-[#8F96A9] -ml-7">
-                  Assigned_Test
+                  Assigned Test
                 </span>
               </div>
             </div>
