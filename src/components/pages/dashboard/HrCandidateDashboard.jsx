@@ -176,16 +176,16 @@ const HrCandidateDashboard = () => {
 
     // Session report data
     const sessionReport = data?.session_report || {};
-    const activeParticipant = isHR 
+    const activeParticipant = isHR
         ? (sessionReport?.activeParticipants ?? sessionReport?.active_participant ?? 0)
         : (sessionReport?.test_attempted ?? sessionReport?.assigned_test ?? sessionReport?.activeParticipants ?? sessionReport?.active_participant ?? 0);
-    const avgSessionDuration = isHR 
+    const avgSessionDuration = isHR
         ? (sessionReport?.averageSessionDuration ?? sessionReport?.average_session_duration ?? 0)
         : (sessionReport?.average_session_duration ?? sessionReport?.averageSessionDuration ?? "0 min");
-    const sessionCreated = isHR 
+    const sessionCreated = isHR
         ? (sessionReport?.totalSessionsCreated ?? sessionReport?.session_created ?? 0)
         : (sessionReport?.assigned_test ?? sessionReport?.test_assigned ?? sessionReport?.session_created ?? 0);
-    const userTraffic = isHR 
+    const userTraffic = isHR
         ? (sessionReport?.userTraffic ?? sessionReport?.user_traffic ?? 0)
         : (sessionReport?.highest_score ?? sessionReport?.best_score ?? sessionReport?.average_score ?? 0);
     const averageScore = sessionReport?.averageScore ?? sessionReport?.average_score ?? 0;
@@ -379,7 +379,8 @@ const HrCandidateDashboard = () => {
     if (loading) return <Loader show text="Loading dashboard..." />;
 
     return (
-        <div className="w-[100%] h-[100%] overflow-auto bg-[#ECEFF2] p-6">
+        <div className="w-full min-h-screen bg-[#ECEFF2] p-6 overflow-visible">
+
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -420,18 +421,19 @@ const HrCandidateDashboard = () => {
                     {/* LEFT COLUMN */}
                     <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 flex flex-col space-y-6">
                         {/* Session Completion */}
-                        <div className="bg-white rounded-2xl shadow-sm p-3 w-full h-auto min-h-[220px] sm:h-[240px] md:h-[220px] lg:h-[220px]">
-                            <h2 className="text-[#8F96A9] mb-2 text-[15px] font-inter font-sm">
+                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] lg:min-h-[260px] overflow-hidden">
+                            <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
                                 Session Completion
                             </h2>
-                            <ResponsiveContainer width="100%" height={120}>
+
+                            <ResponsiveContainer width="100%" height={140}>
                                 <PieChart>
                                     <Pie
                                         data={pieData}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={30}
-                                        outerRadius={55}
+                                        innerRadius={35}
+                                        outerRadius={60}
                                         paddingAngle={4}
                                         cornerRadius={6}
                                         dataKey="value"
@@ -446,8 +448,8 @@ const HrCandidateDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
 
-                            <div className="flex justify-center gap-8 mt-2 text-xs font-medium">
-                                <div className="flex flex-col items-center text-slate-900">
+                            <div className="flex flex-wrap justify-center gap-8 mt-4 text-xs font-medium">
+                                <div className="flex flex-col items-center text-slate-900 min-w-[100px]">
                                     <div
                                         style={{
                                             fontFamily: "Inter, sans-serif",
@@ -468,13 +470,14 @@ const HrCandidateDashboard = () => {
                                         Completed
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-center">
+
+                                <div className="flex flex-col items-center min-w-[100px]">
                                     <div
                                         style={{
                                             fontFamily: "Inter, sans-serif",
                                             fontWeight: 700,
                                             fontSize: "20px",
-                                            color: " #DFB916",
+                                            color: "#DFB916",
                                         }}
                                     >
                                         {pendingPct}%
@@ -493,6 +496,7 @@ const HrCandidateDashboard = () => {
                             </div>
                         </div>
 
+
                         {/* Technology Icons */}
                         <div className="bg-white rounded-[10px] shadow-sm p-3 w-full h-auto min-h-[374px] sm:h-[400px] md:h-[374px]">
                             <h2
@@ -501,7 +505,6 @@ const HrCandidateDashboard = () => {
                                     fontWeight: 400,
                                     fontStyle: "normal",
                                     fontSize: "15px",
-                                    verticalAlign: "middle",
                                     display: "inline-block",
                                     padding: "2px 6px",
                                     borderRadius: "4px",
@@ -510,22 +513,34 @@ const HrCandidateDashboard = () => {
                             >
                                 {isHR ? "Top Technologies" : "Mostly Asked Technology"}
                             </h2>
+
                             {technologies.length > 0 ? (
-                                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-3 mt-4 place-items-center">
+                                <div
+                                    className="
+        grid 
+        grid-cols-2 
+        sm:grid-cols-3 
+        md:grid-cols-4 
+        gap-3 
+        mt-4 
+        place-items-center
+      "
+                                >
                                     {technologies.slice(0, 16).map((tech, idx) => {
                                         const iconSrc = getTechIcon(tech);
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded"
                                                 title={tech}
                                             >
                                                 <img
                                                     src={iconSrc}
-                                                    alt={tech || "Technology"}
-                                                    className="w-[30px] h-[30px] sm:w-[35px] sm:h-[35px] md:w-[40px] md:h-[40px] object-contain"
+                                                    alt={tech || 'Technology'}
+                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain"
                                                     onError={(e) => {
-                                                        e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                                                        e.target.src =
+                                                            'https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F';
                                                     }}
                                                 />
                                             </div>
@@ -538,30 +553,33 @@ const HrCandidateDashboard = () => {
                                 </div>
                             )}
                         </div>
+
+
                     </div>
 
                     {/* RIGHT SECTION */}
                     <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-9 flex flex-col space-y-6">
                         {/* Session Report */}
-                        <div className="bg-white rounded-2xl shadow-sm p-3 w-full h-auto min-h-[220px] sm:h-[240px] md:h-[220px]">
+                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] overflow-hidden">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
                                 <div className="flex flex-col items-start">
                                     <div className="flex items-center gap-2">
-                                        {isHR
-                                            ? <img src={groupLogo} alt="Group" className="w-5 h-5" /> :
+                                        {isHR ? (
+                                            <img src={groupLogo} alt="Group" className="w-5 h-5" />
+                                        ) : (
                                             <img
                                                 src={candidateIcon}
                                                 alt="Group Icon"
                                                 className="w-5 h-5 object-contain"
-                                            />}
+                                            />
+                                        )}
                                         <span className="font-bold text-[20px] text-[#8F96A9]">
                                             {activeParticipant}
                                         </span>
                                     </div>
                                     <span className="text-[12px] text-[#8F96A9] -ml-7">
                                         {isHR ? "Active Participant" : "Test Attempted"}
-
                                     </span>
                                 </div>
                             </div>
@@ -614,31 +632,31 @@ const HrCandidateDashboard = () => {
                             </div>
 
                             {/* Bottom Stats */}
-                            <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 sm:gap-0 text-sm font-medium text-slate-900">
-                                <div className="flex flex-col items-center">
+                            <div className="flex flex-wrap justify-between items-center mt-6 gap-6 text-sm font-medium text-slate-900">
+                                <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
                                 </div>
 
-                                <div className="flex flex-col items-center">
+                                <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
                                         {isHR
                                             ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated).toFixed(1) : "0.0")
-                                            : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0).toFixed(1) : "0.0")
-                                        }
+                                            : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0).toFixed(1) : "0.0")}
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         {isHR ? "Session Created" : "Assigned Test"}
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center">
+                                <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                                         <div className="font-bold text-[20px]">
                                             {isHR
                                                 ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0).toFixed(1)
-                                                : (Number.isFinite(Number(sessionReport?.highest_score || averageScore)) ? Number(sessionReport?.highest_score || averageScore).toFixed(1) : "0.0")
-                                            }
+                                                : (Number.isFinite(Number(sessionReport?.highest_score || averageScore))
+                                                    ? Number(sessionReport?.highest_score || averageScore).toFixed(1)
+                                                    : "0.0")}
                                         </div>
                                         {sessionReport?.progress_indicator === "up" ? (
                                             <img src={trending_up} alt="Up" className="w-5 h-5" />
@@ -651,7 +669,7 @@ const HrCandidateDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center">
+                                <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
                                         {Number.isFinite(Number(averageScore)) ? Number(averageScore).toFixed(1) : "0.0"}
                                     </div>
@@ -660,15 +678,17 @@ const HrCandidateDashboard = () => {
                             </div>
                         </div>
 
+
                         {/* Bottom Row */}
                         <div className="flex flex-col lg:flex-row justify-between gap-6">
                             <div className="flex flex-col gap-6 w-full lg:w-2/3">
                                 {/* Chart Section */}
-                                <div className="bg-[#DFB916] rounded-2xl shadow-sm p-3 h-auto min-h-[200px] sm:h-[220px] md:h-[200px] flex flex-col">
+                                <div className="bg-[#DFB916] rounded-2xl shadow-sm p-5 h-auto min-h-[200px] sm:h-[220px] md:h-[200px] flex flex-col">
                                     <h2 className="font-normal mb-3 text-[#3D5B81]">
-                                        {isHR ? "Annually Hiring Process" : "Last Twelve Test Scores"}
+                                        {isHR ? "Annually Hiring Process" : "Last 12 Session Scores"}
                                     </h2>
-                                    <div className="flex-1">
+
+                                    <div className="flex-1 mt-2">
                                         <ResponsiveContainer>
                                             <BarChart data={barData}>
                                                 <XAxis dataKey="name" hide />
@@ -694,19 +714,23 @@ const HrCandidateDashboard = () => {
                                 </div>
 
                                 {/* Line Chart */}
-                                <div className="bg-white rounded-2xl shadow-sm p-3 h-[200px] overflow-hidden">
+                                <div className="bg-white rounded-2xl shadow-sm p-5 h-[200px] overflow-hidden">
                                     <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
+
                                     {lineData.length > 0 ? (
-                                        <div className="w-full h-[100px]">
+                                        <div className="w-full h-[100px] mt-2">
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={lineData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+                                                <LineChart
+                                                    data={lineData}
+                                                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                                                >
                                                     <XAxis dataKey="name" hide />
                                                     <YAxis hide />
                                                     <Tooltip
                                                         cursor={false}
                                                         content={({ active, payload }) =>
                                                             active && payload && payload.length ? (
-                                                                <div className="bg-[#FEEFC3] px-4 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
+                                                                <div className="bg-[#FEEFC3] px-4 py-1 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
                                                                     {`${payload[0].payload.name} ${payload[0].value}`}
                                                                 </div>
                                                             ) : null
@@ -741,6 +765,7 @@ const HrCandidateDashboard = () => {
                                         </div>
                                     )}
                                 </div>
+
                             </div>
 
                             {/* Right Panel - Conditional Content */}
