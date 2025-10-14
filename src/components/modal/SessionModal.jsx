@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+
 
 export default function SessionModal({
   open,
@@ -146,13 +151,16 @@ export default function SessionModal({
     const sliderWidth = slider.offsetWidth;
 
     let newValue = (offsetX / sliderWidth) * 45 + 5; // (max - min) + min
+    
+    // Snap to the nearest 5-minute interval
+    newValue = Math.round(newValue / 5) * 5;
 
     // Clamp the value between 5 and 50
     if (newValue < 5) newValue = 5;
     if (newValue > 50) newValue = 50;
 
     setSessionDuration({
-      value: Math.round(newValue),
+      value: newValue,
       direction: "up",
     });
   };
@@ -176,6 +184,9 @@ export default function SessionModal({
     };
   }, [isDragging, handleIndicatorMouseMove, handleIndicatorMouseUp]);
 
+
+
+
   return (
     <>
       <SuccessModal
@@ -186,7 +197,7 @@ export default function SessionModal({
       />
 
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl w-[50%] max-w-full h-[90%] max-h-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl max-w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
             <button
@@ -217,17 +228,16 @@ export default function SessionModal({
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               {/* Candidate Name */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Candidate Name
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="relative">
                   <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.candidateName
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#BCC7D2]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName
+                      ? "border-red-500"
+                      : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      } text-[#BCC7D2] font-normal text-xs`}
                     value={candidateName}
                     onChange={(e) => {
                       setCandidateName(e.target.value);
@@ -256,7 +266,7 @@ export default function SessionModal({
                   </svg>
                 </div>
                 {errors.candidateName && (
-                  <p className="text-red-500 text-sm mt-1 overflow-y-auto scrollbar-none">
+                  <p className="text-[#FF4D01] text-xs mt-1 overflow-y-auto scrollbar-none">
                     {errors.candidateName}
                   </p>
                 )}
@@ -264,43 +274,74 @@ export default function SessionModal({
 
               {/* Session Date */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Date Time
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="w-full cursor-pointer">
-                  <input
-                    type="datetime-local"
-                    value={date}
-                    onChange={(e) => {
-                      setDate(e.target.value);
-                      if (e.target.value) clearError("date");
-                    }}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${
-                      errors.date
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#1F2937]`}
-                  />
-                </div>
-                {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
-                )}
-              </div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                      label="DD/MM/YYYY  MM:HH"
+                      value={date ? dayjs(date) : null}
+                      onChange={(newValue) => {
+                        setDate(newValue ? newValue.toISOString() : "");
+                        if (newValue) clearError("date");
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          size: "small",
+                          sx: {
+                            "& .MuiOutlinedInput-root": {
+                              backgroundColor: "white",
+                         // rounded-2xl,
+                              height: "50px",
+                              fontSize: "0.875rem", // text-sm
+                              color: "#182938",
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.date ? "#ef4444" : "#E5E7EB",
+                                borderRadius: "1rem", // Ensure the outline also has the radius
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#E5B800", // focus:ring-[#E5B800]
+                                borderWidth: "2px", // Changed from 8px to 2px for a standard ring effect
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.date ? "#ef4444" : "#BCC7D2",
+                              },
+                            },
+                          },
+                          InputLabelProps: {
+                            sx: { color: "#BCC7D2", fontSize: "0.75rem" }, // placeholder / label color
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                  {errors.date && (
+                    <p className="text-[#FF4D01] text-xs mt-1">{errors.date}</p>
+                  )}
 
-              {/* Session Category */}
+
+
+                </div>
+
+
+
+
+                {/* Session Category */}
+              </div>
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Category
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="relative">
                   <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.sessionCategory
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#BCC7D2]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.sessionCategory
+                      ? "border-red-500"
+                      : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      } text-[#BCC7D2] font-normal text-xs`}
                     value={sessionCategory}
                     onChange={(e) => {
                       setSessionCategory(e.target.value);
@@ -329,7 +370,7 @@ export default function SessionModal({
                   </svg>
                 </div>
                 {errors.sessionCategory && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-[#FF4D01] text-xs mt-1">
                     {errors.sessionCategory}
                   </p>
                 )}
@@ -337,13 +378,13 @@ export default function SessionModal({
 
               {/* Session Duration */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Duration
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="flex items-center gap-4">
                   {/* Editable Input: Remove up/down arrows */}
-                  <div className="w-[80px] h-[48px] border border-[#E5E7EB] rounded-xl flex items-center justify-center bg-white">
+                  <div className="w-[80px] h-[48px] border border-[#BCC7D2] rounded-xl flex items-center justify-center bg-white">
                     <input
                       type="text"
                       inputMode="numeric"
@@ -371,7 +412,7 @@ export default function SessionModal({
                         type="range"
                         min={5}
                         max={50}
-                        step={1}
+                        step={5}
                         value={sessionDuration?.value ?? 15}
                         onChange={(e) =>
                           setSessionDuration({
@@ -381,11 +422,9 @@ export default function SessionModal({
                         }
                         className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
                         style={{
-                          background: `linear-gradient(to right, #29324173 0%, #29324173 ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, #e5e7eb ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, #e5e7eb 100%)`,
+                          background: `linear-gradient(to right, #29324173 0%, #29324173 ${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }%, #e5e7eb ${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }%, #e5e7eb 100%)`,
                           transition: "background 0.2s linear",
                         }}
                       />
@@ -393,9 +432,8 @@ export default function SessionModal({
                         className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded cursor-grab"
                         onMouseDown={handleIndicatorMouseDown}
                         style={{
-                          left: `calc(${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }% - 12px)`,
+                          left: `calc(${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }% - 12px)`,
                           transition: "left 0.2s linear",
                         }}
                       >
@@ -413,9 +451,9 @@ export default function SessionModal({
 
             {/* Session Topic */}
             <div className="mt-3">
-              <label className="block text-[#182938] font-medium mb-3 text-base">
+              <label className="block text-[#182938] font-medium mb-3 text-sm">
                 Session Topic
-                <span className="text-red-500 mr-1"> *</span>
+                <span className="text-[#FF4D01] mr-1"> *</span>
               </label>
               <textarea
                 value={sessionTopic}
@@ -425,12 +463,14 @@ export default function SessionModal({
                 }}
                 placeholder="Write session topic..."
                 rows="6.5"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
-                  errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
-                } text-[#BCC7D2]`}
+                className={`w-full border rounded-xl p-4 
+  ${errors.sessionTopic ? "border-red-500" : "border-[#BCC7D2]"} 
+  text-[#BCC7D2] font-normal text-xs 
+  focus:outline-none focus:ring-2 focus:ring-[#E5B800]`}
+
               />
               {errors.sessionTopic && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-[#FF4D01] text-xs mt-1">
                   {errors.sessionTopic}
                 </p>
               )}
@@ -441,7 +481,7 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-              className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+              className="h-10 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
               onClick={handleReset}
             >
               Reset
@@ -450,14 +490,14 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-10 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
                 onClick={onClose}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
                 onClick={handleSave}
                 disabled={isSaving}
               >
