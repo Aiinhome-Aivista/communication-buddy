@@ -7,7 +7,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-[60] bg-black/30 backdrop-blur-sm"
+       className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm"
       onClick={onClose} // close when clicking outside modal
     >
       <div
@@ -23,7 +23,7 @@ export default function ExpiredModal({ isOpen, onClose, selectedTestTitle }) {
             <CancelIcon className="w-10 h-10" />
         </button>
 
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center">
         <div className="flex items-center justify-center">
             <WarningIcon sx={{ color: "#DFB916", fontSize: 48 }} />
         </div>

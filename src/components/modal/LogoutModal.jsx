@@ -8,7 +8,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }) {
     }
     return (
         <div
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm"
+            className="fixed inset-0 flex items-center justify-center z-[50] bg-black/30 backdrop-blur-sm"
         
         >
             <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative">
