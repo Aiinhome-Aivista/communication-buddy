@@ -895,8 +895,8 @@ const CandidateDashboard = () => {
                     topScores.map((item, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
-                      >
+                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm w-[97%] mx-2"
+ >
                         {/* Left content */}
                         <div className="flex items-start gap-3">
                           <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
