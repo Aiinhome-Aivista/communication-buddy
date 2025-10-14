@@ -263,7 +263,14 @@ export default function TestResult() {
                   <Column
                     field="original_session_time" // Sort using the original date
                     header="Session Time"
-                    body={(rowData) => rowData.session_time_formatted} // Display the formatted time
+                    body={(rowData) => {
+                      if (!rowData.session_time) return "N/A";
+                      return new Date(rowData.session_time).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      });
+                    }}
                   ></Column>
                   <Column
                     field="score"
