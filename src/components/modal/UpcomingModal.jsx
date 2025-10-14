@@ -35,16 +35,12 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-[60] bg-black/30 backdrop-blur-sm"
+      className="fixed inset-0 flex items-center justify-center z-[50] bg-black/30 backdrop-blur-sm"
       onClick={onClose}
     >
-      <div
-        className="bg-[#FEFEFE] rounded-2xl p-8 min-w-[420px]  min-h-[220px]  sm:p-10 flex flex-col items-center justify-center shadow-xl relative"
+  <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative"
       
-        style={{
-          minWidth: "min(350px, 90vw)",
-          minHeight: "min(180px, 60vh)",
-        }}
+    
         onClick={(e) => e.stopPropagation()}
       >
          

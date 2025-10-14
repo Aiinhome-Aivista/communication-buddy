@@ -5,7 +5,7 @@ const SuccessModal = ({ open, onClose }) => {
         if (open) {
             const timer = setTimeout(() => {
                 onClose();
-            }, 1000); // Auto close after 1 seconds
+            }, 3000); // Auto close after 3 seconds
             return () => clearTimeout(timer);
         }
     }, [open, onClose]);
@@ -13,7 +13,7 @@ const SuccessModal = ({ open, onClose }) => {
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-[60]">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[50]">
             <div
                 className="bg-[#FEFEFE] rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center shadow-xl"
                 style={{

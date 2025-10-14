@@ -265,6 +265,7 @@ export default function PracticeTest() {
                           hr_name: e.data.hr_name,
                           assigned_by: e.data.hr_name,
                           user_id: e.data.user_id,
+                          total_time: e.data.total_time,
                           status: e.data.topic_attend_status,
                         },
                       });

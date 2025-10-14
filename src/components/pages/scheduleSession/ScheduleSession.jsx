@@ -308,7 +308,7 @@ export default function ScheduleSession() {
                             Schedule Session
                         </h1>
                         <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
+                            className="flex items-center gap-2 bg-[#DFB916] hover:bg-yellow-400 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
                             <svg

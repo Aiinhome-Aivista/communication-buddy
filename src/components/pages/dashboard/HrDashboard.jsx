@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchHrDashboard, fatchedPostRequest, postURL } from "../../../services/ApiService";
+import {
+  fetchHrDashboard,
+  fatchedPostRequest,
+  postURL,
+} from "../../../services/ApiService";
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import {
@@ -20,8 +24,8 @@ import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 import * as SIIcons from "react-icons/si";
 import { FaCode } from "react-icons/fa";
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 const HrDashboard = () => {
   const COLORS = ["#0f172a", "#DFB916"];
@@ -33,7 +37,6 @@ const HrDashboard = () => {
   const [animateBars, setAnimateBars] = useState(false);
   const [userData, setUserData] = useState([]);
   const [topics, setTopics] = useState([]);
-
 
   const hrId =
     typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
@@ -75,13 +78,16 @@ const HrDashboard = () => {
       if (!hrId) return;
       try {
         const JsonBody = { hr_id: hrId };
-        const response = await fatchedPostRequest(postURL.hrTopicCandidate, JsonBody);
+        const response = await fatchedPostRequest(
+          postURL.hrTopicCandidate,
+          JsonBody
+        );
         if (response.success === true || response.status === 200) {
           setUserData(response.candidates || []);
           setTopics(response.topics || []);
         }
       } catch (error) {
-        console.error('Error fetching modal data', error.message);
+        console.error("Error fetching modal data", error.message);
       }
     };
     if (modalOpen) {
@@ -96,14 +102,14 @@ const HrDashboard = () => {
   const completedPct =
     completionTotal > 0
       ? Math.round(
-        (Number(sessionCompletion.completed || 0) / completionTotal) * 100
-      )
+          (Number(sessionCompletion.completed || 0) / completionTotal) * 100
+        )
       : 0;
   const pendingPct =
     completionTotal > 0
       ? Math.round(
-        (Number(sessionCompletion.pending || 0) / completionTotal) * 100
-      )
+          (Number(sessionCompletion.pending || 0) / completionTotal) * 100
+        )
       : 0;
 
   const pieData = useMemo(() => {
@@ -133,13 +139,10 @@ const HrDashboard = () => {
     });
   }, [data]);
 
-
   const mostAskedTechnologies = Array.isArray(data?.top_technical_skills)
     ? data.top_technical_skills
     : [];
-  const mostTopTechnologies = Array.isArray(
-    data?.top_technologies
-  )
+  const mostTopTechnologies = Array.isArray(data?.top_technologies)
     ? data.top_technologies
     : [];
 
@@ -152,9 +155,7 @@ const HrDashboard = () => {
     sessionReport?.average_session_duration ??
     0;
   const sessionCreated =
-    sessionReport?.totalSessionsCreated ??
-    sessionReport?.session_created ??
-    0;
+    sessionReport?.totalSessionsCreated ?? sessionReport?.session_created ?? 0;
   const userTraffic =
     sessionReport?.userTraffic ?? sessionReport?.user_traffic ?? 0;
   const averageScore =
@@ -343,25 +344,23 @@ const HrDashboard = () => {
         <div
           style={{
             backgroundColor: "#182938C2", // dark background
-            color: "#fff",               // white text
+            color: "#fff", // white text
             padding: "6px 10px",
             borderRadius: "6px",
             fontSize: "12px",
             fontWeight: "600",
             boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            pointerEvents: "none",       // prevents mouse interference
+            pointerEvents: "none", // prevents mouse interference
             transform: "translateY(-8px)", // lifts above the bar
             whiteSpace: "nowrap",
           }}
         >
-          <div>
-            {` ${payload[0].value}`}</div>
+          <div>{` ${payload[0].value}`}</div>
         </div>
       );
     }
     return null;
   };
-
 
   const CustomTooltip1 = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -378,7 +377,8 @@ const HrDashboard = () => {
           }}
         >
           <span
-            style={{// solid background for text
+            style={{
+              // solid background for text
               color: "#DFB916", // readable dark text
               fontWeight: 600,
               fontSize: "13px",
@@ -395,9 +395,6 @@ const HrDashboard = () => {
     return null;
   };
 
-
-
-
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
@@ -406,7 +403,7 @@ const HrDashboard = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         <button
-                                 className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
+          className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
           onClick={() => setModalOpen(true)}
         >
           <svg
@@ -416,7 +413,11 @@ const HrDashboard = () => {
             strokeWidth={2}
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Create Session
         </button>
@@ -471,7 +472,6 @@ const HrDashboard = () => {
               </div>
             </div>
 
-
             {/* Mostly Asked Tech */}
             <div className="bg-white rounded-xl shadow-sm p-4 w-full h-full">
               <h2 className="font-normal text-[#8F96A9] mb-6">
@@ -493,15 +493,14 @@ const HrDashboard = () => {
                           className="w-[40px] h-[40px] object-contain"
                           onError={(e) => {
                             // If image fails to load, show placeholder
-                            e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                            e.target.src =
+                              "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
                           }}
                         />
                       </div>
-
                     );
                   })}
                 </div>
-
               ) : (
                 <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                   No data found
@@ -527,7 +526,6 @@ const HrDashboard = () => {
                   <span className="text-[12px] text-[#8F96A9] -ml-7">
                     Active participant
                   </span>
-
                 </div>
               </div>
               <div className="font-inter font-normal text-[13px] leading-none tracking-normal align-middle text-[#8F96A9] mb-3">
@@ -543,7 +541,9 @@ const HrDashboard = () => {
                     <div
                       className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                       style={{
-                        width: `${(commRaw / Math.max(1, sessionCreated)) * 100}%`,
+                        width: `${
+                          (commRaw / Math.max(1, sessionCreated)) * 100
+                        }%`,
                         backgroundColor: "#0f172a",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
@@ -554,7 +554,9 @@ const HrDashboard = () => {
                     </div>
                   </div>
                   <div className="w-10 text-right">
-                    <span className="text-xs text-[#8F96A9] font-medium">{commRaw}</span>
+                    <span className="text-xs text-[#8F96A9] font-medium">
+                      {commRaw}
+                    </span>
                   </div>
                 </div>
 
@@ -564,8 +566,11 @@ const HrDashboard = () => {
                     <div
                       className="h-6 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                       style={{
-                        width: `${(techRaw / Math.max(1, sessionCreated)) * 100}%`,
-                        background: "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
+                        width: `${
+                          (techRaw / Math.max(1, sessionCreated)) * 100
+                        }%`,
+                        background:
+                          "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -575,15 +580,12 @@ const HrDashboard = () => {
                     </div>
                   </div>
                   <div className="w-10 text-right">
-                    <span className="text-xs text-[#8F96A9] font-medium">{techRaw}</span>
+                    <span className="text-xs text-[#8F96A9] font-medium">
+                      {techRaw}
+                    </span>
                   </div>
                 </div>
               </div>
-
-
-
-
-
 
               {/* Bottom Stats */}
               <div className="flex justify-between items-center mt-4 text-sm font-medium text-slate-900">
@@ -593,7 +595,7 @@ const HrDashboard = () => {
                     <span
                       style={{
                         fontFamily: "Inter, sans-serif",
-                        fontWeight: 700,   // Bold
+                        fontWeight: 700, // Bold
                         fontStyle: "normal",
                         fontSize: "20px",
                         lineHeight: "100%",
@@ -609,7 +611,7 @@ const HrDashboard = () => {
                     <span
                       style={{
                         fontFamily: "Inter, sans-serif",
-                        fontWeight: 300,   // Light
+                        fontWeight: 300, // Light
                         fontStyle: "normal",
                         fontSize: "20px",
                         lineHeight: "100%",
@@ -623,16 +625,18 @@ const HrDashboard = () => {
                   </div>
 
                   {/* Label text - Medium */}
-                  <div className="text-[12px] text-[#8F96A9] font-normal"
-                  >
+                  <div className="text-[12px] text-[#8F96A9] font-normal">
                     Average Session Duration
                   </div>
                 </div>
 
-
                 <div className="flex flex-col items-center">
-                  <div className="font-bold text-[20px] text-[#8F96A9]">{sessionReport.totalSessionsCreated}</div>
-                  <div className="text-[12px] text-[#8F96A9] font-normal">Session Created</div>
+                  <div className="font-bold text-[20px] text-[#8F96A9]">
+                    {sessionReport.totalSessionsCreated}
+                  </div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">
+                    Session Created
+                  </div>
                 </div>
 
                 <div className="flex flex-col items-center">
@@ -646,28 +650,39 @@ const HrDashboard = () => {
                       <img src={trending_down} alt="Down" className="w-5 h-5" />
                     ) : null}
                   </div>
-                  <div className="text-[12px] text-[#8F96A9] font-normal">User Traffic</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">
+                    User Traffic
+                  </div>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="flex text-[20px] text-[#8F96A9]">
                     {(() => {
                       const score = Number(averageScore);
-                      const rounded = Number.isFinite(score) ? score.toFixed(2) : "0.00";
+                      const rounded = Number.isFinite(score)
+                        ? score.toFixed(2)
+                        : "0.00";
                       const [intPart, decPart] = rounded.split(".");
                       return (
                         <>
                           <span className="font-bold">{intPart}</span>
-                          <span className="font-light" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
+                          <span
+                            className="font-light"
+                            style={{
+                              fontFamily: "Inter, sans-serif",
+                              fontWeight: 300,
+                            }}
+                          >
                             .{decPart}
                           </span>
                         </>
                       );
                     })()}
                   </div>
-                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">
+                    Average Score
+                  </div>
                 </div>
-
               </div>
             </div>
 
@@ -704,9 +719,7 @@ const HrDashboard = () => {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm p-4 h-[200px] overflow-hidden">
-                  <h2 className="font-normal text-[#8F96A9]">
-                    Language Usage
-                  </h2>
+                  <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
 
                   {lineData.length > 0 ? (
                     <div className="w-full h-[100px]">
@@ -717,7 +730,10 @@ const HrDashboard = () => {
                         >
                           <XAxis dataKey="name" hide />
                           <YAxis hide />
-                          <Tooltip content={<CustomTooltip1 />} cursor={false} />
+                          <Tooltip
+                            content={<CustomTooltip1 />}
+                            cursor={false}
+                          />
                           <Line
                             type="monotone"
                             dataKey="uv"
@@ -730,7 +746,6 @@ const HrDashboard = () => {
                               strokeWidth: 2,
                               opacity: 0.9,
                             }}
-
                             activeDot={{
                               r: 8,
                               fill: "#DFB916",
@@ -792,8 +807,6 @@ const HrDashboard = () => {
                     no data found
                   </div>
                 )}
-
-
               </div>
             </div>
           </div>
