@@ -18,10 +18,10 @@ import {
 } from "recharts";
 import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
-import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "/assets/icons/assignment.png";
-import personImage from "../../../assets/logo/person.jpg";
+import Subtract from "../../../assets/logo/Subtract.svg";
 import candidateIcon from "/public/assets/images/AT.png";
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -622,10 +622,11 @@ const HrCandidateDashboard = () => {
 
                                 <div className="flex flex-col items-center">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
-                                        {isHR
-                                            ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated).toFixed(1) : "0.0")
-                                            : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0).toFixed(1) : "0.0")
-                                        }
+{isHR
+  ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated) : 0)
+  : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0) : 0)
+}
+
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         {isHR ? "Session Created" : "Assigned Test"}
@@ -636,14 +637,14 @@ const HrCandidateDashboard = () => {
                                     <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                                         <div className="font-bold text-[20px]">
                                             {isHR
-                                                ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0).toFixed(1)
+                                                ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0)
                                                 : (Number.isFinite(Number(sessionReport?.highest_score || averageScore)) ? Number(sessionReport?.highest_score || averageScore).toFixed(1) : "0.0")
                                             }
                                         </div>
                                         {sessionReport?.progress_indicator === "up" ? (
                                             <img src={trending_up} alt="Up" className="w-5 h-5" />
                                         ) : sessionReport?.progress_indicator === "down" ? (
-                                            <img src={trending_down} alt="Down" className="w-5 h-5" />
+                                            <TrendingDownIcon style={{ fontSize: '20px', color: '#e91717ff' }} />
                                         ) : null}
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
@@ -744,93 +745,135 @@ const HrCandidateDashboard = () => {
                             </div>
 
                             {/* Right Panel - Conditional Content */}
-                            <div className="bg-white shadow-sm p-3 rounded-2xl w-full lg:w-1/3 h-full flex-shrink-0">
-                                {isHR ? (
-                                    /* HR: Technical Skills */
-                                    <>
-                                        <h2 className="font-normal text-[#8F96A9] mb-6">
-                                            Mostly Asked Technical Skill
-                                        </h2>
-                                        {technicalSkills.length > 0 ? (
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 justify-items-center mt-4 text-sm">
-                                                {technicalSkills.map((skill, i) => (
-                                                    <span
-                                                        key={`${skill}-${i}`}
-                                                        className="bg-[#D9D9D933] px-4 py-2 border-[#3D5B81] border-1 items-center rounded-4xl text-[#8F96A9]"
-                                                        title={skill}
-                                                    >
-                                                        {skill}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
-                                                No data found
-                                            </div>
-                                        )}
-                                    </>
-                                ) : (
-                                    /* Candidate: Top Test Scores */
-                                    <>
-                                        <h2 className="font-normal text-[#8F96A9] mb-6">Top 5 Session Score</h2>
-                                        <div>
-                                            {topScores.length > 0 ? (
-                                                topScores.map((item, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
-                                                    >
-                                                        {/* Left content */}
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                                                                <span className="material-icons text-gray-400 text-[18px]">
-                                                                    <img
-                                                                        src={personImage}
-                                                                        alt="Person"
-                                                                        className="w-8 h-8 rounded-full"
-                                                                    />
-                                                                </span>
-                                                            </div>
+{isHR ? (
+  /* HR: Technical Skills */
+  <div className="bg-white shadow-sm p-3 rounded-2xl w-full lg:w-1/3 h-full flex-shrink-0">
+    <h2 className="font-normal text-[#8F96A9] mb-6">
+      Mostly Asked Technical Skill
+    </h2>
+    {technicalSkills.length > 0 ? (
+<div className="flex flex-wrap gap-4 mt-4 justify-center text-sm">
+  {technicalSkills.map((skill, i) => (
+    <span
+      key={`${skill}-${i}`}
+      className="bg-[#D9D9D933] px-4 py-2 border border-[#3D5B81] rounded-full text-center"
+      style={{
+        fontFamily: 'Inter',
+        fontWeight: 500,         // Medium
+        fontStyle: 'normal',     // Medium
+        fontSize: '12px',
+        lineHeight: '100%',
+        letterSpacing: '0%',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: "#8F96A9",
+      }}
+      title={skill}
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
-                                                                    Assigned by
-                                                                </span>
-                                                                <span className="font-medium text-[13px] text-[#2C2E42] leading-tight">
-                                                                    {item.name}
-                                                                </span>
-                                                                <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
-                                                                    Topic: {item.topic}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        {/* Right side */}
-                                                        <div className="flex flex-col items-end">
-                                                            <span className="text-[15px] font-semibold text-[#2C2E42] leading-tight">
-                                                                {item.score}
-                                                            </span>
-                                                            <span className="text-[10px] text-gray-400">
-                                                                Score
-                                                            </span>
-                                                            <KeyboardArrowDown
-                                                                style={{
-                                                                    fontSize: "16px",
-                                                                    color: "#B0B3B8",
-                                                                    marginTop: "2px",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <p className="text-center text-gray-500 pt-10">No top score found</p>
-                                            )}
-                                        </div>
+    ) : (
+      <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
+        No data found
+      </div>
+    )}
+  </div>
+) : (
+  /* Candidate: Top Test Scores without outer container */
+  <>
+    <style>{`
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;     /* Firefox */
+      }
+    `}</style>
+    <div
+      style={{ height: "400px", overflowY: "auto" }}
+      className="scrollbar-hide w-full md:w-1/2"
+    >
+      <h2
+        className="mb-4"
+        style={{
+          fontFamily: "Inter, sans-serif",
+          fontWeight: 400,
+          fontStyle: "normal",
+          fontSize: "15px",
+          verticalAlign: "middle",
+          display: "inline-block",
+          padding: "2px 6px",
+          borderRadius: "4px",
+          color: "#8F96A9",
+        }}
+      >
+        Top 5 Session Score
+      </h2>
+      <div className="space-y-3 h-82 overflow-y-auto scrollbar-hide">
+        {topScores.length > 0 ? (
+          topScores.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm w-[97%] mx-2"
+            >
+              {/* Left content */}
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                  <img
+                    src={Subtract}
+                    alt="Subtract"
+                    className="w-8 h-8 rounded-full"
+                  />
+                </div>
 
+<div className="flex flex-col">
+  <span className="text-[10px] text-gray-400 leading-none mt-[2px]">
+    Assigned by
+  </span>
 
-                                    </>
-                                )}
-                            </div>
+  <span className="font-medium text-[13px] text-[#2C2E42] leading-tight mt-2">
+    {item.name}
+  </span>
+
+                  <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
+                    Topic: {item.topic}
+                  </span>
+                </div>
+              </div>
+              {/* Right side */}
+              <div className="flex flex-col items-end">
+                <span className="font-bold text-[20px] leading-[100%] text-right" style={{ fontFamily: 'Inter', color: '#8F96A9' }}>
+                  {item.score}
+                </span>
+                <span
+  className="font-normal text-[12px] leading-[100%] text-right"
+  style={{ fontFamily: 'Inter', color: '#8F96A9' }}
+  
+>
+Score</span>
+                <KeyboardArrowDown
+                  style={{
+                    fontSize: "16px",
+                    color: "#B0B3B8",
+                    marginTop: "2px",
+                  }}
+                />
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 pt-10">No top scores found.</p>
+        )}
+      </div>
+    </div>
+  </>
+)}
+
                         </div>
                     </div>
                 </div>
