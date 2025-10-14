@@ -303,12 +303,12 @@ export default function ScheduleSession() {
         <div className="w-full min-h-full bg-[#ECEFF2] flex flex-col">
             <div className="flex-grow flex flex-col">
                 <div className="pt-4 px-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-start px-0 mx-0">
                         <h1 className="text-2xl font-bold text-[#2C2E42]">
                             Schedule Session
                         </h1>
                         <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
                             <svg

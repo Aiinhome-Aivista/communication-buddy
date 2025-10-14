@@ -37,7 +37,7 @@ export default function Sidebar() {
   return (
     <aside
       className={`${collapsed ? "w-18" : "w-60"
-        } bg-white h-screen border-t border-[#BCC7D2] border-r border-b flex flex-col transition-all duration-200 overflow-hidden`}
+        } bg-white h-screen border-t border-t-[#FFFFFF] border-[#BCC7D2] border-r border-b flex flex-col transition-all duration-200 overflow-hidden`}
     >
       <div className={`flex items-center border-b border-[#BCC7D2] h-[calc(9%)] ${collapsed ? "justify-between px-2" : "justify-between"}`}>
         <div className="w-[calc(17%)]"></div>
