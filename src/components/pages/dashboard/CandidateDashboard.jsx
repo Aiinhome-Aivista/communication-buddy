@@ -374,10 +374,32 @@ const CandidateDashboard = () => {
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         <div className="flex items-center gap-3">
           {/* Main action button */}
-          <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
-            <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
-            <span>Ongoing session</span>
-          </button>
+<div className="relative inline-block">
+  <button
+    className="bg-[#DFB916] hover:bg-[#c8a514] flex items-center justify-center gap-2 rounded-md"
+    style={{
+      width: '148px',
+      height: '47px',
+      fontFamily: 'Inter',
+      fontWeight: 800,
+      fontSize: '12px',
+      lineHeight: '100%',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+    }}
+  >
+    <img
+      src={assignmentIcon}
+      alt="assignment"
+      className="w-6 h-6" // 24px
+    />
+    <span>Ongoing session</span>
+  </button>
+
+</div>
+
+
+
         </div>
       </div>
 
