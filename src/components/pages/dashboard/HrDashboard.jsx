@@ -36,6 +36,13 @@ const HrDashboard = () => {
   const [data, setData] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
   const [userData, setUserData] = useState([]);
+  const [modalState, setModalState] = useState({
+    date: "",
+    sessionTopic: "",
+    candidateName: "",
+    sessionCategory: "",
+    candidateSearch: "",
+  });
   const [topics, setTopics] = useState([]);
 
   const hrId =
@@ -818,9 +825,21 @@ const HrDashboard = () => {
         onClose={() => setModalOpen(false)}
         sessionDuration={sessionDuration}
         setSessionDuration={setSessionDuration}
+        modalState={modalState}
+        setModalState={setModalState}
         userData={userData}
         topics={topics}
-        onSave={() => setModalOpen(false)}
+        onSave={() => {
+          setModalOpen(false);
+          // Optionally reset state on save
+          setModalState({
+            date: "",
+            sessionTopic: "",
+            candidateName: "",
+            sessionCategory: "",
+            candidateSearch: "",
+          });
+        }}
       />
     </div>
   );
