@@ -415,13 +415,13 @@ const HrCandidateDashboard = () => {
                             Create Session
                         </button>
                     ) :
-                    //     (
-                    //     <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
-                    //         <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
-                    //         <span>Ongoing session</span>
-                    //     </button>
-                    // )
-                    ""}
+                        //     (
+                        //     <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
+                        //         <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
+                        //         <span>Ongoing session</span>
+                        //     </button>
+                        // )
+                        ""}
                 </div>
             </div>
 
@@ -560,10 +560,10 @@ const HrCandidateDashboard = () => {
                                                 />
                                                 {/* Hover tooltip */}
                                                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none shadow-md"
-                                                     style={{ backgroundColor: '#FFF8E1', color: '#DFB916' }}>
+                                                    style={{ backgroundColor: '#FFF8E1', color: '#DFB916' }}>
                                                     {tech}
-                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent" 
-                                                         style={{ borderTopColor: '#FFF8E1' }}></div>
+                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
+                                                        style={{ borderTopColor: '#FFF8E1' }}></div>
                                                 </div>
                                             </div>
                                         );
@@ -624,10 +624,10 @@ const HrCandidateDashboard = () => {
                                                 textOverflow: "ellipsis",
                                             }}
                                         >
-                                            
+
                                         </div>
                                     </div>
-                                    <div className="w-10 text-right ">
+                                    <div className="w-10 text-right flex gap-2 ">
                                         <span className="text-xs text-[#8F96A9]">Communication</span>
                                         <span className="text-xs text-[#8F96A9] font-medium">{commRaw}</span>
                                     </div>
@@ -645,10 +645,10 @@ const HrCandidateDashboard = () => {
                                                 textOverflow: "ellipsis",
                                             }}
                                         >
-                                    
+
                                         </div>
                                     </div>
-                                    <div className="w-10 text-right gap-4">
+                                    <div className="w-10 text-right flex gap-2 ">
                                         <span className="text-xs text-[#8F96A9]">Technology</span>
                                         <span className="text-xs text-[#8F96A9] font-medium">{techRaw}</span>
                                     </div>
