@@ -37,10 +37,11 @@ export default function PracticeTest() {
   );
   const hrId = sessionData.hr_id || matchedRecord?.hr_id || null;
   const topicName =
-    sessionData.topic ||
-    sessionData.topic_name ||
-    matchedRecord?.topic ||
-    matchedRecord?.topic_name;
+      sessionData.topic ||
+      sessionData.topic_name ||
+      matchedRecord?.topic ||
+      matchedRecord?.topic_name,
+    totalTimeFromState = sessionData.total_time;
 
   // Debug logging
   console.log("Component data initialization:", {
@@ -56,6 +57,7 @@ export default function PracticeTest() {
     topicFromRecord: matchedRecord?.topic,
     topicNameFromRecord: matchedRecord?.topic_name,
     sessionData,
+    totalTimeFromState,
   });
 
   const [isAILoading, setIsAILoading] = useState(false);
@@ -644,12 +646,12 @@ export default function PracticeTest() {
               (voiceGender === "male") === isLikelyMaleVoice(selectedVoice),
           });
         } else {
-          console.warn("⚠ No suitable voice found for:", {
+          console.warn("⚠️ No suitable voice found for:", {
             lang,
             voiceGender,
             availableVoices: voices.length,
           });
-          console.warn("⚠ Using system default voice");
+          console.warn("⚠️ Using system default voice");
         }
 
         setIsSpeaking(true);
@@ -670,7 +672,7 @@ export default function PracticeTest() {
           // Verify the voice is still selected correctly before speaking
           if (selectedVoice && utterance.voice !== selectedVoice) {
             console.warn(
-              "⚠ Voice changed during setup, reapplying:",
+              "⚠️ Voice changed during setup, reapplying:",
               selectedVoice.name
             );
             utterance.voice = selectedVoice;
@@ -836,7 +838,7 @@ export default function PracticeTest() {
       if (days > 0) countdownText += `${days}d `;
       if (hours > 0) countdownText += `${hours}h `;
       if (minutes > 0) countdownText += `${minutes}m `;
-      countdownText += ${seconds}s;
+      countdownText += `${seconds}s`;
 
       setCountdownTime(countdownText);
     }, 1000);
@@ -845,7 +847,7 @@ export default function PracticeTest() {
   // Session timer functionality (uses API total_time and session_time when available)
   const startSessionTimer = (totalMinutesParam, sessionStartAt) => {
     const totalTime = Number(
-      totalMinutesParam ?? matchedRecord?.total_time ?? 10
+      totalTimeFromState ?? totalMinutesParam ?? matchedRecord?.total_time ?? 10
     ); // minutes
     setSessionTotalTime(totalTime);
     sessionStartRef.current = sessionStartAt
@@ -878,6 +880,7 @@ export default function PracticeTest() {
         } catch {}
         setIsSpeaking(false);
         setSessionExpired(true);
+        setUserStatus("expired"); // Switch to the expired view
         setShowTimeUpPopup(true);
         // Note: Removed auto-save on time up per requirement
       }
@@ -982,7 +985,7 @@ export default function PracticeTest() {
             readableLang
           );
           const introMsg =
-            intro?.message || Let's begin our discussion on ${topicName}.;
+            intro?.message || `Let's begin our discussion on ${topicName}.`;
           const introEntry = {
             id: Date.now() + 2,
             text: introMsg,
@@ -1059,7 +1062,7 @@ export default function PracticeTest() {
         console.log(
           "🔍 All available voices:",
           voices.map(
-            (v) => ${v.name} (${v.lang}) - ${v.gender || "unknown gender"}
+            (v) => `${v.name} (${v.lang}) - ${v.gender || "unknown gender"}`
           )
         );
       });
@@ -1069,7 +1072,7 @@ export default function PracticeTest() {
       console.log(
         "🔍 All available voices:",
         voices.map(
-          (v) => ${v.name} (${v.lang}) - ${v.gender || "unknown gender"}
+          (v) => `${v.name} (${v.lang}) - ${v.gender || "unknown gender"}`
         )
       );
     }
@@ -1112,7 +1115,7 @@ export default function PracticeTest() {
         console.log("Current voice gender preference:", voiceGender);
       },
     };
-    console.log("🛠 Debug functions available: window.debugVoices");
+    console.log("🛠️ Debug functions available: window.debugVoices");
 
     return () => {
       if (window.speechSynthesis.speaking) {
@@ -1351,7 +1354,7 @@ export default function PracticeTest() {
         ) : userStatus === "expired" ? (
           // Expired session
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-             <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative">
+            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative">
               {/* Close Button */}
               <button
                 onClick={() => {
@@ -1373,7 +1376,7 @@ export default function PracticeTest() {
               </div>
 
               {/* Aiihome | CB Title */}
-               <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+              <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
                 A<span className="text-[#DFB916]">ii</span>nhome
                 <span className="px-1">|</span>
                 <span className="font-bold">CB</span>
@@ -1426,7 +1429,9 @@ export default function PracticeTest() {
                   className="p-2 rounded-xl transition"
                   onClick={showBackPopup}
                 >
-                  <ArrowBackIosNewRoundedIcon style={{ color: "#BCC7D2" }} />
+                  <div className="cursor-pointer text-[#BCC7D2] hover:text-[#E5B800] transition-colors duration-200">
+                    <ArrowBackIosNewRoundedIcon />
+                  </div>
                 </button>
                 <div className="flex justify-between flex-1">
                   <div className="leading-tight">
@@ -1439,16 +1444,14 @@ export default function PracticeTest() {
                     <h2 className="text-sm font-semibold text-[#8F96A9]">
                       {hrName || "HR Manager"}
                     </h2>
-                    <p className="text-xs text-[#7E8489]">Assigned by</p>
+                    <p className="text-xs text-[#7E8489]">Assigned By</p>
                   </div>
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
-                      {sessionStatus?.total_time ||
-                        matchedRecord?.total_time ||
-                        10}{" "}
+                      {sessionStatus?.total_time || totalTimeFromState || 10}{" "}
                       mins
                     </h3>
-                    <p className="text-xs text-[#7E8489]">Allocated duration</p>
+                    <p className="text-xs text-[#7E8489]">Allocated Duration</p>
                   </div>
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
@@ -1469,11 +1472,11 @@ export default function PracticeTest() {
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming"
                         ? "Time to start"
-                        : "Remaining time"}
+                        : "Remaining Time"}
                     </p>
                   </div>
                   <button
-                    className="h-8 w-15 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
                     onClick={showEndPopup}
                   >
                     End
@@ -1492,7 +1495,8 @@ export default function PracticeTest() {
                     onClick={async () => {
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
-                        sessionStatus?.total_time ??
+                        totalTimeFromState ??
+                          sessionStatus?.total_time ??
                           matchedRecord?.total_time ??
                           10
                       );
@@ -1604,7 +1608,10 @@ export default function PracticeTest() {
                 onClick={handleSend}
                 type="button"
                 disabled={
-                  !sessionStarted || !inputValue.trim() || sessionExpired
+                  !sessionStarted ||
+                  !inputValue.trim() ||
+                  sessionExpired ||
+                  isAILoading
                 }
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
@@ -1613,7 +1620,6 @@ export default function PracticeTest() {
           </>
         )}
       </div>
-
 
       {popupType && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
@@ -1648,7 +1654,7 @@ export default function PracticeTest() {
               </button>
               <button
                 onClick={closePopup}
-                className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-8 w-15 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
               >
                 No
               </button>
