@@ -40,8 +40,7 @@ export default function PracticeTest() {
     sessionData.topic ||
     sessionData.topic_name ||
     matchedRecord?.topic ||
-    matchedRecord?.topic_name,
-    totalTimeFromState = sessionData.total_time;
+    matchedRecord?.topic_name;
 
   // Debug logging
   console.log("Component data initialization:", {
@@ -57,7 +56,6 @@ export default function PracticeTest() {
     topicFromRecord: matchedRecord?.topic,
     topicNameFromRecord: matchedRecord?.topic_name,
     sessionData,
-    totalTimeFromState,
   });
 
   const [isAILoading, setIsAILoading] = useState(false);
@@ -646,12 +644,12 @@ export default function PracticeTest() {
               (voiceGender === "male") === isLikelyMaleVoice(selectedVoice),
           });
         } else {
-          console.warn("⚠️ No suitable voice found for:", {
+          console.warn("⚠ No suitable voice found for:", {
             lang,
             voiceGender,
             availableVoices: voices.length,
           });
-          console.warn("⚠️ Using system default voice");
+          console.warn("⚠ Using system default voice");
         }
 
         setIsSpeaking(true);
@@ -672,7 +670,7 @@ export default function PracticeTest() {
           // Verify the voice is still selected correctly before speaking
           if (selectedVoice && utterance.voice !== selectedVoice) {
             console.warn(
-              "⚠️ Voice changed during setup, reapplying:",
+              "⚠ Voice changed during setup, reapplying:",
               selectedVoice.name
             );
             utterance.voice = selectedVoice;
@@ -838,7 +836,7 @@ export default function PracticeTest() {
       if (days > 0) countdownText += `${days}d `;
       if (hours > 0) countdownText += `${hours}h `;
       if (minutes > 0) countdownText += `${minutes}m `;
-      countdownText += `${seconds}s`;
+      countdownText += ${seconds}s;
 
       setCountdownTime(countdownText);
     }, 1000);
@@ -846,7 +844,7 @@ export default function PracticeTest() {
 
   // Session timer functionality (uses API total_time and session_time when available)
   const startSessionTimer = (totalMinutesParam, sessionStartAt) => {
-    const totalTime = Number(totalTimeFromState ??
+    const totalTime = Number(
       totalMinutesParam ?? matchedRecord?.total_time ?? 10
     ); // minutes
     setSessionTotalTime(totalTime);
@@ -880,7 +878,6 @@ export default function PracticeTest() {
         } catch {}
         setIsSpeaking(false);
         setSessionExpired(true);
-        setUserStatus("expired"); // Switch to the expired view
         setShowTimeUpPopup(true);
         // Note: Removed auto-save on time up per requirement
       }
@@ -979,13 +976,13 @@ export default function PracticeTest() {
         try {
           const intro = await sendChatMessage(
             sessionId,
-            topicName, 
+            topicName,
             matchedRecord?.total_time || 10,
             "",
             readableLang
           );
           const introMsg =
-            intro?.message || `Let's begin our discussion on ${topicName}.`;
+            intro?.message || Let's begin our discussion on ${topicName}.;
           const introEntry = {
             id: Date.now() + 2,
             text: introMsg,
@@ -1062,7 +1059,7 @@ export default function PracticeTest() {
         console.log(
           "🔍 All available voices:",
           voices.map(
-            (v) => `${v.name} (${v.lang}) - ${v.gender || "unknown gender"}`
+            (v) => ${v.name} (${v.lang}) - ${v.gender || "unknown gender"}
           )
         );
       });
@@ -1072,7 +1069,7 @@ export default function PracticeTest() {
       console.log(
         "🔍 All available voices:",
         voices.map(
-          (v) => `${v.name} (${v.lang}) - ${v.gender || "unknown gender"}`
+          (v) => ${v.name} (${v.lang}) - ${v.gender || "unknown gender"}
         )
       );
     }
@@ -1115,7 +1112,7 @@ export default function PracticeTest() {
         console.log("Current voice gender preference:", voiceGender);
       },
     };
-    console.log("🛠️ Debug functions available: window.debugVoices");
+    console.log("🛠 Debug functions available: window.debugVoices");
 
     return () => {
       if (window.speechSynthesis.speaking) {
@@ -1275,7 +1272,7 @@ export default function PracticeTest() {
     try {
       const data = await sendChatMessage(
         sessionId,
-        topicName, 
+        topicName,
         matchedRecord?.total_time || 10,
         userInput,
         selectedLanguage || "English",
@@ -1447,7 +1444,7 @@ export default function PracticeTest() {
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
                       {sessionStatus?.total_time ||
-                        totalTimeFromState ||
+                        matchedRecord?.total_time ||
                         10}{" "}
                       mins
                     </h3>
@@ -1461,7 +1458,7 @@ export default function PracticeTest() {
                         ? timeLeft || "--:--"
                         : sessionStatus?.total_time
                         ? `${String(sessionStatus.total_time).padStart(
-                            2, 
+                            2,
                             "0"
                           )}:00`
                         : `${String(matchedRecord?.total_time || 10).padStart(
@@ -1495,7 +1492,7 @@ export default function PracticeTest() {
                     onClick={async () => {
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
-                        totalTimeFromState ?? sessionStatus?.total_time ??
+                        sessionStatus?.total_time ??
                           matchedRecord?.total_time ??
                           10
                       );
@@ -1565,7 +1562,7 @@ export default function PracticeTest() {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={!sessionStarted || sessionExpired}
-              /> 
+              />
               <button
                 className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
                 onClick={() => {
@@ -1607,7 +1604,7 @@ export default function PracticeTest() {
                 onClick={handleSend}
                 type="button"
                 disabled={
-                  !sessionStarted || !inputValue.trim() || sessionExpired || isAILoading
+                  !sessionStarted || !inputValue.trim() || sessionExpired
                 }
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
