@@ -61,7 +61,7 @@ export default function Sidebar() {
       </div>
       <div className="h-[calc(81%)]">
         {/* Menu */}
-        <nav className={`mt-2 ${collapsed ? 'px-4' : 'p-3'}`}>
+        <nav className={`mt-2 ${collapsed ? 'px-4' : 'px-3'}`}>
           {menuItems.map((item) => (
             <NavLink
               key={item.name}

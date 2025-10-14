@@ -160,12 +160,12 @@ export default function TestResult() {
               <input
                 type="text"
                 placeholder="Search content"
-                className="w-full h-10 pl-10 pr-4 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2]"
+                className="w-full h-10 pl-4 pr-10 border border-[#BCC7D2] rounded-xl text-[#8F96A9] text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 bg-[#ECEFF2]"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8F96A9] cursor-default"
                 sx={{ fontSize: "1.25rem" }}
               />
             </div>

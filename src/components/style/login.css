@@ -10,3 +10,16 @@
     color: rgba(61, 91, 129, 1) !important; /* Different color on hover */
 }
 
+.hide-password-icon::-ms-reveal {
+  display: none !important;
+}
+
+/* Hide the password reveal button in WebKit browsers (Chrome, Safari) */
+.hide-password-icon::-webkit-contacts-auto-fill-button,
+.hide-password-icon::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}

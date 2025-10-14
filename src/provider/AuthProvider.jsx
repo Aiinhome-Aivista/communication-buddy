@@ -4,7 +4,7 @@ import { fatchedPostRequest, postURL } from "../services/ApiService";
 const authContext = React.createContext({
   isAuthenticated: false,
   login: () => Promise.resolve(),
-  logout: () => {},
+  logout: () => { },
   isLoading: false,
   isError: false,
 });
@@ -25,18 +25,16 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("user_id", response.user_id);
         setIsAuthenticated(true); // ✅ Set it
         setIsLoading(false);
-        return { success: true };
+        return { success: true, userName: response.name };
       } else {
-        alert(response.message || "Login failed");
         setIsLoading(false);
         setIsError(true);
-        return { success: false };
+        return { success: false, message: response.message || "Login failed" };
       }
     } catch (error) {
       setIsLoading(false);
       setIsError(true);
-      // alert("An error occurred while logging in. Please try again.");
-      return { success: false };
+      return { success: false, message: "An error occurred while logging in. Please try again." };
     }
   };
 

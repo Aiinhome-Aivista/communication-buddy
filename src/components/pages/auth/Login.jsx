@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../../provider/AuthProvider";
 import { useNavigate } from "react-router";
 import bg from "../../../assets/image/background-image.png";
@@ -9,6 +9,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import "../../style/login.css";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
+import LoginInfoToast from "../../modal/LoginInfoToast";
 
 function Login() {
   const { login } = useAuth();
@@ -17,9 +18,20 @@ function Login() {
     email: "",
     password: "",
   });
-  const toast = useRef(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [loginResponse, setLoginResponse] = useState([])
+
+  useEffect(() => {
+    if (showInfoModal) {
+      const timer = setTimeout(() => {
+        setShowInfoModal(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showInfoModal]);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -36,16 +48,21 @@ function Login() {
     try {
       setLoading(true);
       const result = await login(userInfo);
+      setLoginResponse(result)
       if (result?.success) {
+        setShowInfoModal(true);
         setLoading(false);
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1200);
+        }, 3000);
       } else {
         setLoading(false);
+        if (result?.message) {
+          setShowInfoModal(true);
+        }
       }
     } catch (err) {
-      console.error(err);
+      //console.error(err);
       setLoading(false);
     }
   };
@@ -60,8 +77,9 @@ function Login() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Top Logo */}
-      <p className="w-full flex text-base md:text-lg">
+      <LoginInfoToast show={showInfoModal} onClose={() => setShowInfoModal(false)} message={loginResponse?.message} success={loginResponse?.success} />
+      <p
+        className="w-full flex text-base md:text-lg cursor-pointer">
         A<span className="text-[#DFB916]">ii</span>nhome
         <span className="px-1">|</span>
         <span className="font-bold">CB</span>
@@ -143,7 +161,7 @@ function Login() {
                 sx={{ color: userInfo.password ? "#3D5B81" : "" }}
               />
               <input
-                className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base"
+                className="input-field w-full focus:outline-none bg-transparent text-sm md:text-base hide-password-icon"
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
