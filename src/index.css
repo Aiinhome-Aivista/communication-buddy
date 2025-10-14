@@ -301,3 +301,12 @@ body,
   background-color: #eeeeeedd !important; /* Your theme's yellow color */
   color: #182938 !important;           /* Dark text for contrast */
 }
+
+.candidate-search-input::placeholder {
+  color: #BCC7D2 !important;
+}
+
+/* Custom scrollbar for candidate dropdown */
+.candidate-dropdown-scrollbar::-webkit-scrollbar-track {
+  background: #BCC7D2; /* Match dropdown background */
+}

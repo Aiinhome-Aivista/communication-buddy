@@ -33,6 +33,8 @@ export default function SessionModal({
   const [errors, setErrors] = useState({});
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [candidateDropdownOpen, setCandidateDropdownOpen] = useState(false);
+  const candidateDropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
@@ -53,6 +55,12 @@ export default function SessionModal({
     function handleClickOutside(event) {
       if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
         setCategoryDropdownOpen(false);
+      }
+      if (
+        candidateDropdownRef.current &&
+        !candidateDropdownRef.current.contains(event.target)
+      ) {
+        setCandidateDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -167,7 +175,7 @@ export default function SessionModal({
     const sliderWidth = slider.offsetWidth;
 
     let newValue = (offsetX / sliderWidth) * 45 + 5; // (max - min) + min
-    
+
     // Snap to the nearest 5-minute interval
     newValue = Math.round(newValue / 5) * 5;
 
@@ -213,7 +221,7 @@ export default function SessionModal({
       />
 
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl max-w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
             <button
@@ -248,38 +256,53 @@ export default function SessionModal({
                   Candidate Name
                   <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
-                <div className="relative">
-                  <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName
-                        ? "border-[#FF4D01]"
-                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                <div className="relative" ref={candidateDropdownRef}>
+                  <input
+                    type="text"
+                    placeholder="Select or search candidate"
+                    className={`candidate-search-input cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.candidateName
+                      ? "border-[#FF4D01]"
+                      : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
                       } ${candidateName ? "text-[#182938]" : (errors.candidateName ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
-                    value={candidateName}
+                    value={candidateDropdownOpen ? candidateSearch : (userData.find(c => c.id === candidateName)?.name_email || "")}
+                    onFocus={() => setCandidateDropdownOpen(true)}
                     onChange={(e) => {
-                      setCandidateName(e.target.value);
-                      if (e.target.value) clearError("candidateName");
+                      setCandidateSearch(e.target.value);
+                      setCandidateDropdownOpen(true);
                     }}
-                  >
-                    <option value="">Select candidate</option>
-                    {userData.map((candidate) => (
-                      <option key={candidate.id} value={candidate.id}>
-                        {candidate.name_email}
-                      </option>
-                    ))}
-                  </select>
-                  <svg
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none overflow-y-auto scrollbar-none"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    {candidateDropdownOpen ? <KeyboardArrowUpIcon className="w-5 h-5 text-[#9CA3AF]" /> : <KeyboardArrowDownIcon className="w-5 h-5 text-[#9CA3AF]" />}
+                  </div>
+                  {candidateDropdownOpen && (
+                    <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-20 overflow-hidden">
+                      <div className="overflow-y-auto max-h-48 candidate-dropdown-scrollbar">
+                        {filteredCandidates.map((candidate) => (
+                          <li
+                            key={candidate.id}
+                            onClick={() => {
+                              setCandidateName(candidate.id);
+                              setCandidateDropdownOpen(false);
+                              setCandidateSearch(""); // Clear search on selection
+                              clearError("candidateName");
+                            }}
+                            className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${candidateName === candidate.id
+                              ? "bg-[#D9D9D9] font-bold"
+                              : "hover:bg-[#D9D9D9]/50"
+                              }`}
+                          >
+                            {candidate.name_email}
+                            {candidateName === candidate.id && (
+                              <CheckIcon sx={{ fontSize: "1.25rem", color: "#182938" }} />
+                            )}
+                          </li>
+                        ))}
+                        {filteredCandidates.length === 0 && (
+                          <li className="px-4 py-2 text-sm text-gray-500">No candidates found</li>
+                        )}
+                      </div>
+                    </ul>
+                  )}
                 </div>
                 {errors.candidateName && (
                   <p className="text-[#FF4D01] text-xs mt-1 overflow-y-auto scrollbar-none">
@@ -310,7 +333,7 @@ export default function SessionModal({
                           sx: {
                             "& .MuiOutlinedInput-root": {
                               backgroundColor: "white",
-                         // rounded-2xl,
+                              // rounded-2xl,
                               height: "50px",
                               fontSize: "0.875rem", // text-sm
                               color: "#182938",
@@ -356,8 +379,8 @@ export default function SessionModal({
                   <button
                     type="button"
                     className={`cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.sessionCategory
-                        ? "border-[#FF4D01]"
-                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      ? "border-[#FF4D01]"
+                      : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
                       } ${sessionCategory ? "text-[#182938]" : (errors.sessionCategory ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
                     onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
                   >
@@ -369,7 +392,7 @@ export default function SessionModal({
                     )}
                   </button>
                   {categoryDropdownOpen && (
-                    <ul className="absolute mt-1 w-full bg-[#ECEFF2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                    <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                       {uniqueCategories.map((category) => (
                         <li
                           key={category}
@@ -378,9 +401,9 @@ export default function SessionModal({
                             setCategoryDropdownOpen(false);
                             clearError("sessionCategory");
                           }}
-                          className={`flex items-center justify-between px-4 py-2 text-sm cursor-pointer font-medium text-[#182938] ${sessionCategory === category
-                              ? "bg-[#D9D9D9] font-bold"
-                              : "hover:bg-[#D9D9D9]/50"
+                          className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${sessionCategory === category
+                            ? "bg-[#D9D9D9] font-bold"
+                            : "hover:bg-[#D9D9D9]/50"
                             }`}
                         >
                           {category}
