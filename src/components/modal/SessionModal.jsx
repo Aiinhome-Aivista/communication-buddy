@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CheckIcon from "@mui/icons-material/Check";
 
 export default function SessionModal({
   open,
@@ -25,6 +32,10 @@ export default function SessionModal({
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef(null);
 
   const uniqueCategories = [
     ...new Set(topics.map((topic) => topic.topic_category).filter(Boolean)),
@@ -37,6 +48,18 @@ export default function SessionModal({
       candidate.name_email &&
       candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
   );
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setCategoryDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [categoryDropdownRef]);
 
   const clearError = (field) => {
     setErrors((prev) => {
@@ -130,6 +153,56 @@ export default function SessionModal({
     });
   };
 
+  const handleIndicatorMouseDown = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleIndicatorMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+
+    const slider = sliderRef.current;
+    const rect = slider.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const sliderWidth = slider.offsetWidth;
+
+    let newValue = (offsetX / sliderWidth) * 45 + 5; // (max - min) + min
+    
+    // Snap to the nearest 5-minute interval
+    newValue = Math.round(newValue / 5) * 5;
+
+    // Clamp the value between 5 and 50
+    if (newValue < 5) newValue = 5;
+    if (newValue > 50) newValue = 50;
+
+    setSessionDuration({
+      value: newValue,
+      direction: "up",
+    });
+  };
+
+  const handleIndicatorMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleIndicatorMouseMove);
+      window.addEventListener("mouseup", handleIndicatorMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleIndicatorMouseMove);
+      window.removeEventListener("mouseup", handleIndicatorMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleIndicatorMouseMove);
+      window.removeEventListener("mouseup", handleIndicatorMouseUp);
+    };
+  }, [isDragging, handleIndicatorMouseMove, handleIndicatorMouseUp]);
+
+
+
+
   return (
     <>
       <SuccessModal
@@ -140,7 +213,7 @@ export default function SessionModal({
       />
 
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl w-[50%] max-w-full h-[90%] max-h-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl max-w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
             <button
@@ -171,17 +244,16 @@ export default function SessionModal({
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               {/* Candidate Name */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Candidate Name
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="relative">
                   <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.candidateName
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#BCC7D2]`}
+                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName
+                        ? "border-[#FF4D01]"
+                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      } ${candidateName ? "text-[#182938]" : (errors.candidateName ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
                     value={candidateName}
                     onChange={(e) => {
                       setCandidateName(e.target.value);
@@ -210,7 +282,7 @@ export default function SessionModal({
                   </svg>
                 </div>
                 {errors.candidateName && (
-                  <p className="text-red-500 text-sm mt-1 overflow-y-auto scrollbar-none">
+                  <p className="text-[#FF4D01] text-xs mt-1 overflow-y-auto scrollbar-none">
                     {errors.candidateName}
                   </p>
                 )}
@@ -218,72 +290,117 @@ export default function SessionModal({
 
               {/* Session Date */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Date Time
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="w-full cursor-pointer">
-                  <input
-                    type="datetime-local"
-                    value={date}
-                    onChange={(e) => {
-                      setDate(e.target.value);
-                      if (e.target.value) clearError("date");
-                    }}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm bg-white h-[48px] focus:outline-none cursor-text ${
-                      errors.date
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#1F2937]`}
-                  />
-                </div>
-                {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
-                )}
-              </div>
-
-              {/* Session Category */}
-              <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
-                  Session Category
-                  <span className="text-red-500 mr-1"> *</span>
-                </label>
-                <div className="relative">
-                  <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${
-                      errors.sessionCategory
-                        ? "border-red-500"
-                        : "border-[#E5E7EB] focus:ring-2 focus:ring-[#E5B800]"
-                    } text-[#BCC7D2]`}
-                    value={sessionCategory}
-                    onChange={(e) => {
-                      setSessionCategory(e.target.value);
-                      if (e.target.value) clearError("sessionCategory");
-                    }}
-                  >
-                    <option value="">Select category</option>
-                    {uniqueCategories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                  <svg
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                      label="DD/MM/YYYY  MM:HH"
+                      value={date ? dayjs(date) : null}
+                      onChange={(newValue) => {
+                        setDate(newValue ? newValue.toISOString() : "");
+                        if (newValue) clearError("date");
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          size: "small",
+                          sx: {
+                            "& .MuiOutlinedInput-root": {
+                              backgroundColor: "white",
+                         // rounded-2xl,
+                              height: "50px",
+                              fontSize: "0.875rem", // text-sm
+                              color: "#182938",
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.date ? "#FF4D01" : "#E5E7EB",
+                                borderRadius: "1rem", // Ensure the outline also has the radius
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#E5B800", // focus:ring-[#E5B800]
+                                borderWidth: "2px", // Changed from 8px to 2px for a standard ring effect
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.date ? "#FF4D01" : "#BCC7D2",
+                              },
+                            },
+                          },
+                          InputLabelProps: {
+                            sx: { color: errors.date ? "#FF4D01" : "#BCC7D2", fontSize: "0.75rem" }, // placeholder / label color
+                          },
+                        },
+                      }}
                     />
-                  </svg>
+                  </LocalizationProvider>
+                  {errors.date && (
+                    <p className="text-[#FF4D01] text-xs mt-1">{errors.date}</p>
+                  )}
+
+
+
+                </div>
+
+
+
+
+                {/* Session Category */}
+              </div>
+              <div>
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
+                  Session Category
+                  <span className="text-[#FF4D01] mr-1"> *</span>
+                </label>
+                <div className="relative" ref={categoryDropdownRef}>
+                  <button
+                    type="button"
+                    className={`cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.sessionCategory
+                        ? "border-[#FF4D01]"
+                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      } ${sessionCategory ? "text-[#182938]" : (errors.sessionCategory ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
+                    onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                  >
+                    {sessionCategory || "Select category"}
+                    {categoryDropdownOpen ? (
+                      <KeyboardArrowUpIcon className="w-5 h-5 text-[#9CA3AF]" />
+                    ) : (
+                      <KeyboardArrowDownIcon className="w-5 h-5 text-[#9CA3AF]" />
+                    )}
+                  </button>
+                  {categoryDropdownOpen && (
+                    <ul className="absolute mt-1 w-full bg-[#ECEFF2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                      {uniqueCategories.map((category) => (
+                        <li
+                          key={category}
+                          onClick={() => {
+                            setSessionCategory(category);
+                            setCategoryDropdownOpen(false);
+                            clearError("sessionCategory");
+                          }}
+                          className={`flex items-center justify-between px-4 py-2 text-sm cursor-pointer font-medium text-[#182938] ${sessionCategory === category
+                              ? "bg-[#D9D9D9] font-bold"
+                              : "hover:bg-[#D9D9D9]/50"
+                            }`}
+                        >
+                          {category}
+                          {sessionCategory === category && (
+                            <CheckIcon sx={{ fontSize: "1.25rem", color: "#182938" }} />
+                          )}
+                        </li>
+                      ))}
+                      {uniqueCategories.length === 0 && (
+                        <li
+                          className="px-4 py-2 text-sm text-gray-500"
+                        >
+                          No categories found
+                        </li>
+                      )}
+                    </ul>
+                  )}
                 </div>
                 {errors.sessionCategory && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-[#FF4D01] text-xs mt-1">
                     {errors.sessionCategory}
                   </p>
                 )}
@@ -291,13 +408,13 @@ export default function SessionModal({
 
               {/* Session Duration */}
               <div>
-                <label className="block text-[#182938] font-medium mb-3 text-base">
+                <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Duration
-                  <span className="text-red-500 mr-1"> *</span>
+                  <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="flex items-center gap-4">
                   {/* Editable Input: Remove up/down arrows */}
-                  <div className="w-[80px] h-[48px] border border-[#E5E7EB] rounded-xl flex items-center justify-center bg-white">
+                  <div className="w-[80px] h-[48px] border border-[#BCC7D2] rounded-xl flex items-center justify-center bg-white">
                     <input
                       type="text"
                       inputMode="numeric"
@@ -321,10 +438,11 @@ export default function SessionModal({
                   <div className="flex-1 relative flex flex-col items-stretch">
                     <div className="relative">
                       <input
+                        ref={sliderRef}
                         type="range"
                         min={5}
                         max={50}
-                        step={1}
+                        step={5}
                         value={sessionDuration?.value ?? 15}
                         onChange={(e) =>
                           setSessionDuration({
@@ -334,20 +452,18 @@ export default function SessionModal({
                         }
                         className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
                         style={{
-                          background: `linear-gradient(to right, #29324173 0%, #29324173 ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, #e5e7eb ${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }%, #e5e7eb 100%)`,
+                          background: `linear-gradient(to right, #29324173 0%, #29324173 ${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }%, #e5e7eb ${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }%, #e5e7eb 100%)`,
                           transition: "background 0.2s linear",
                         }}
                       />
                       <div
-                        className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
+                        className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded cursor-grab"
+                        onMouseDown={handleIndicatorMouseDown}
                         style={{
-                          left: `calc(${
-                            (((sessionDuration?.value ?? 15) - 5) / 45) * 100
-                          }% - 12px)`,
+                          left: `calc(${(((sessionDuration?.value ?? 15) - 5) / 45) * 100
+                            }% - 12px)`,
                           transition: "left 0.2s linear",
                         }}
                       >
@@ -365,9 +481,9 @@ export default function SessionModal({
 
             {/* Session Topic */}
             <div className="mt-3">
-              <label className="block text-[#182938] font-medium mb-3 text-base">
+              <label className="block text-[#182938] font-medium mb-3 text-sm">
                 Session Topic
-                <span className="text-red-500 mr-1"> *</span>
+                <span className="text-[#FF4D01] mr-1"> *</span>
               </label>
               <textarea
                 value={sessionTopic}
@@ -375,14 +491,15 @@ export default function SessionModal({
                   setSessionTopic(e.target.value);
                   if (e.target.value.trim()) clearError("sessionTopic");
                 }}
-                placeholder="Write session topic..."
                 rows="6.5"
-                className={`w-full border rounded-xl p-4 focus:ring-2 focus:ring-[#E5B800] focus:outline-none resize-none text-sm placeholder:text-[#9CA3AF] ${
-                  errors.sessionTopic ? "border-red-500" : "border-[#E5E7EB]"
-                } text-[#BCC7D2]`}
+                placeholder="Write session topic..."
+                className={`w-full border rounded-xl p-4 font-normal text-xs focus:outline-none focus:ring-2 focus:ring-[#E5B800] ${errors.sessionTopic ? "border-[#FF4D01] placeholder:text-[#FF4D01]" : "border-[#BCC7D2] placeholder:text-[#BCC7D2]"
+                  } ${sessionTopic ? "text-[#182938]" : "text-[#BCC7D2]"
+                  }`}
+
               />
               {errors.sessionTopic && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-[#FF4D01] text-xs mt-1">
                   {errors.sessionTopic}
                 </p>
               )}
@@ -393,7 +510,7 @@ export default function SessionModal({
           <div className="border-t border-[#E5E7EB] px-8 py-4 flex justify-between bg-white mt-auto rounded-b-2xl">
             <button
               type="button"
-              className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+              className="h-10 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors"
               onClick={handleReset}
             >
               Reset
@@ -402,14 +519,14 @@ export default function SessionModal({
             <div className="flex gap-3">
               <button
                 type="button"
-                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-10 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors"
                 onClick={onClose}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-10 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors"
                 onClick={handleSave}
                 disabled={isSaving}
               >
