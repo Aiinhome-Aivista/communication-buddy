@@ -743,30 +743,13 @@ const HrCandidateDashboard = () => {
   dataKey="uv"
   stroke="#DFB916"
   strokeWidth={3}
-dot={(props) => {
-  const { cx, cy } = props;
-  return (
-    <g>
-      {/* Outer circle (stroke only) */}
-      <circle
-        cx={cx}
-        cy={cy}
-        r={6} // Outer radius
-        stroke="#DFB916"
-        strokeWidth={2}
-        fill="white" // Transparent center
-      />
-      {/* Inner small filled circle */}
-      <circle
-        cx={cx}
-        cy={cy}
-        r={4} // Inner dot
-        fill="#DFB916"
-      />
-    </g>
-  );
-}}
-
+dot={{
+                                                            r: 5,
+                                                            fill: "#DFB916",
+                                                            stroke: "#DFB916",
+                                                            strokeWidth: 2,
+                                                            opacity: 0.9,
+                                                        }}
   activeDot={{
     r: 8,
     fill: "#DFB916",
