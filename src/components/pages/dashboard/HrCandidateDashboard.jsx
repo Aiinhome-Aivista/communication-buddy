@@ -640,17 +640,11 @@ const HrCandidateDashboard = () => {
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
-<<<<<<< HEAD
 {isHR
   ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated) : 0)
   : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0) : 0)
 }
 
-=======
-                                        {isHR
-                                            ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated).toFixed(1) : "0.0")
-                                            : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0).toFixed(1) : "0.0")}
->>>>>>> 78a7efed3ba14e86c0ba04aa30fffa57781fae1d
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         {isHR ? "Session Created" : "Assigned Test"}
@@ -661,16 +655,9 @@ const HrCandidateDashboard = () => {
                                     <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                                         <div className="font-bold text-[20px]">
                                             {isHR
-<<<<<<< HEAD
                                                 ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0)
                                                 : (Number.isFinite(Number(sessionReport?.highest_score || averageScore)) ? Number(sessionReport?.highest_score || averageScore).toFixed(1) : "0.0")
                                             }
-=======
-                                                ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0).toFixed(1)
-                                                : (Number.isFinite(Number(sessionReport?.highest_score || averageScore))
-                                                    ? Number(sessionReport?.highest_score || averageScore).toFixed(1)
-                                                    : "0.0")}
->>>>>>> 78a7efed3ba14e86c0ba04aa30fffa57781fae1d
                                         </div>
                                         {sessionReport?.progress_indicator === "up" ? (
                                             <img src={trending_up} alt="Up" className="w-5 h-5" />
