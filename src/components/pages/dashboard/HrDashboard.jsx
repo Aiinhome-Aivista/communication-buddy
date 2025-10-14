@@ -406,7 +406,7 @@ const HrDashboard = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         <button
-          className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-[#272727] font-semibold px-8 py-2 rounded-xl shadow-none cursor-pointer"
+                                 className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-1 rounded-xl shadow-none cursor-pointer"
           onClick={() => setModalOpen(true)}
         >
           <svg
