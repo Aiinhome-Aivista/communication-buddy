@@ -731,33 +731,55 @@ const HrCandidateDashboard = () => {
                                                         cursor={false}
                                                         content={({ active, payload }) =>
                                                             active && payload && payload.length ? (
-                                                                <div className="bg-[#FEEFC3] px-4 py-1 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
+                                                                <div className="px-4 py-1 rounded-sm text-[#DFB916] font-normal text-sm shadow-md" 
+           style={{ backgroundColor: '#FFF8E1' }}>
                                                                     {`${payload[0].payload.name} ${payload[0].value}`}
                                                                 </div>
                                                             ) : null
                                                         }
                                                     />
-                                                    <Line
-                                                        type="monotone"
-                                                        dataKey="uv"
-                                                        stroke="#DFB916"
-                                                        strokeWidth={3}
-                                                        dot={{
-                                                            r: 5,
-                                                            fill: "#DFB916",
-                                                            stroke: "#DFB916",
-                                                            strokeWidth: 2,
-                                                            opacity: 0.9,
-                                                        }}
-                                                        activeDot={{
-                                                            r: 8,
-                                                            fill: "#DFB916",
-                                                            stroke: "#fff",
-                                                            strokeWidth: 3,
-                                                        }}
-                                                        isAnimationActive={true}
-                                                    />
-                                                </LineChart>
+  <Line
+  type="monotone"
+  dataKey="uv"
+  stroke="#DFB916"
+  strokeWidth={3}
+dot={(props) => {
+  const { cx, cy } = props;
+  return (
+    <g>
+      {/* Outer circle (stroke only) */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={6} // Outer radius
+        stroke="#DFB916"
+        strokeWidth={2}
+        fill="white" // Transparent center
+      />
+      {/* Inner small filled circle */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={4} // Inner dot
+        fill="#DFB916"
+      />
+    </g>
+  );
+}}
+
+  activeDot={{
+    r: 8,
+    fill: "#DFB916",
+    stroke: "#fff",
+    strokeWidth: 3,
+  }}
+  isAnimationActive={true}
+/>
+
+
+
+</LineChart>
+
                                             </ResponsiveContainer>
                                         </div>
                                     ) : (
@@ -773,7 +795,18 @@ const HrCandidateDashboard = () => {
 {isHR ? (
   /* HR: Technical Skills */
   <div className="bg-white shadow-sm p-3 rounded-2xl w-full lg:w-1/3 h-full flex-shrink-0">
-    <h2 className="font-normal text-[#8F96A9] mb-6">
+    <h2
+                                style={{
+                                    fontFamily: "Inter",
+                                    fontWeight: 400,
+                                    fontStyle: "normal",
+                                    fontSize: "15px",
+                                    display: "inline-block",
+                                    padding: "2px 6px",
+                                    borderRadius: "4px",
+                                    color: "#8F96A9",
+                                }}
+                            >
       Mostly Asked Technical Skill
     </h2>
     {technicalSkills.length > 0 ? (
