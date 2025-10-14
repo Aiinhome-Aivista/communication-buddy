@@ -546,7 +546,7 @@ const HrCandidateDashboard = () => {
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded relative group cursor-pointer"
                                                 title={tech}
                                             >
                                                 <img
@@ -558,6 +558,13 @@ const HrCandidateDashboard = () => {
                                                             'https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F';
                                                     }}
                                                 />
+                                                {/* Hover tooltip */}
+                                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none shadow-md"
+                                                     style={{ backgroundColor: '#FFF8E1', color: '#DFB916' }}>
+                                                    {tech}
+                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent" 
+                                                         style={{ borderTopColor: '#FFF8E1' }}></div>
+                                                </div>
                                             </div>
                                         );
                                     })}
