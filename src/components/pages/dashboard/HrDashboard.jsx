@@ -363,43 +363,37 @@ const HrDashboard = () => {
   };
 
 
-  // const getTechIcon = (name) => {
-  //   if (!name) return FaCode; // fallback
-  //   const key = name
-  //     .toLowerCase()
-  //     .replace(/\+/g, "plus")
-  //     .replace(/\s/g, ""); // normalize key
-
-  //   // Map normalized names to actual icon names
-  //   const mapping = {
-  //     python: "SiPython",
-  //     angular: "SiAngular",
-  //     "apache kafka": "SiApachKafka", // Apache Kafka
-  //     css: "SiCss3",
-  //     dash: "SiPlotly", // Dash is from Plotly
-  //     dom: "SiJavascript", // Closest icon for DOM
-  //     elasticsearch: "SiElasticsearch",
-  //     html: "SiHtml5",
-  //     javascript: "SiJavascript",
-  //     jsx: "SiReact", // JSX is used in React
-  //     react: "SiReact",
-  //     pandas: "SiPandas",
-  //     pyspark: "SiApachespark",
-  //     streamlit: "SiStreamlit",
-  //     tensorflow: "SiTensorflow",
-  //     "c++": "SiCplusplus",
-  //     c: "SiC",
-  //     java: "SiJava",
-  //     php: "SiPhp",
-  //     mysql: "SiMysql",
-  //     oracle: "SiOracle",
-  //     swift: "SiSwift",
-  //   };
-
-
-  //   const iconName = mapping[key];
-  //   return iconName && SIIcons[iconName] ? SIIcons[iconName] : FaCode;
-  // };
+  const CustomTooltip1 = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#DFB91614", // light transparent background
+            padding: "6px 10px",
+            borderRadius: "8px",
+            border: "1px solid #DFB91633",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{// solid background for text
+              color: "#DFB916", // readable dark text
+              fontWeight: 600,
+              fontSize: "13px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              textTransform: "capitalize",
+            }}
+          >
+            {label} : {payload[0].value}
+          </span>
+        </div>
+      );
+    }
+    return null;
+  };
 
 
 
@@ -407,7 +401,7 @@ const HrDashboard = () => {
   if (loading) return <Loader show text="Loading HR dashboard..." />;
 
   return (
-    <div className="w-screen h-screen overflow-auto bg-[#ECEFF2] p-6">
+    <div className="w-[100%] h-[100%] overflow-auto bg-[#ECEFF2] p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -477,42 +471,42 @@ const HrDashboard = () => {
               </div>
             </div>
 
-           
+
             {/* Mostly Asked Tech */}
             <div className="bg-white rounded-xl shadow-sm p-4 w-full h-full">
               <h2 className="font-normal text-[#8F96A9] mb-6">
                 Mostly Asked Technology
               </h2>
-            {mostTopTechnologies.length > 0 ? (
-              <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
-                {mostTopTechnologies.slice(0, 16).map((tech, idx) => {
-                  const iconSrc = getTechIcon(tech);
-                  return (
-                    <div
-                      key={`${tech}-${idx}`}
-                      className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
-                      title={tech}
-                    >
-                      <img
-                        src={iconSrc}
-                        alt={tech || "Technology"}
-                        className="w-[40px] h-[40px] object-contain"
-                        onError={(e) => {
-                          // If image fails to load, show placeholder
-                          e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
-                        }}
-                      />
-                    </div>
-                    
-                  );
-                })}
+              {mostTopTechnologies.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4 mt-4 place-items-center">
+                  {mostTopTechnologies.slice(0, 16).map((tech, idx) => {
+                    const iconSrc = getTechIcon(tech);
+                    return (
+                      <div
+                        key={`${tech}-${idx}`}
+                        className="w-[65px] h-[65px] flex items-center justify-center bg-gray-100 rounded"
+                        title={tech}
+                      >
+                        <img
+                          src={iconSrc}
+                          alt={tech || "Technology"}
+                          className="w-[40px] h-[40px] object-contain"
+                          onError={(e) => {
+                            // If image fails to load, show placeholder
+                            e.target.src = "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                          }}
+                        />
+                      </div>
+
+                    );
+                  })}
                 </div>
-                
-            ) : (
-              <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
-                No data found
-              </div>
-            )}
+
+              ) : (
+                <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
+                  No data found
+                </div>
+              )}
             </div>
           </div>
 
@@ -593,47 +587,47 @@ const HrDashboard = () => {
 
               {/* Bottom Stats */}
               <div className="flex justify-between items-center mt-4 text-sm font-medium text-slate-900">
-<div className="flex flex-col items-center">
-  <div className="text-[#8F96A9] text-[20px]">
-    {/* Integer part - Bold */}
-    <span
-      style={{
-        fontFamily: "Inter, sans-serif",
-        fontWeight: 700,   // Bold
-        fontStyle: "normal",
-        fontSize: "20px",
-        lineHeight: "100%",
-        letterSpacing: "0%",
-        textAlign: "center",
-        verticalAlign: "middle",
-      }}
-    >
-      {String(avgSessionDuration).split(".")[0]}
-    </span>
+                <div className="flex flex-col items-center">
+                  <div className="text-[#8F96A9] text-[20px]">
+                    {/* Integer part - Bold */}
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 700,   // Bold
+                        fontStyle: "normal",
+                        fontSize: "20px",
+                        lineHeight: "100%",
+                        letterSpacing: "0%",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      {String(avgSessionDuration).split(".")[0]}
+                    </span>
 
-    {/* Decimal part - Light */}
-    <span
-      style={{
-        fontFamily: "Inter, sans-serif",
-        fontWeight: 300,   // Light
-        fontStyle: "normal",
-        fontSize: "20px",
-        lineHeight: "100%",
-        letterSpacing: "0%",
-        textAlign: "center",
-        verticalAlign: "middle",
-      }}
-    >
-      .{String(avgSessionDuration).split(".")[1] || "00"}
-    </span>
-  </div>
+                    {/* Decimal part - Light */}
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 300,   // Light
+                        fontStyle: "normal",
+                        fontSize: "20px",
+                        lineHeight: "100%",
+                        letterSpacing: "0%",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      .{String(avgSessionDuration).split(".")[1] || "00"}
+                    </span>
+                  </div>
 
-  {/* Label text - Medium */}
-<div className="text-[12px] text-[#8F96A9] font-normal"
-  >
-    Average Session Duration
-  </div>
-</div>
+                  {/* Label text - Medium */}
+                  <div className="text-[12px] text-[#8F96A9] font-normal"
+                  >
+                    Average Session Duration
+                  </div>
+                </div>
 
 
                 <div className="flex flex-col items-center">
@@ -644,7 +638,7 @@ const HrDashboard = () => {
                 <div className="flex flex-col items-center">
                   <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                     <div className="font-bold text-[20px]">
-       {sessionReport.userTraffic}
+                      {sessionReport.userTraffic}
                     </div>
                     {sessionReport?.progress_indicator === "up" ? (
                       <img src={trending_up} alt="Up" className="w-5 h-5" />
@@ -655,24 +649,24 @@ const HrDashboard = () => {
                   <div className="text-[12px] text-[#8F96A9] font-normal">User Traffic</div>
                 </div>
 
-<div className="flex flex-col items-center">
-  <div className="flex text-[20px] text-[#8F96A9]">
-    {(() => {
-      const score = Number(averageScore);
-      const rounded = Number.isFinite(score) ? score.toFixed(2) : "0.00";
-      const [intPart, decPart] = rounded.split(".");
-      return (
-        <>
-          <span className="font-bold">{intPart}</span>
-          <span className="font-light" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
-            .{decPart}
-          </span>
-        </>
-      );
-    })()}
-  </div>
-  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
-</div>
+                <div className="flex flex-col items-center">
+                  <div className="flex text-[20px] text-[#8F96A9]">
+                    {(() => {
+                      const score = Number(averageScore);
+                      const rounded = Number.isFinite(score) ? score.toFixed(2) : "0.00";
+                      const [intPart, decPart] = rounded.split(".");
+                      return (
+                        <>
+                          <span className="font-bold">{intPart}</span>
+                          <span className="font-light" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
+                            .{decPart}
+                          </span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
+                </div>
 
               </div>
             </div>
@@ -723,16 +717,7 @@ const HrDashboard = () => {
                         >
                           <XAxis dataKey="name" hide />
                           <YAxis hide />
-                          <Tooltip
-                            cursor={false}
-                            content={({ active, payload }) =>
-                              active && payload && payload.length ? (
-                                <div className="bg-[#FEEFC3] px-4 rounded-sm text-[#DFB916] font-normal text-sm shadow-md">
-                                  {`${payload[0].payload.name} ${payload[0].value}`}
-                                </div>
-                              ) : null
-                            }
-                          />
+                          <Tooltip content={<CustomTooltip1 />} cursor={false} />
                           <Line
                             type="monotone"
                             dataKey="uv"
@@ -790,7 +775,7 @@ const HrDashboard = () => {
                           borderColor: "#3D5B81",
                           borderWidth: 1,
                           borderRadius: "25px",
-                          px:2,
+                          px: 2,
                           "& .MuiChip-label": {
                             fontSize: "0.61rem",
                             fontWeight: 400,
