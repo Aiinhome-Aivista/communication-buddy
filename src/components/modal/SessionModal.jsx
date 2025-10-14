@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
 
@@ -25,6 +25,8 @@ export default function SessionModal({
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef(null);
 
   const uniqueCategories = [
     ...new Set(topics.map((topic) => topic.topic_category).filter(Boolean)),
@@ -129,6 +131,50 @@ export default function SessionModal({
       direction: "up",
     });
   };
+
+  const handleIndicatorMouseDown = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleIndicatorMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+
+    const slider = sliderRef.current;
+    const rect = slider.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const sliderWidth = slider.offsetWidth;
+
+    let newValue = (offsetX / sliderWidth) * 45 + 5; // (max - min) + min
+
+    // Clamp the value between 5 and 50
+    if (newValue < 5) newValue = 5;
+    if (newValue > 50) newValue = 50;
+
+    setSessionDuration({
+      value: Math.round(newValue),
+      direction: "up",
+    });
+  };
+
+  const handleIndicatorMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleIndicatorMouseMove);
+      window.addEventListener("mouseup", handleIndicatorMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleIndicatorMouseMove);
+      window.removeEventListener("mouseup", handleIndicatorMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleIndicatorMouseMove);
+      window.removeEventListener("mouseup", handleIndicatorMouseUp);
+    };
+  }, [isDragging, handleIndicatorMouseMove, handleIndicatorMouseUp]);
 
   return (
     <>
@@ -321,6 +367,7 @@ export default function SessionModal({
                   <div className="flex-1 relative flex flex-col items-stretch">
                     <div className="relative">
                       <input
+                        ref={sliderRef}
                         type="range"
                         min={5}
                         max={50}
@@ -343,7 +390,8 @@ export default function SessionModal({
                         }}
                       />
                       <div
-                        className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded"
+                        className="absolute -top-8 text-[#3D5B81] text-xs px-2 py-5 rounded cursor-grab"
+                        onMouseDown={handleIndicatorMouseDown}
                         style={{
                           left: `calc(${
                             (((sessionDuration?.value ?? 15) - 5) / 45) * 100
