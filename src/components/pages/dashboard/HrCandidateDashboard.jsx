@@ -432,14 +432,14 @@ const HrCandidateDashboard = () => {
             {!error && (
                 <div className="grid grid-cols-12 gap-6">
                     {/* LEFT COLUMN */}
-                    <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 flex flex-col space-y-6">
+                    <div className="col-span-12 md:col-span-4 lg:col-span-3 flex flex-col space-y-6">
                         {/* Session Completion */}
-                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] lg:min-h-[260px] overflow-hidden">
-                            <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
+                        <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-auto flex flex-col gap-2">
+                            <h2 className="text-[#8F96A9] text-[15px] font-inter font-sm">
                                 Session Completion
                             </h2>
 
-                            <ResponsiveContainer width="100%" height={140}>
+                            <ResponsiveContainer width="100%" height={120}>
                                 <PieChart>
                                     <Pie
                                         data={pieData}
@@ -461,8 +461,8 @@ const HrCandidateDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
 
-                            <div className="flex flex-wrap justify-center gap-8 mt-4 text-xs font-medium">
-                                <div className="flex flex-col items-center text-slate-900 min-w-[100px]">
+                            <div className="flex justify-center text-xs font-medium">
+                                <div className="flex flex-col items-center text-slate-900 flex-1">
                                     <div
                                         style={{
                                             fontFamily: "Inter, sans-serif",
@@ -484,7 +484,7 @@ const HrCandidateDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center min-w-[100px]">
+                                <div className="flex flex-col items-center flex-1">
                                     <div
                                         style={{
                                             fontFamily: "Inter, sans-serif",
@@ -571,10 +571,10 @@ const HrCandidateDashboard = () => {
                     </div>
 
                     {/* RIGHT SECTION */}
-                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-9 flex flex-col space-y-6">
+                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-9 flex flex-col space-y-6 ">
                         {/* Session Report */}
-                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] overflow-hidden">
-                            <div className="flex justify-between items-center mb-4">
+                        <div className="bg-white rounded-2xl shadow-sm p-4 w-full h-auto flex flex-col gap-3">
+                            <div className="flex justify-between items-center">
                                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
                                 <div className="flex flex-col items-start">
                                     <div className="flex items-center gap-2">
@@ -597,7 +597,7 @@ const HrCandidateDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="font-inter font-normal text-[13px] leading-none tracking-normal align-middle text-[#8F96A9] mb-3">
+                            <div className="font-inter font-normal text-[13px] leading-none tracking-normal align-middle text-[#8F96A9] ">
                                 Session type
                             </div>
 
@@ -649,7 +649,7 @@ const HrCandidateDashboard = () => {
                             </div>
 
                             {/* Bottom Stats */}
-                            <div className="flex flex-wrap justify-between items-center mt-6 gap-6 text-sm font-medium text-slate-900">
+                            <div className="flex flex-wrap justify-between items-center gap-6 text-sm font-medium text-slate-900">
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
@@ -701,7 +701,7 @@ const HrCandidateDashboard = () => {
                         <div className="flex flex-col lg:flex-row justify-between gap-6">
                             <div className="flex flex-col gap-6 w-full lg:w-2/3">
                                 {/* Chart Section */}
-                                <div className="bg-[#DFB916] rounded-2xl shadow-sm p-5 h-auto min-h-[200px] sm:h-[220px] md:h-[200px] flex flex-col">
+                                <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-auto min-h-[200px] sm:h-[220px] md:h-[200px] flex flex-col">
                                     <h2 className="font-normal mb-3 text-[#3D5B81]">
                                         {isHR ? "Annually Hiring Process" : "Last 12 Session Scores"}
                                     </h2>
@@ -733,7 +733,7 @@ const HrCandidateDashboard = () => {
 
                                 {/* Line Chart */}
 
-                                <div className="bg-white rounded-2xl shadow-sm p-5 h-[200px] overflow-hidden">
+                                <div className="bg-white rounded-2xl shadow-sm p-4 h-[200px] overflow-hidden">
                                     <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
 
                                     {lineData.length > 0 ? (
