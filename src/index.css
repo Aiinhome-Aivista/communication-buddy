@@ -2,6 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Custom style for DateTimePicker border-radius */
+.session-datetime-picker .MuiOutlinedInput-root {
+  border-radius: 0.75rem; /* rounded-xl */
+}
+
+
+/* Default placeholder color for the session topic textarea */
+.session-topic-textarea::placeholder {
+  color: #bcc7d2;
+  opacity: 1;
+}
+
+
 
 html,
 body,
@@ -300,4 +313,13 @@ body,
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
   background-color: #eeeeeedd !important; /* Your theme's yellow color */
   color: #182938 !important;           /* Dark text for contrast */
+}
+
+.candidate-search-input::placeholder {
+  color: #BCC7D2 !important;
+}
+
+/* Custom scrollbar for candidate dropdown */
+.candidate-dropdown-scrollbar::-webkit-scrollbar-track {
+  background: #BCC7D2; /* Match dropdown background */
 }

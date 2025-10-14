@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
 import dayjs from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckIcon from "@mui/icons-material/Check";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 export default function SessionModal({
   open,
   onClose,
   sessionDuration,
   setSessionDuration,
+  modalState,
+  setModalState,
   onSave,
   userData = [],
   topics = [],
@@ -24,15 +26,22 @@ export default function SessionModal({
     console.log("Topics data in SessionModal:", topics);
   }, [topics]);
 
-  const [date, setDate] = useState("");
-  const [sessionTopic, setSessionTopic] = useState("");
-  const [candidateName, setCandidateName] = useState("");
-  const [sessionCategory, setSessionCategory] = useState("");
+  const { date, sessionTopic, candidateName, sessionCategory, candidateSearch } = modalState;
+
+  const setDate = (newDate) => setModalState(prev => ({ ...prev, date: newDate }));
+  const setSessionTopic = (newTopic) => setModalState(prev => ({ ...prev, sessionTopic: newTopic }));
+  const setCandidateName = (newName) => setModalState(prev => ({ ...prev, candidateName: newName }));
+  const setSessionCategory = (newCategory) => setModalState(prev => ({ ...prev, sessionCategory: newCategory }));
+  const setCandidateSearch = (newSearch) => setModalState(prev => ({ ...prev, candidateSearch: newSearch }));
+
+
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const userId = parseInt(sessionStorage.getItem("user_id"), 10);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [candidateDropdownOpen, setCandidateDropdownOpen] = useState(false);
+  const candidateDropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
@@ -41,18 +50,32 @@ export default function SessionModal({
     ...new Set(topics.map((topic) => topic.topic_category).filter(Boolean)),
   ];
 
-  const [candidateSearch, setCandidateSearch] = useState("");
-
   const filteredCandidates = userData.filter(
     (candidate) =>
       candidate.name_email &&
       candidate.name_email.toLowerCase().includes(candidateSearch.toLowerCase())
   );
 
+  const handleReset = useCallback(() => {
+    setDate("");
+    setSessionTopic("");
+    setCandidateName("");
+    setSessionCategory("");
+    setSessionDuration({ value: 15, direction: "up" });
+    setErrors({});
+    setCandidateSearch(""); // This will now update the parent state
+  }, [setSessionDuration]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
         setCategoryDropdownOpen(false);
+      }
+      if (
+        candidateDropdownRef.current &&
+        !candidateDropdownRef.current.contains(event.target)
+      ) {
+        setCandidateDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -130,16 +153,6 @@ export default function SessionModal({
     }
   };
 
-  const handleReset = () => {
-    setDate("");
-    setSessionTopic("");
-    setCandidateName("");
-    setSessionCategory("");
-    setSessionDuration({ value: 15, direction: "up" });
-    setErrors({});
-    setCandidateSearch("");
-  };
-
   // Editable Input: Remove up/down arrows and allow only direct typing
   const handleInputChange = (e) => {
     let val = e.target.value.replace(/[^0-9]/g, "");
@@ -167,7 +180,7 @@ export default function SessionModal({
     const sliderWidth = slider.offsetWidth;
 
     let newValue = (offsetX / sliderWidth) * 45 + 5; // (max - min) + min
-    
+
     // Snap to the nearest 5-minute interval
     newValue = Math.round(newValue / 5) * 5;
 
@@ -213,7 +226,7 @@ export default function SessionModal({
       />
 
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl max-w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
             <button
@@ -248,38 +261,53 @@ export default function SessionModal({
                   Candidate Name
                   <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
-                <div className="relative">
-                  <select
-                    className={`cursor-pointer w-full border rounded-xl px-4 py-3 text-sm bg-white appearance-none h-[48px] focus:outline-none ${errors.candidateName
-                        ? "border-[#FF4D01]"
-                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                <div className="relative" ref={candidateDropdownRef}>
+                  <input
+                    type="text"
+                    placeholder="Select or search for a candidate"
+                    className={`candidate-search-input cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.candidateName
+                      ? "border-[#FF4D01]"
+                      : candidateName ? "border-[#DFB916]" : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
                       } ${candidateName ? "text-[#182938]" : (errors.candidateName ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
-                    value={candidateName}
+                    value={candidateDropdownOpen ? candidateSearch : (userData.find(c => c.id === candidateName)?.name_email || "")}
+                    onFocus={() => setCandidateDropdownOpen(true)}
                     onChange={(e) => {
-                      setCandidateName(e.target.value);
-                      if (e.target.value) clearError("candidateName");
+                      setCandidateSearch(e.target.value);
+                      setCandidateDropdownOpen(true);
                     }}
-                  >
-                    <option value="">Select candidate</option>
-                    {userData.map((candidate) => (
-                      <option key={candidate.id} value={candidate.id}>
-                        {candidate.name_email}
-                      </option>
-                    ))}
-                  </select>
-                  <svg
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none overflow-y-auto scrollbar-none"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    {candidateDropdownOpen ? <KeyboardArrowUpIcon className="w-5 h-5 text-[#9CA3AF]" /> : <KeyboardArrowDownIcon className="w-5 h-5 text-[#9CA3AF]" />}
+                  </div>
+                  {candidateDropdownOpen && (
+                    <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-20 overflow-hidden">
+                      <div className="overflow-y-auto max-h-48 candidate-dropdown-scrollbar">
+                        {filteredCandidates.map((candidate) => (
+                          <li
+                            key={candidate.id}
+                            onClick={() => {
+                              setCandidateName(candidate.id);
+                              setCandidateDropdownOpen(false);
+                              setCandidateSearch(""); // Clear search on selection
+                              clearError("candidateName");
+                            }}
+                            className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${candidateName === candidate.id
+                              ? "bg-[#D9D9D9] font-bold"
+                              : "hover:bg-[#D9D9D9]/50"
+                              }`}
+                          >
+                            {candidate.name_email}
+                            {candidateName === candidate.id && (
+                              <CheckIcon sx={{ fontSize: "1.25rem", color: "#182938" }} />
+                            )}
+                          </li>
+                        ))}
+                        {filteredCandidates.length === 0 && (
+                          <li className="px-4 py-2 text-sm text-gray-500">No candidates found</li>
+                        )}
+                      </div>
+                    </ul>
+                  )}
                 </div>
                 {errors.candidateName && (
                   <p className="text-[#FF4D01] text-xs mt-1 overflow-y-auto scrollbar-none">
@@ -306,17 +334,21 @@ export default function SessionModal({
                       slotProps={{
                         textField: {
                           fullWidth: true,
+
                           size: "small",
                           sx: {
                             "& .MuiOutlinedInput-root": {
                               backgroundColor: "white",
-                         // rounded-2xl,
+                              // rounded-2xl,
                               height: "50px",
+                              height: "48px",
                               fontSize: "0.875rem", // text-sm
                               color: "#182938",
                               "& .MuiOutlinedInput-notchedOutline": {
                                 borderColor: errors.date ? "#FF4D01" : "#E5E7EB",
-                                borderRadius: "1rem", // Ensure the outline also has the radius
+                                borderColor: errors.date ? "#FF4D01" : (date ? "#DFB916" : "#E5E7EB"),
+                                 borderRadius: "16px",
+
                               },
                               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "#E5B800", // focus:ring-[#E5B800]
@@ -324,6 +356,7 @@ export default function SessionModal({
                               },
                               "&:hover .MuiOutlinedInput-notchedOutline": {
                                 borderColor: errors.date ? "#FF4D01" : "#BCC7D2",
+                                borderColor: errors.date ? "#FF4D01" : (date ? "#DFB916" : "#BCC7D2"),
                               },
                             },
                           },
@@ -356,8 +389,8 @@ export default function SessionModal({
                   <button
                     type="button"
                     className={`cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.sessionCategory
-                        ? "border-[#FF4D01]"
-                        : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
+                      ? "border-[#FF4D01]"
+                      : sessionCategory ? "border-[#DFB916]" : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
                       } ${sessionCategory ? "text-[#182938]" : (errors.sessionCategory ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
                     onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
                   >
@@ -369,7 +402,7 @@ export default function SessionModal({
                     )}
                   </button>
                   {categoryDropdownOpen && (
-                    <ul className="absolute mt-1 w-full bg-[#ECEFF2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                    <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                       {uniqueCategories.map((category) => (
                         <li
                           key={category}
@@ -378,9 +411,9 @@ export default function SessionModal({
                             setCategoryDropdownOpen(false);
                             clearError("sessionCategory");
                           }}
-                          className={`flex items-center justify-between px-4 py-2 text-sm cursor-pointer font-medium text-[#182938] ${sessionCategory === category
-                              ? "bg-[#D9D9D9] font-bold"
-                              : "hover:bg-[#D9D9D9]/50"
+                          className={`flex items-center justify-between px-4 py-2 text-base cursor-pointer font-medium text-[#182938] ${sessionCategory === category
+                            ? "bg-[#D9D9D9] font-bold"
+                            : "hover:bg-[#D9D9D9]/50"
                             }`}
                         >
                           {category}
@@ -414,7 +447,7 @@ export default function SessionModal({
                 </label>
                 <div className="flex items-center gap-4">
                   {/* Editable Input: Remove up/down arrows */}
-                  <div className="w-[80px] h-[48px] border border-[#BCC7D2] rounded-xl flex items-center justify-center bg-white">
+                  <div className="w-[50px] h-[50px] border border-[#BCC7D2] rounded-xl flex items-center justify-center bg-white">
                     <input
                       type="text"
                       inputMode="numeric"
@@ -493,10 +526,7 @@ export default function SessionModal({
                 }}
                 rows="6.5"
                 placeholder="Write session topic..."
-                className={`w-full border rounded-xl p-4 font-normal text-xs focus:outline-none focus:ring-2 focus:ring-[#E5B800] ${errors.sessionTopic ? "border-[#FF4D01] placeholder:text-[#FF4D01]" : "border-[#BCC7D2] placeholder:text-[#BCC7D2]"
-                  } ${sessionTopic ? "text-[#182938]" : "text-[#BCC7D2]"
-                  }`}
-
+                className={`w-full border rounded-xl p-4 font-normal text-xs focus:outline-none focus:ring-2 focus:ring-[#E5B800] text-[#182938] session-topic-textarea ${errors.sessionTopic ? "border-[#FF4D01] textarea-error" : sessionTopic ? "border-[#DFB916]" : "border-[#BCC7D2]"}`}
               />
               {errors.sessionTopic && (
                 <p className="text-[#FF4D01] text-xs mt-1">
