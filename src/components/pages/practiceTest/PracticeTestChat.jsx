@@ -37,10 +37,10 @@ export default function PracticeTest() {
   );
   const hrId = sessionData.hr_id || matchedRecord?.hr_id || null;
   const topicName =
-    sessionData.topic ||
-    sessionData.topic_name ||
-    matchedRecord?.topic ||
-    matchedRecord?.topic_name,
+      sessionData.topic ||
+      sessionData.topic_name ||
+      matchedRecord?.topic ||
+      matchedRecord?.topic_name,
     totalTimeFromState = sessionData.total_time;
 
   // Debug logging
@@ -846,8 +846,8 @@ export default function PracticeTest() {
 
   // Session timer functionality (uses API total_time and session_time when available)
   const startSessionTimer = (totalMinutesParam, sessionStartAt) => {
-    const totalTime = Number(totalTimeFromState ??
-      totalMinutesParam ?? matchedRecord?.total_time ?? 10
+    const totalTime = Number(
+      totalTimeFromState ?? totalMinutesParam ?? matchedRecord?.total_time ?? 10
     ); // minutes
     setSessionTotalTime(totalTime);
     sessionStartRef.current = sessionStartAt
@@ -979,7 +979,7 @@ export default function PracticeTest() {
         try {
           const intro = await sendChatMessage(
             sessionId,
-            topicName, 
+            topicName,
             matchedRecord?.total_time || 10,
             "",
             readableLang
@@ -1275,7 +1275,7 @@ export default function PracticeTest() {
     try {
       const data = await sendChatMessage(
         sessionId,
-        topicName, 
+        topicName,
         matchedRecord?.total_time || 10,
         userInput,
         selectedLanguage || "English",
@@ -1354,7 +1354,7 @@ export default function PracticeTest() {
         ) : userStatus === "expired" ? (
           // Expired session
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-             <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative">
+            <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative">
               {/* Close Button */}
               <button
                 onClick={() => {
@@ -1376,7 +1376,7 @@ export default function PracticeTest() {
               </div>
 
               {/* Aiihome | CB Title */}
-               <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
+              <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
                 A<span className="text-[#DFB916]">ii</span>nhome
                 <span className="px-1">|</span>
                 <span className="font-bold">CB</span>
@@ -1429,7 +1429,9 @@ export default function PracticeTest() {
                   className="p-2 rounded-xl transition"
                   onClick={showBackPopup}
                 >
-                  <ArrowBackIosNewRoundedIcon style={{ color: "#BCC7D2" }} />
+                  <div className="cursor-pointer text-[#BCC7D2] hover:text-[#E5B800] transition-colors duration-200">
+                    <ArrowBackIosNewRoundedIcon />
+                  </div>
                 </button>
                 <div className="flex justify-between flex-1">
                   <div className="leading-tight">
@@ -1442,16 +1444,14 @@ export default function PracticeTest() {
                     <h2 className="text-sm font-semibold text-[#8F96A9]">
                       {hrName || "HR Manager"}
                     </h2>
-                    <p className="text-xs text-[#7E8489]">Assigned by</p>
+                    <p className="text-xs text-[#7E8489]">Assigned By</p>
                   </div>
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
-                      {sessionStatus?.total_time ||
-                        totalTimeFromState ||
-                        10}{" "}
+                      {sessionStatus?.total_time || totalTimeFromState || 10}{" "}
                       mins
                     </h3>
-                    <p className="text-xs text-[#7E8489]">Allocated duration</p>
+                    <p className="text-xs text-[#7E8489]">Allocated Duration</p>
                   </div>
                   <div className="leading-tight">
                     <h3 className="text-sm font-semibold text-[#8F96A9]">
@@ -1461,7 +1461,7 @@ export default function PracticeTest() {
                         ? timeLeft || "--:--"
                         : sessionStatus?.total_time
                         ? `${String(sessionStatus.total_time).padStart(
-                            2, 
+                            2,
                             "0"
                           )}:00`
                         : `${String(matchedRecord?.total_time || 10).padStart(
@@ -1472,11 +1472,11 @@ export default function PracticeTest() {
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming"
                         ? "Time to start"
-                        : "Remaining time"}
+                        : "Remaining Time"}
                     </p>
                   </div>
                   <button
-                    className="h-8 w-15 border border-[#DFB916] text-[#7E8489] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
                     onClick={showEndPopup}
                   >
                     End
@@ -1495,7 +1495,8 @@ export default function PracticeTest() {
                     onClick={async () => {
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
-                        totalTimeFromState ?? sessionStatus?.total_time ??
+                        totalTimeFromState ??
+                          sessionStatus?.total_time ??
                           matchedRecord?.total_time ??
                           10
                       );
@@ -1565,7 +1566,7 @@ export default function PracticeTest() {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={!sessionStarted || sessionExpired}
-              /> 
+              />
               <button
                 className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
                 onClick={() => {
@@ -1607,7 +1608,10 @@ export default function PracticeTest() {
                 onClick={handleSend}
                 type="button"
                 disabled={
-                  !sessionStarted || !inputValue.trim() || sessionExpired || isAILoading
+                  !sessionStarted ||
+                  !inputValue.trim() ||
+                  sessionExpired ||
+                  isAILoading
                 }
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
@@ -1616,7 +1620,6 @@ export default function PracticeTest() {
           </>
         )}
       </div>
-
 
       {popupType && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
@@ -1651,7 +1654,7 @@ export default function PracticeTest() {
               </button>
               <button
                 onClick={closePopup}
-                className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-8 w-15 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
               >
                 No
               </button>
