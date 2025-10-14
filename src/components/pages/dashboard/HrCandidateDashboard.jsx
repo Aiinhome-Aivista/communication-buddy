@@ -215,7 +215,6 @@ const HrCandidateDashboard = () => {
             </g>
         );
     };
-    const showLoader = useMinLoaderTime(loading, 3000);
     // Technology icon function
     const getTechIcon = (name) => {
         const key = (name || "").toLowerCase();
@@ -391,8 +390,8 @@ const HrCandidateDashboard = () => {
         return null;
     };
 
-    // if (loading) return <Loader show text="Loading dashboard..." />;
-    if (loading) return (
+    const showLoader = useMinLoaderTime(loading, 3000);
+    if (showLoader) return (
         <div className="w-full min-h-screen bg-[#ECEFF2] flex items-center justify-center">
             <LoaderNew />
         </div>
