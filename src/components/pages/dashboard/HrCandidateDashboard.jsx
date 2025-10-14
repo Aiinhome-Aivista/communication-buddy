@@ -22,6 +22,8 @@ import assignmentIcon from "/assets/icons/assignment.png";
 import Subtract from "../../../assets/logo/Subtract.svg";
 import candidateIcon from "/public/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import LoaderNew from "../../ui/LoaderNew";
+import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -213,7 +215,7 @@ const HrCandidateDashboard = () => {
             </g>
         );
     };
-
+    const showLoader = useMinLoaderTime(loading, 3000);
     // Technology icon function
     const getTechIcon = (name) => {
         const key = (name || "").toLowerCase();
@@ -389,18 +391,23 @@ const HrCandidateDashboard = () => {
         return null;
     };
 
-    if (loading) return <Loader show text="Loading dashboard..." />;
+    // if (loading) return <Loader show text="Loading dashboard..." />;
+    if (loading) return (
+        <div className="w-full min-h-screen bg-[#ECEFF2] flex items-center justify-center">
+            <LoaderNew />
+        </div>
+    );
 
     return (
-        <div className="w-full min-h-screen bg-[#ECEFF2] p-6 overflow-visible">
+        <div className="w-full min-h-screen bg-[#ECEFF2] p-3 overflow-visible">
 
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
                 <div className="flex items-center gap-3">
                     {isHR ? (
-
-                        <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2"
+                        <button
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
                             <svg
@@ -410,7 +417,11 @@ const HrCandidateDashboard = () => {
                                 strokeWidth={2}
                                 viewBox="0 0 24 24"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 4v16m8-8H4"
+                                />
                             </svg>
                             Create Session
                         </button>
