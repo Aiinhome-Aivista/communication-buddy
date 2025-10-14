@@ -3,10 +3,10 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import trending_down from "../../../assets/logo/trending_down.png";
 import assignmentIcon from "../../../../public/assets/icons/assignment.png";
+import assignment_turned_in from "../../../assets/logo/assignment_turned_in.svg";
 import { KeyboardArrowDown, IntegrationInstructions, Css, Html, Javascript, Code, TableChart, Bolt, ShowChart, Science, DataObject } from "@mui/icons-material";
 import { useState, useEffect, useMemo } from "react";
 import personImage from "../../../assets/logo/person.jpg";
-
 
 
 
@@ -573,8 +573,8 @@ const CandidateDashboard = () => {
                 {/* First line: icon + number */}
                 <div className="flex items-center gap-2">
                   <img
-                    src={groupLogo}
-                    alt="Group Icon"
+                    src={assignment_turned_in}
+                    alt="assignment_turned_in Icon"
                     className="w-5 h-5 object-contain"
                   />
                   <span className="font-bold text-[20px] text-[#8F96A9]">
@@ -584,7 +584,7 @@ const CandidateDashboard = () => {
 
                 {/* Second line: label */}
                 <span className="text-[12px] text-[#8F96A9] -ml-7">
-                  Assigned_Test
+                  Assigned Test
                 </span>
               </div>
             </div>
