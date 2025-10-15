@@ -765,7 +765,7 @@ const HrCandidateDashboard = () => {
 
                             {/* Bottom Stats */}
                             <div className="flex flex-wrap justify-between items-center mt-4 gap-4 text-sm font-medium text-slate-900">
-                                <div className="flex flex-col items-center flex-1 min-w-[120px]">
+                                <div className="flex flex-col items-start flex-1 min-w-[120px]">
                                     <div className="text-[#8F96A9]" style={{ fontSize: "20px", lineHeight: "100%" }}>
                                         {/* Integer part - Bold */}
                                         <span
