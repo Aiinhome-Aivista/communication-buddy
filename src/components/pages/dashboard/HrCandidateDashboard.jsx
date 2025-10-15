@@ -514,10 +514,18 @@ const HrCandidateDashboard = () => {
                                     alignItems: "center", // vertically center (optional)
                                     width: "100%",
                                     height: "106px", // match chart height
+                                    outline: "none",
+                                    userSelect: "none",
+                                    WebkitUserSelect: "none",
+                                    MozUserSelect: "none",
+                                    msUserSelect: "none",
+                                    WebkitTapHighlightColor: "transparent",
                                 }}
+                                onFocus={(e) => e.target.blur()}
+                                tabIndex={-1}
                             >
                                 <ResponsiveContainer width={200} height={106}>
-                                    <PieChart>
+                                    <PieChart style={{ outline: "none" }}>
                                         <Pie
                                             data={pieData}
                                             cx="50%"
@@ -530,9 +538,22 @@ const HrCandidateDashboard = () => {
                                             isAnimationActive={true}
                                             animationBegin={animateBars ? 300 : 0}
                                             animationDuration={700}
+                                            onClick={() => {}}
+                                            onMouseEnter={() => {}}
+                                            onMouseLeave={() => {}}
+                                            cursor="default"
+                                            style={{ outline: "none" }}
                                         >
                                             {pieData.map((_, i) => (
-                                                <Cell key={i} fill={COLORS[i]} />
+                                                <Cell 
+                                                    key={i} 
+                                                    fill={COLORS[i]}
+                                                    onClick={() => {}}
+                                                    onMouseEnter={() => {}}
+                                                    onMouseLeave={() => {}}
+                                                    cursor="default"
+                                                    style={{ outline: "none" }}
+                                                />
                                             ))}
                                         </Pie>
                                     </PieChart>
