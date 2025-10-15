@@ -686,7 +686,7 @@ const HrCandidateDashboard = () => {
                     <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4">
                         {/* Session Report */}
                         <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
-                            <div className="flex justify-between items-start mb-4">
+                            <div className="flex justify-between items-start mb-6">
                                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
                                 <div className="flex flex-col items-start">
                                     <div className="flex items-center gap-2">
