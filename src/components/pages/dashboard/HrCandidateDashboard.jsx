@@ -622,7 +622,6 @@ const HrCandidateDashboard = () => {
                                             <div
                                                 key={`${tech}-${idx}`}
                                                 className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-lg"
-                                                title={tech}
                                             >
                                                 {/* Background overlay for opacity effect */}
                                                 <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
