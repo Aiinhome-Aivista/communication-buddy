@@ -39,7 +39,7 @@ const HrCandidateDashboard = () => {
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
-    const isHR = userRole === 'hr';
+    const isHR = userRole === 'HR';
 
     useEffect(() => {
         const load = async () => {
