@@ -439,24 +439,12 @@ const HrCandidateDashboard = () => {
                 <div className="flex items-center gap-3">
                     {isHR ? (
                         <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
-                            onClick={() => setModalOpen(true)}
-                        >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4v16m8-8H4"
-                                />
-                            </svg>
-                            Create Session
-                        </button>
+                                                    className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                                                    onClick={() => setModalOpen(true)}
+                                                >
+                                                    <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                                                    Create Session
+                                                </button>
                     ) : (
                         //     (
                         //     <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
