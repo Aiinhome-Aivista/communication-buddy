@@ -3,7 +3,6 @@ import React, { lazy, Suspense } from "react";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import PublicRoute from "../pages/auth/PublicRoute";
 import ManageSchedule from "../pages/admin/ManageScheduleOld";
-import PageLoader from "../layout/PageLoader";
 // Lazy-loaded components improve performance by splitting code into smaller chunks
 const AppLayout = lazy(() => import("../layout/AppLayout"));
 const Login = lazy(() => import("../pages/auth/Login"));
@@ -28,7 +27,7 @@ export const router = createBrowserRouter(
     {
       path: "/",
       element: (
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={null}>
           <PublicRoute>
             <Login />
           </PublicRoute>
@@ -38,7 +37,7 @@ export const router = createBrowserRouter(
     {
       // This is now the main layout route for all protected pages
       element: (
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={null}>
           <ProtectedRoute>
             <AppLayout />
           </ProtectedRoute>
