@@ -955,11 +955,35 @@ const HrCandidateDashboard = () => {
                                         <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
 
                                         {lineData.length > 0 ? (
-                                            <div className="w-full h-[100px] mt-2">
+                                            <div
+                                                className="w-full h-[100px] mt-2"
+                                                style={{
+                                                    outline: "none",
+                                                    userSelect: "none",
+                                                    WebkitUserSelect: "none",
+                                                    MozUserSelect: "none",
+                                                    msUserSelect: "none",
+                                                    WebkitTapHighlightColor: "transparent"
+                                                }}
+                                                onClick={(e) => e.preventDefault()}
+                                                onFocus={(e) => e.target.blur()}
+                                                tabIndex={-1}
+                                            >
                                                 <ResponsiveContainer width="100%" height="100%">
                                                     <LineChart
                                                         data={lineData}
                                                         margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                                                        style={{
+                                                            outline: "none !important",
+                                                            userSelect: "none",
+                                                            WebkitUserSelect: "none",
+                                                            MozUserSelect: "none",
+                                                            msUserSelect: "none",
+                                                            WebkitTapHighlightColor: "transparent"
+                                                        }}
+                                                        onClick={(e) => e.preventDefault()}
+                                                        onFocus={(e) => e.target.blur()}
+                                                        tabIndex={-1}
                                                     >
                                                         <XAxis dataKey="name" hide />
                                                         <YAxis hide />
@@ -987,9 +1011,15 @@ const HrCandidateDashboard = () => {
                                                                 stroke: "#DFB916",
                                                                 strokeWidth: 2,
                                                                 opacity: 0.9,
+                                                                style: { outline: "none" }
                                                             }}
                                                             activeDot={<CustomActiveDot />}
                                                             isAnimationActive={true}
+                                                            onClick={(e) => e.preventDefault()}
+                                                            cursor="default"
+                                                            style={{
+                                                                outline: "none !important"
+                                                            }}
                                                         />
                                                     </LineChart>
                                                 </ResponsiveContainer>
