@@ -315,8 +315,26 @@ body,
   color: #182938 !important;           /* Dark text for contrast */
 }
 
+.input-error.candidate-search-input::placeholder {
+  color: #FF4D017D !important;
+}
+
 .candidate-search-input::placeholder {
   color: #BCC7D2 !important;
+}
+
+.textarea-error::placeholder {
+  color: #FF4D017D;
+  opacity: 1;
+}
+
+/* Style for the datetime-local input placeholder text */
+.date-error {
+  color: #FF4D017D;
+}
+
+.date-error::-webkit-calendar-picker-indicator {
+  filter: invert(55%) sepia(98%) saturate(3419%) hue-rotate(349deg) brightness(100%) contrast(101%) opacity(50%);
 }
 
 /* Custom scrollbar for candidate dropdown */

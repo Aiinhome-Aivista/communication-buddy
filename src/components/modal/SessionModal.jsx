@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import SuccessModal from "./SessionModal";
 import { fatchedPostRequest, postURL } from "../../services/ApiService";
-import dayjs from "dayjs";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckIcon from "@mui/icons-material/Check";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+
 
 export default function SessionModal({
   open,
@@ -43,6 +40,7 @@ export default function SessionModal({
   const [candidateDropdownOpen, setCandidateDropdownOpen] = useState(false);
   const candidateDropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
+  const dateInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
 
@@ -105,6 +103,13 @@ export default function SessionModal({
     return Object.keys(newErrors).length === 0;
   };
 
+  const toDatetimeLocalInput = (isoDate) => {
+    if (!isoDate) return "";
+    const d = new Date(isoDate);
+    // Adjust for timezone offset to display local time correctly in the input
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  };
   const handleSave = async () => {
     if (!validate()) return;
     setIsSaving(true);
@@ -266,9 +271,9 @@ export default function SessionModal({
                     type="text"
                     placeholder="Select or search for a candidate"
                     className={`candidate-search-input cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.candidateName
-                      ? "border-[#FF4D01]"
+                      ? "border-[#FF4D01] input-error"
                       : candidateName ? "border-[#DFB916]" : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
-                      } ${candidateName ? "text-[#182938]" : (errors.candidateName ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
+                      } ${candidateName ? "text-[#182938]" : (errors.candidateName ? "text-[#FF4D017D]" : "text-[#BCC7D2]")} font-normal text-xs`}
                     value={candidateDropdownOpen ? candidateSearch : (userData.find(c => c.id === candidateName)?.name_email || "")}
                     onFocus={() => setCandidateDropdownOpen(true)}
                     onChange={(e) => {
@@ -276,8 +281,8 @@ export default function SessionModal({
                       setCandidateDropdownOpen(true);
                     }}
                   />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    {candidateDropdownOpen ? <KeyboardArrowUpIcon className="w-5 h-5 text-[#9CA3AF]" /> : <KeyboardArrowDownIcon className="w-5 h-5 text-[#9CA3AF]" />}
+                  <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none ${errors.candidateName ? 'text-[#FF4D017D]' : 'text-[#9CA3AF]'}`}>
+                    {candidateDropdownOpen ? <KeyboardArrowUpIcon className="w-5 h-5" /> : <KeyboardArrowDownIcon className="w-5 h-5" />}
                   </div>
                   {candidateDropdownOpen && (
                     <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-20 overflow-hidden">
@@ -322,64 +327,30 @@ export default function SessionModal({
                   Session Date Time
                   <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
-                <div className="w-full cursor-pointer">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      label="DD/MM/YYYY  MM:HH"
-                      value={date ? dayjs(date) : null}
-                      onChange={(newValue) => {
-                        setDate(newValue ? newValue.toISOString() : "");
-                        if (newValue) clearError("date");
-                      }}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-
-                          size: "small",
-                          sx: {
-                            "& .MuiOutlinedInput-root": {
-                              backgroundColor: "white",
-                              // rounded-2xl,
-                              height: "50px",
-                              height: "48px",
-                              fontSize: "0.875rem", // text-sm
-                              color: "#182938",
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: errors.date ? "#FF4D01" : "#E5E7EB",
-                                borderColor: errors.date ? "#FF4D01" : (date ? "#DFB916" : "#E5E7EB"),
-                                 borderRadius: "16px",
-
-                              },
-                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "#E5B800", // focus:ring-[#E5B800]
-                                borderWidth: "2px", // Changed from 8px to 2px for a standard ring effect
-                              },
-                              "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: errors.date ? "#FF4D01" : "#BCC7D2",
-                                borderColor: errors.date ? "#FF4D01" : (date ? "#DFB916" : "#BCC7D2"),
-                              },
-                            },
-                          },
-                          InputLabelProps: {
-                            sx: { color: errors.date ? "#FF4D01" : "#BCC7D2", fontSize: "0.75rem" }, // placeholder / label color
-                          },
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
+                <div className="relative">
+                  {!date && (
+                    <span className={`absolute top-1/2 left-4 -translate-y-1/2 text-xs pointer-events-none z-10 ${errors.date ? 'text-[#FF4D017D]' : 'text-[#BCC7D2]'}`}>
+                      DD/MM/YYYY MM:HH
+                    </span>
+                  )}
+                  <input
+                    type="datetime-local"
+                    id="session-datetime-picker"
+                    value={toDatetimeLocalInput(date)}
+                    onChange={(e) => {
+                      const newDate = e.target.value ? new Date(e.target.value).toISOString() : "";
+                      setDate(newDate);
+                      if (newDate) clearError("date");
+                    }}
+                    className={`w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none focus:ring-2 focus:ring-[#E5B800] ${date ? 'text-[#182938]' : 'text-transparent'} ${errors.date ? "border-[#FF4D01] date-error" : date ? "border-[#DFB916]" : "border-[#BCC7D2]"}`}
+                  />
                   {errors.date && (
                     <p className="text-[#FF4D01] text-xs mt-1">{errors.date}</p>
                   )}
-
-
-
                 </div>
-
-
-
+              </div>
 
                 {/* Session Category */}
-              </div>
               <div>
                 <label className="block text-[#182938] font-medium mb-3 text-sm">
                   Session Category
@@ -389,17 +360,17 @@ export default function SessionModal({
                   <button
                     type="button"
                     className={`cursor-pointer w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none flex items-center justify-between text-left ${errors.sessionCategory
-                      ? "border-[#FF4D01]"
+                      ? "border-[#FF4D01] input-error"
                       : sessionCategory ? "border-[#DFB916]" : "border-[#BCC7D2] focus:ring-2 focus:ring-[#E5B800]"
-                      } ${sessionCategory ? "text-[#182938]" : (errors.sessionCategory ? "text-[#FF4D01]" : "text-[#BCC7D2]")} font-normal text-xs`}
+                      } ${sessionCategory ? "text-[#182938]" : (errors.sessionCategory ? "text-[#FF4D017D]" : "text-[#BCC7D2]")} font-normal text-xs`}
                     onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
                   >
                     {sessionCategory || "Select category"}
-                    {categoryDropdownOpen ? (
-                      <KeyboardArrowUpIcon className="w-5 h-5 text-[#9CA3AF]" />
-                    ) : (
-                      <KeyboardArrowDownIcon className="w-5 h-5 text-[#9CA3AF]" />
-                    )}
+                    <div className={`${errors.sessionCategory ? 'text-[#FF4D017D]' : 'text-[#9CA3AF]'}`}>
+                      {categoryDropdownOpen
+                        ? <KeyboardArrowUpIcon className="w-5 h-5" />
+                        : <KeyboardArrowDownIcon className="w-5 h-5" />}
+                    </div>
                   </button>
                   {categoryDropdownOpen && (
                     <ul className="absolute mt-1 w-full bg-[#BCC7D2] rounded-xl shadow-lg z-10 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
