@@ -192,16 +192,14 @@ export default function ScheduleSession() {
 
     // Initial data load
     useEffect(() => {
-        if (userRole === 'hr') {
-            const loadData = async () => {
-                setLoading(true);
-                await fetchUserData();
-                await fetchSessionData();
-                setLoading(false);
-            };
-            loadData();
-        }
-    }, [userRole]);
+        const loadData = async () => {
+            setLoading(true);
+            await fetchUserData();
+            await fetchSessionData();
+            setLoading(false);
+        };
+        loadData();
+    }, []);
 
     // Reload data (sync button)
     const ReloadGridData = async () => {
@@ -324,7 +322,7 @@ export default function ScheduleSession() {
                             className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
-                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight:"extrabold" }} />
+                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
                             Create Session
                         </button>
                     </div>
