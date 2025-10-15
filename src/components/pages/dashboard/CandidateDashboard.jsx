@@ -619,53 +619,53 @@ const CandidateDashboard = () => {
 
             {/* Bottom Stats */}
             <div className="flex justify-between items-center mt-6 text-sm font-medium text-slate-900">
-<div className="flex flex-col items-center">
-  <div className="text-[#8F96A9] text-[20px]">
-    {/* Split integer and decimal parts */}
-    {sessionReport.average_session_duration ? (
-      <>
-        {/* Integer part - Bold */}
-        <span
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 700, // Bold
-            fontStyle: "normal",
-            fontSize: "20px",
-            lineHeight: "100%",
-            letterSpacing: "0%",
-            textAlign: "center",
-            verticalAlign: "middle",
-          }}
-        >
-          {String(sessionReport.average_session_duration).split(".")[0]}
-        </span>
+              <div className="flex flex-col items-center">
+                <div className="text-[#8F96A9] text-[20px]">
+                  {/* Split integer and decimal parts */}
+                  {sessionReport.average_session_duration ? (
+                    <>
+                      {/* Integer part - Bold */}
+                      <span
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 700, // Bold
+                          fontStyle: "normal",
+                          fontSize: "20px",
+                          lineHeight: "100%",
+                          letterSpacing: "0%",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        {String(sessionReport.average_session_duration).split(".")[0]}
+                      </span>
 
-        {/* Decimal part - Light */}
-        <span
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 300, // Light
-            fontStyle: "normal",
-            fontSize: "20px",
-            lineHeight: "100%",
-            letterSpacing: "0%",
-            textAlign: "center",
-            verticalAlign: "middle",
-          }}
-        >
-          .{String(sessionReport.average_session_duration).split(".")[1] || "00"}
-        </span>
-      </>
-    ) : (
-      "15.00"
-    )}
-  </div>
+                      {/* Decimal part - Light */}
+                      <span
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 300, // Light
+                          fontStyle: "normal",
+                          fontSize: "20px",
+                          lineHeight: "100%",
+                          letterSpacing: "0%",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        .{String(sessionReport.average_session_duration).split(".")[1] || "00"}
+                      </span>
+                    </>
+                  ) : (
+                    "15.00"
+                  )}
+                </div>
 
-  {/* Label text - Medium */}
-  <div className="text-[12px] text-[#8F96A9] font-normal">
-    Average Session Duration
-  </div>
-</div>
+                {/* Label text - Medium */}
+                <div className="text-[12px] text-[#8F96A9] font-normal">
+                  Average Session Duration
+                </div>
+              </div>
 
 
               <div className="flex flex-col items-center">
@@ -678,35 +678,35 @@ const CandidateDashboard = () => {
               </div>
 
               <div className="flex flex-col items-center">
-<div className="flex items-center gap-1 font-semibold">
-  {/* Score */}
-  <div className="text-[20px] text-[#8F96A9] flex items-center">
-    {(() => {
-      const score = Number(sessionReport.highest_score) || 0;
-      const rounded = score.toFixed(2); // ensures 2 decimals
-      const [intPart, decPart] = rounded.split(".");
-      return (
-        <>
-          <span className="font-bold">{intPart}</span>
-          <span
-            className="font-light"
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 300,        // Light
-              fontStyle: "normal",
-              fontSize: "20px",
-              lineHeight: "100%",
-              letterSpacing: "0%",
-              textAlign: "center",
-              verticalAlign: "middle",
-            }}
-          >
-            .{decPart}
-          </span>
-        </>
-      );
-    })()}
-  </div>
+                <div className="flex items-center gap-1 font-semibold">
+                  {/* Score */}
+                  <div className="text-[20px] text-[#8F96A9] flex items-center">
+                    {(() => {
+                      const score = Number(sessionReport.highest_score) || 0;
+                      const rounded = score.toFixed(2); // ensures 2 decimals
+                      const [intPart, decPart] = rounded.split(".");
+                      return (
+                        <>
+                          <span className="font-bold">{intPart}</span>
+                          <span
+                            className="font-light"
+                            style={{
+                              fontFamily: "Inter, sans-serif",
+                              fontWeight: 300,        // Light
+                              fontStyle: "normal",
+                              fontSize: "20px",
+                              lineHeight: "100%",
+                              letterSpacing: "0%",
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            .{decPart}
+                          </span>
+                        </>
+                      );
+                    })()}
+                  </div>
 
 
 
@@ -732,33 +732,33 @@ const CandidateDashboard = () => {
                 </div>
               </div>
 
-<div className="flex flex-col items-center">
-  <div className="text-[20px] text-[#8F96A9] flex">
-    {(() => {
-      const score = Number(sessionReport.average_score);
-      const rounded = Number.isFinite(score) ? score.toFixed(1) : "0.0";
-      const [intPart, decPart] = rounded.split(".");
-      return (
-        <>
-          <span className="font-bold">{intPart}</span>
-          <span
-            className="font-light"
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 300, // Light
-              fontSize: "20px",
-            }}
-          >
-            .{decPart}
-          </span>
-        </>
-      );
-    })()}
-  </div>
-  <div className="text-[12px] text-[#8F96A9] font-normal">
-    Average Score
-  </div>
-</div>
+              <div className="flex flex-col items-center">
+                <div className="text-[20px] text-[#8F96A9] flex">
+                  {(() => {
+                    const score = Number(sessionReport.average_score);
+                    const rounded = Number.isFinite(score) ? score.toFixed(1) : "0.0";
+                    const [intPart, decPart] = rounded.split(".");
+                    return (
+                      <>
+                        <span className="font-bold">{intPart}</span>
+                        <span
+                          className="font-light"
+                          style={{
+                            fontFamily: "Inter, sans-serif",
+                            fontWeight: 300, // Light
+                            fontSize: "20px",
+                          }}
+                        >
+                          .{decPart}
+                        </span>
+                      </>
+                    );
+                  })()}
+                </div>
+                <div className="text-[12px] text-[#8F96A9] font-normal">
+                  Average Score
+                </div>
+              </div>
 
 
             </div>
