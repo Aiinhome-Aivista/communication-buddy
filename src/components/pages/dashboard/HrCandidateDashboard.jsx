@@ -621,7 +621,7 @@ const HrCandidateDashboard = () => {
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded relative group cursor-pointer"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100  rounded-2xl relative group cursor-pointer"
                                                 title={tech}
                                             >
                                                 <img
@@ -819,7 +819,7 @@ const HrCandidateDashboard = () => {
                                     <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col ">
                                         <h2 className="font-normal mb-3 text-[#3D5B81]">
                                             {isHR
-                                                ? "Annually Hiring Process"
+                                                ? "Monthly Session Created"
                                                 : "Last 12 Session Scores"}
                                         </h2>
 
@@ -885,8 +885,8 @@ const HrCandidateDashboard = () => {
                                                                 stroke: "#DFB916",
                                                                 strokeWidth: 2,
                                                                 opacity: 0.9,
-                                                            }}
-                                                            activeDot={<CustomActiveDot />}
+                                                            }}                                                             
+                                                            activeDot = {<CustomActiveDot />}
                                                             isAnimationActive={true}
                                                         />
                                                     </LineChart>
