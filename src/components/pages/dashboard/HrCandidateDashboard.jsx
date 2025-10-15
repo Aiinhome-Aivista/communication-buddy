@@ -918,47 +918,51 @@ const HrCandidateDashboard = () => {
                             <div className="col-span-2 h-full ">
                                 <div className="flex flex-col gap-4 w-full h-full">
                                     {/* Chart Section */}
-                                    <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col ">
-                                        <h2 className="font-normal mb-3 text-[#3D5B81]">
-                                            {isHR
-                                                ? "Monthly Session Created"
-                                                : "Last 12 Session Scores"}
-                                        </h2>
+<div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
+  <h2 className="font-normal mb-3 text-[#3D5B81]">
+    {isHR ? "Monthly Session Created" : "Last 12 Session Scores"}
+  </h2>
 
-                                        <div className="flex-1 mt-2">
-                                            <ResponsiveContainer height={130} >
-                                                <BarChart data={barData}>
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{
-                                                            fill: "#182938",
-                                                            fontSize: 10,
-                                                            fontWeight: 500
-                                                        }}
-                                                        height={20}
-                                                    />
-                                                    <YAxis
-                                                        stroke="#182938"
-                                                        axisLine
-                                                        tickLine={false}
-                                                        tick={{ fill: "#182938", fontSize: 12 }}
-                                                    />
-                                                    <Tooltip content={<CustomTooltip />} cursor={false} />
-                                                    <Bar
-                                                        dataKey="uv"
-                                                        fill="#182938"
-                                                        barSize={25}
-                                                        radius={[5, 5, 5, 5]}
-                                                        isAnimationActive={true}
-                                                        animationBegin={animateBars ? 300 : 0}
-                                                        animationDuration={700}
-                                                    />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    </div>
+  <div
+    className="flex-1 mt-2"
+    tabIndex={-1} // prevents focus border
+    onFocus={(e) => e.target.blur()} // ensures no focus stays
+    style={{
+      outline: "none",
+      userSelect: "none",
+      WebkitTapHighlightColor: "transparent",
+    }}
+  >
+    <ResponsiveContainer height={130}>
+      <BarChart data={barData}>
+        <XAxis
+          dataKey="name"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fill: "#182938", fontSize: 10, fontWeight: 500 }}
+          height={20}
+        />
+        <YAxis
+          stroke="#182938"
+          axisLine
+          tickLine={false}
+          tick={{ fill: "#182938", fontSize: 12 }}
+        />
+        <Tooltip content={<CustomTooltip />} cursor={false} />
+        <Bar
+          dataKey="uv"
+          fill="#182938"
+          barSize={25}
+          radius={[5, 5, 5, 5]}
+          isAnimationActive={true}
+          animationBegin={animateBars ? 300 : 0}
+          animationDuration={700}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</div>
+
 
                                     {/* Line Chart */}
                                     <div className="bg-white rounded-2xl shadow-sm p-4 h-full">
