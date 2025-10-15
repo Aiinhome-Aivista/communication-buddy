@@ -391,46 +391,48 @@ const HrCandidateDashboard = () => {
     };
 
     const showLoader = useMinLoaderTime(loading, 3000);
-    if (showLoader) return (
-        <div className="w-full min-h-screen bg-[#ECEFF2] p-3 overflow-visible">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
-                <div className="flex items-center gap-3">
-                    {isHR ? (
-                        <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
-                            onClick={() => setModalOpen(true)}
-                        >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                viewBox="0 0 24 24"
+    if (showLoader)
+        return (
+            <div className="w-full bg-[#ECEFF2] p-3 overflow-visible">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+                    <div className="flex items-center gap-3">
+                        {isHR ? (
+                            <button
+                                className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
+                                onClick={() => setModalOpen(true)}
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4v16m8-8H4"
-                                />
-                            </svg>
-                            Create Session
-                        </button>
-                    ) : ""}
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
+                                Create Session
+                            </button>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                </div>
+
+                {/* Loader below header */}
+                <div className="w-full flex items-center justify-center py-32">
+                    <LoaderNew />
                 </div>
             </div>
-            
-            {/* Loader below header */}
-            <div className="w-full flex items-center justify-center py-32">
-                <LoaderNew />
-            </div>
-        </div>
-    );
+        );
 
     return (
-        <div className="w-full min-h-screen bg-[#ECEFF2] p-3 overflow-visible">
-
+        <div className="w-full h-full bg-[#ECEFF2] p-3 overflow-visible">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -455,14 +457,15 @@ const HrCandidateDashboard = () => {
                             </svg>
                             Create Session
                         </button>
-                    ) :
+                    ) : (
                         //     (
                         //     <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
                         //         <img src={assignmentIcon} alt="assignment" className="w-5 h-5" />
                         //         <span>Ongoing session</span>
                         //     </button>
                         // )
-                        ""}
+                        ""
+                    )}
                 </div>
             </div>
 
@@ -473,38 +476,70 @@ const HrCandidateDashboard = () => {
             )}
 
             {!error && (
-                <div className="grid grid-cols-12 gap-6">
+                <div className="grid grid-cols-4 gap-4">
                     {/* LEFT COLUMN */}
-                    <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 flex flex-col space-y-6">
+                    <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start">
                         {/* Session Completion */}
-                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] lg:min-h-[260px] overflow-hidden">
+                        <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full  ">
                             <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
                                 Session Completion
                             </h2>
 
-                            <ResponsiveContainer width="100%" height={140}>
-                                <PieChart>
-                                    <Pie
-                                        data={pieData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={35}
-                                        outerRadius={60}
-                                        paddingAngle={4}
-                                        cornerRadius={6}
-                                        dataKey="value"
-                                        isAnimationActive={true}
-                                        animationBegin={animateBars ? 300 : 0}
-                                        animationDuration={700}
-                                    >
-                                        {pieData.map((_, i) => (
-                                            <Cell key={i} fill={COLORS[i]} />
-                                        ))}
-                                    </Pie>
-                                </PieChart>
-                            </ResponsiveContainer>
+                            {/* <ResponsiveContainer width="100%" height={106} >
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={35}
+                    outerRadius={60}
+                    paddingAngle={4}
+                    cornerRadius={6}
+                    dataKey="value"
+                    isAnimationActive={true}
+                    animationBegin={animateBars ? 300 : 0}
+                    animationDuration={700}
+                  >
+                    {pieData.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer> */}
 
-                            <div className="flex flex-wrap justify-center gap-8 mt-4 text-xs font-medium">
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center", // horizontally center
+                                    alignItems: "center", // vertically center (optional)
+                                    width: "100%",
+                                    height: "106px", // match chart height
+                                }}
+                            >
+                                <ResponsiveContainer width={200} height={106}>
+                                    <PieChart>
+                                        <Pie
+                                            data={pieData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={25}
+                                            outerRadius={45}
+                                            paddingAngle={4}
+                                            cornerRadius={6}
+                                            dataKey="value"
+                                            isAnimationActive={true}
+                                            animationBegin={animateBars ? 300 : 0}
+                                            animationDuration={700}
+                                        >
+                                            {pieData.map((_, i) => (
+                                                <Cell key={i} fill={COLORS[i]} />
+                                            ))}
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            <div className="flex  justify-center mt-4 text-xs font-medium">
                                 <div className="flex flex-col items-center text-slate-900 min-w-[100px]">
                                     <div
                                         style={{
@@ -552,9 +587,8 @@ const HrCandidateDashboard = () => {
                             </div>
                         </div>
 
-
                         {/* Technology Icons */}
-                        <div className="bg-white rounded-[10px] shadow-sm p-3 w-full h-auto min-h-[374px] sm:h-[400px] md:h-[374px]">
+                        <div className="bg-white rounded-[10px] shadow-sm p-3 w-full flex-grow">
                             <h2
                                 style={{
                                     fontFamily: "Inter",
@@ -592,19 +626,26 @@ const HrCandidateDashboard = () => {
                                             >
                                                 <img
                                                     src={iconSrc}
-                                                    alt={tech || 'Technology'}
+                                                    alt={tech || "Technology"}
                                                     className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain"
                                                     onError={(e) => {
                                                         e.target.src =
-                                                            'https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F';
+                                                            "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
                                                     }}
                                                 />
                                                 {/* Hover tooltip */}
-                                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none shadow-md"
-                                                    style={{ backgroundColor: '#FFF8E1', color: '#DFB916' }}>
+                                                <div
+                                                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none shadow-md"
+                                                    style={{
+                                                        backgroundColor: "#FFF8E1",
+                                                        color: "#DFB916",
+                                                    }}
+                                                >
                                                     {tech}
-                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
-                                                        style={{ borderTopColor: '#FFF8E1' }}></div>
+                                                    <div
+                                                        className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
+                                                        style={{ borderTopColor: "#FFF8E1" }}
+                                                    ></div>
                                                 </div>
                                             </div>
                                         );
@@ -616,14 +657,12 @@ const HrCandidateDashboard = () => {
                                 </div>
                             )}
                         </div>
-
-
                     </div>
 
                     {/* RIGHT SECTION */}
-                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-9 flex flex-col space-y-6">
+                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4">
                         {/* Session Report */}
-                        <div className="bg-white rounded-2xl shadow-sm p-5 w-full h-auto min-h-[260px] sm:min-h-[280px] md:min-h-[260px] overflow-hidden">
+                        <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-[15px] text-[#8F96A9]">Session Report</h2>
                                 <div className="flex flex-col items-start">
@@ -658,19 +697,22 @@ const HrCandidateDashboard = () => {
                                         <div
                                             className="h-5 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                                             style={{
-                                                width: `${(commRaw / Math.max(1, sessionCreated)) * 100}%`,
+                                                width: `${(commRaw / Math.max(1, sessionCreated)) * 100
+                                                    }%`,
                                                 backgroundColor: "#0f172a",
                                                 whiteSpace: "nowrap",
                                                 overflow: "hidden",
                                                 textOverflow: "ellipsis",
                                             }}
-                                        >
-
-                                        </div>
+                                        ></div>
                                     </div>
                                     <div className="w-10 text-right flex gap-2 ">
-                                        <span className="text-xs text-[#8F96A9]">Communication</span>
-                                        <span className="text-xs text-[#8F96A9] font-medium">{commRaw}</span>
+                                        <span className="text-xs text-[#8F96A9]">
+                                            Communication
+                                        </span>
+                                        <span className="text-xs text-[#8F96A9] font-medium">
+                                            {commRaw}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -679,37 +721,47 @@ const HrCandidateDashboard = () => {
                                         <div
                                             className="h-5 rounded-sm flex items-center pl-2 transition-all duration-700 ease-in-out"
                                             style={{
-                                                width: `${(techRaw / Math.max(1, sessionCreated)) * 100}%`,
-                                                background: "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
+                                                width: `${(techRaw / Math.max(1, sessionCreated)) * 100
+                                                    }%`,
+                                                background:
+                                                    "linear-gradient(90deg, #DFB916 0%, #F5D85B 100%)",
                                                 whiteSpace: "nowrap",
                                                 overflow: "hidden",
                                                 textOverflow: "ellipsis",
                                             }}
-                                        >
-
-                                        </div>
+                                        ></div>
                                     </div>
                                     <div className="w-10 text-right flex gap-2 ">
                                         <span className="text-xs text-[#8F96A9]">Technology</span>
-                                        <span className="text-xs text-[#8F96A9] font-medium">{techRaw}</span>
+                                        <span className="text-xs text-[#8F96A9] font-medium">
+                                            {techRaw}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Bottom Stats */}
-                            <div className="flex flex-wrap justify-between items-center mt-6 gap-6 text-sm font-medium text-slate-900">
+                            <div className="flex flex-wrap justify-between items-center mt-4 gap-4 text-sm font-medium text-slate-900">
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
-                                    <div className="font-bold text-[20px] text-[#8F96A9]">{avgSessionDuration}</div>
-                                    <div className="text-[12px] text-[#8F96A9] font-normal">Average Session Duration</div>
+                                    <div className="font-bold text-[20px] text-[#8F96A9]">
+                                        {avgSessionDuration}
+                                    </div>
+                                    <div className="text-[12px] text-[#8F96A9] font-normal">
+                                        Average Session Duration
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
                                         {isHR
-                                            ? (Number.isFinite(Number(sessionCreated)) ? Number(sessionCreated) : 0)
-                                            : (Number.isFinite(Number(sessionReport?.assigned_test || 0)) ? Number(sessionReport?.assigned_test || 0) : 0)
-                                        }
-
+                                            ? Number.isFinite(Number(sessionCreated))
+                                                ? Number(sessionCreated)
+                                                : 0
+                                            : Number.isFinite(
+                                                Number(sessionReport?.assigned_test || 0)
+                                            )
+                                                ? Number(sessionReport?.assigned_test || 0)
+                                                : 0}
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         {isHR ? "Session Created" : "Assigned Test"}
@@ -720,14 +772,25 @@ const HrCandidateDashboard = () => {
                                     <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
                                         <div className="font-bold text-[20px]">
                                             {isHR
-                                                ? Math.round(Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0)
-                                                : (Number.isFinite(Number(sessionReport?.highest_score || averageScore)) ? Number(sessionReport?.highest_score || averageScore).toFixed(1) : "0.0")
-                                            }
+                                                ? Math.round(
+                                                    Number.isFinite(Number(userTraffic))
+                                                        ? Number(userTraffic)
+                                                        : 0
+                                                )
+                                                : Number.isFinite(
+                                                    Number(sessionReport?.highest_score || averageScore)
+                                                )
+                                                    ? Number(
+                                                        sessionReport?.highest_score || averageScore
+                                                    ).toFixed(1)
+                                                    : "0.0"}
                                         </div>
                                         {sessionReport?.progress_indicator === "up" ? (
                                             <img src={trending_up} alt="Up" className="w-5 h-5" />
                                         ) : sessionReport?.progress_indicator === "down" ? (
-                                            <TrendingDownIcon style={{ fontSize: '20px', color: '#e91717ff' }} />
+                                            <TrendingDownIcon
+                                                style={{ fontSize: "20px", color: "#e91717ff" }}
+                                            />
                                         ) : null}
                                     </div>
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
@@ -737,108 +800,110 @@ const HrCandidateDashboard = () => {
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="font-bold text-[20px] text-[#8F96A9]">
-                                        {Number.isFinite(Number(averageScore)) ? Number(averageScore).toFixed(1) : "0.0"}
+                                        {Number.isFinite(Number(averageScore))
+                                            ? Number(averageScore).toFixed(1)
+                                            : "0.0"}
                                     </div>
-                                    <div className="text-[12px] text-[#8F96A9] font-normal">Average Score</div>
+                                    <div className="text-[12px] text-[#8F96A9] font-normal">
+                                        Average Score
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-
                         {/* Bottom Row */}
-                        <div className="flex flex-col lg:flex-row justify-between gap-6">
-                            <div className="flex flex-col gap-6 w-full lg:w-2/3">
-                                {/* Chart Section */}
-                                <div className="bg-[#DFB916] rounded-2xl shadow-sm p-5 h-auto min-h-[200px] sm:h-[220px] md:h-[200px] flex flex-col">
-                                    <h2 className="font-normal mb-3 text-[#3D5B81]">
-                                        {isHR ? "Annually Hiring Process" : "Last 12 Session Scores"}
-                                    </h2>
+                        <div className="grid grid-cols-3 gap-4 h-full">
+                            <div className="col-span-2 h-full ">
+                                <div className="flex flex-col gap-4 w-full h-full">
+                                    {/* Chart Section */}
+                                    <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col ">
+                                        <h2 className="font-normal mb-3 text-[#3D5B81]">
+                                            {isHR
+                                                ? "Annually Hiring Process"
+                                                : "Last 12 Session Scores"}
+                                        </h2>
 
-                                    <div className="flex-1 mt-2">
-                                        <ResponsiveContainer>
-                                            <BarChart data={barData}>
-                                                <XAxis dataKey="name" hide />
-                                                <YAxis
-                                                    stroke="#182938"
-                                                    axisLine
-                                                    tickLine={false}
-                                                    tick={{ fill: "#182938", fontSize: 12 }}
-                                                />
-                                                <Tooltip content={<CustomTooltip />} cursor={false} />
-                                                <Bar
-                                                    dataKey="uv"
-                                                    fill="#182938"
-                                                    barSize={25}
-                                                    radius={[5, 5, 5, 5]}
-                                                    isAnimationActive={true}
-                                                    animationBegin={animateBars ? 300 : 0}
-                                                    animationDuration={700}
-                                                />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </div>
-
-                                {/* Line Chart */}
-                                <div className="bg-white rounded-2xl shadow-sm p-5 h-[200px] overflow-hidden">
-                                    <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
-
-                                    {lineData.length > 0 ? (
-                                        <div className="w-full h-[100px] mt-2">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart
-                                                    data={lineData}
-                                                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-                                                >
+                                        <div className="flex-1 mt-2">
+                                            <ResponsiveContainer height={130} >
+                                                <BarChart data={barData}>
                                                     <XAxis dataKey="name" hide />
-                                                    <YAxis hide />
-                                                    <Tooltip
-                                                        cursor={false}
-                                                        content={({ active, payload }) =>
-                                                            active && payload && payload.length ? (
-                                                                <div className="px-4 py-1 rounded-sm text-[#DFB916] font-normal text-sm shadow-md"
-                                                                    style={{ backgroundColor: '#FFF8E1' }}>
-                                                                    {`${payload[0].payload.name} ${payload[0].value}`}
-                                                                </div>
-                                                            ) : null
-                                                        }
+                                                    <YAxis
+                                                        stroke="#182938"
+                                                        axisLine
+                                                        tickLine={false}
+                                                        tick={{ fill: "#182938", fontSize: 12 }}
                                                     />
-                                                    <Line
-                                                        type="monotone"
+                                                    <Tooltip content={<CustomTooltip />} cursor={false} />
+                                                    <Bar
                                                         dataKey="uv"
-                                                        stroke="#DFB916"
-                                                        strokeWidth={3}
-                                                        dot={{
-                                                            r: 5,
-                                                            fill: "#DFB916",
-                                                            stroke: "#DFB916",
-                                                            strokeWidth: 2,
-                                                            opacity: 0.9,
-                                                        }}
-                                                        activeDot={<CustomActiveDot />}
+                                                        fill="#182938"
+                                                        barSize={25}
+                                                        radius={[5, 5, 5, 5]}
                                                         isAnimationActive={true}
+                                                        animationBegin={animateBars ? 300 : 0}
+                                                        animationDuration={700}
                                                     />
-
-
-
-
-                                                </LineChart>
-
+                                                </BarChart>
                                             </ResponsiveContainer>
                                         </div>
-                                    ) : (
-                                        <div className="flex items-center justify-center h-[80px] text-[#8F96A9] text-sm">
-                                            No data found
-                                        </div>
-                                    )}
+                                    </div>
+
+                                    {/* Line Chart */}
+                                    <div className="bg-white rounded-2xl shadow-sm p-4 h-full">
+                                        <h2 className="font-normal text-[#8F96A9]">Language Usage</h2>
+
+                                        {lineData.length > 0 ? (
+                                            <div className="w-full h-[100px] mt-2">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <LineChart
+                                                        data={lineData}
+                                                        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                                                    >
+                                                        <XAxis dataKey="name" hide />
+                                                        <YAxis hide />
+                                                        <Tooltip
+                                                            cursor={false}
+                                                            content={({ active, payload }) =>
+                                                                active && payload && payload.length ? (
+                                                                    <div
+                                                                        className="px-4 py-1 rounded-sm text-[#DFB916] font-normal text-sm shadow-md"
+                                                                        style={{ backgroundColor: "#FFF8E1" }}
+                                                                    >
+                                                                        {`${payload[0].payload.name} ${payload[0].value}`}
+                                                                    </div>
+                                                                ) : null
+                                                            }
+                                                        />
+                                                        <Line
+                                                            type="monotone"
+                                                            dataKey="uv"
+                                                            stroke="#DFB916"
+                                                            strokeWidth={3}
+                                                            dot={{
+                                                                r: 5,
+                                                                fill: "#DFB916",
+                                                                stroke: "#DFB916",
+                                                                strokeWidth: 2,
+                                                                opacity: 0.9,
+                                                            }}
+                                                            activeDot={<CustomActiveDot />}
+                                                            isAnimationActive={true}
+                                                        />
+                                                    </LineChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center h-[80px] text-[#8F96A9] text-sm">
+                                                No data found
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-
                             </div>
-
                             {/* Right Panel - Conditional Content */}
                             {isHR ? (
                                 /* HR: Technical Skills */
-                                <div className="bg-white shadow-sm p-3 rounded-2xl w-full lg:w-1/3 h-full flex-shrink-0">
+                                <div className="bg-white shadow-sm p-3 rounded-2xl w-full h-full flex-shrink-0 col-span-1">
                                     <h2
                                         style={{
                                             fontFamily: "Inter",
@@ -860,15 +925,15 @@ const HrCandidateDashboard = () => {
                                                     key={`${skill}-${i}`}
                                                     className="bg-[#D9D9D933] px-4 py-2 border border-[#3D5B81] rounded-full text-center"
                                                     style={{
-                                                        fontFamily: 'Inter',
-                                                        fontWeight: 500,         // Medium
-                                                        fontStyle: 'normal',     // Medium
-                                                        fontSize: '12px',
-                                                        lineHeight: '100%',
-                                                        letterSpacing: '0%',
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
+                                                        fontFamily: "Inter",
+                                                        fontWeight: 500, // Medium
+                                                        fontStyle: "normal", // Medium
+                                                        fontSize: "12px",
+                                                        lineHeight: "100%",
+                                                        letterSpacing: "0%",
+                                                        display: "inline-flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
                                                         color: "#8F96A9",
                                                     }}
                                                     title={skill}
@@ -877,7 +942,6 @@ const HrCandidateDashboard = () => {
                                                 </span>
                                             ))}
                                         </div>
-
                                     ) : (
                                         <div className="flex items-center justify-center h-full text-[#8F96A9] text-sm">
                                             No data found
@@ -897,8 +961,9 @@ const HrCandidateDashboard = () => {
                                         }
                                         `}</style>
                                     <div
-                                        style={{ height: "400px", overflowY: "auto" }}
-                                        className="scrollbar-hide w-full md:w-1/2"
+                                        style={{ overflowY: "auto" }}
+                                        className="scrollbar-hide w-full 
+                    "
                                     >
                                         <h2
                                             className="mb-4"
@@ -916,21 +981,26 @@ const HrCandidateDashboard = () => {
                                         >
                                             Top 5 Session Score
                                         </h2>
-                                        <div className="space-y-3 h-82 overflow-y-auto scrollbar-hide">
+                                        <div className="space-y-3 h-92 overflow-y-auto scrollbar-hide">
                                             {topScores.length > 0 ? (
                                                 topScores.map((item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm w-[97%] mx-2"
+                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm mx-2"
                                                     >
                                                         {/* Left content */}
                                                         <div className="flex items-start gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
-                                                                <img
-                                                                    src={Subtract}
-                                                                    alt="Subtract"
-                                                                    className="w-8 h-8 rounded-full"
-                                                                />
+                                                            <div className="flex flex-col gap-2" >
+                                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+
+                                                                    <img
+                                                                        src={Subtract}
+                                                                        alt="Subtract"
+                                                                        className="w-8 h-8 rounded-full"
+                                                                    />
+
+                                                                </div>
+                                                                <p className="text-[11px] text-gray-600 ">Topic</p>
                                                             </div>
 
                                                             <div className="flex flex-col">
@@ -942,22 +1012,31 @@ const HrCandidateDashboard = () => {
                                                                     {item.name}
                                                                 </span>
 
-                                                                <span className="text-[11px] text-gray-600 truncate max-w-[140px] mt-[4px] text-left w-full">
-                                                                    Topic: {item.topic}
+                                                                <span className="text-[11px] text-gray-400 font-bold truncate max-w-[140px] mt-[4px] text-left w-full">
+                                                                    {item.topic}
                                                                 </span>
                                                             </div>
                                                         </div>
                                                         {/* Right side */}
                                                         <div className="flex flex-col items-end">
-                                                            <span className="font-bold text-[20px] leading-[100%] text-right" style={{ fontFamily: 'Inter', color: '#8F96A9' }}>
+                                                            <span
+                                                                className="font-bold text-[20px] leading-[100%] text-right"
+                                                                style={{
+                                                                    fontFamily: "Inter",
+                                                                    color: "#8F96A9",
+                                                                }}
+                                                            >
                                                                 {item.score}
                                                             </span>
                                                             <span
                                                                 className="font-normal text-[12px] leading-[100%] text-right"
-                                                                style={{ fontFamily: 'Inter', color: '#8F96A9' }}
-
+                                                                style={{
+                                                                    fontFamily: "Inter",
+                                                                    color: "#8F96A9",
+                                                                }}
                                                             >
-                                                                Score</span>
+                                                                Score
+                                                            </span>
                                                             <KeyboardArrowDown
                                                                 style={{
                                                                     fontSize: "16px",
@@ -969,13 +1048,14 @@ const HrCandidateDashboard = () => {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <p className="text-center text-gray-500 pt-10">No top scores found.</p>
+                                                <p className="text-center text-gray-500 pt-10">
+                                                    No top scores found.
+                                                </p>
                                             )}
                                         </div>
                                     </div>
                                 </>
                             )}
-
                         </div>
                     </div>
                 </div>
