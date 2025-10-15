@@ -4,6 +4,7 @@ import { fatchedPostRequest, postURL } from "../../services/ApiService";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckIcon from "@mui/icons-material/Check";
+import "../style/SessionModal.css";
 
 
 export default function SessionModal({
@@ -230,7 +231,12 @@ export default function SessionModal({
         isSuccess={true}
       />
 
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
+      <div
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
         <div className="bg-white rounded-2xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="border-b border-[#E5E7EB] px-8 py-4 flex items-center">
@@ -329,7 +335,7 @@ export default function SessionModal({
                 </label>
                 <div className="relative">
                   {!date && (
-                    <span className={`absolute top-1/2 left-4 -translate-y-1/2 text-xs pointer-events-none z-10 ${errors.date ? 'text-[#FF4D017D]' : 'text-[#BCC7D2]'}`}>
+                    <span className={`absolute top-1/2 left-4 -translate-y-1/2 text-xs pointer-events-none z-10 ${errors.date ? 'date-error-placeholder' : 'text-[#BCC7D2]'}`}>
                       DD/MM/YYYY MM:HH
                     </span>
                   )}
