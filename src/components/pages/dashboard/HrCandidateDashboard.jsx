@@ -400,22 +400,10 @@ const HrCandidateDashboard = () => {
                     <div className="flex items-center gap-3">
                         {isHR ? (
                             <button
-                                className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
+                                className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
                                 onClick={() => setModalOpen(true)}
                             >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M12 4v16m8-8H4"
-                                    />
-                                </svg>
+                                <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
                                 Create Session
                             </button>
                         ) : (
@@ -439,12 +427,12 @@ const HrCandidateDashboard = () => {
                 <div className="flex items-center gap-3">
                     {isHR ? (
                         <button
-                                                    className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
-                                                    onClick={() => setModalOpen(true)}
-                                                >
-                                                    <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
-                                                    Create Session
-                                                </button>
+                            className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                            onClick={() => setModalOpen(true)}
+                        >
+                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                            Create Session
+                        </button>
                     ) : (
                         //     (
                         //     <button className="bg-[#DFB916] hover:bg-[#c8a514] px-4 py-2 rounded-md font-semibold text-gray-900 flex items-center gap-2">
@@ -906,50 +894,50 @@ const HrCandidateDashboard = () => {
                             <div className="col-span-2 h-full ">
                                 <div className="flex flex-col gap-4 w-full h-full">
                                     {/* Chart Section */}
-<div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
-  <h2 className="font-normal mb-3 text-[#3D5B81]">
-    {isHR ? "Monthly Session Created" : "Last 12 Session Scores"}
-  </h2>
+                                    <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
+                                        <h2 className="font-normal mb-3 text-[#3D5B81]">
+                                            {isHR ? "Monthly Session Created" : "Last 12 Session Scores"}
+                                        </h2>
 
-  <div
-    className="flex-1 mt-2"
-    tabIndex={-1} // prevents focus border
-    onFocus={(e) => e.target.blur()} // ensures no focus stays
-    style={{
-      outline: "none",
-      userSelect: "none",
-      WebkitTapHighlightColor: "transparent",
-    }}
-  >
-    <ResponsiveContainer height={130}>
-      <BarChart data={barData}>
-        <XAxis
-          dataKey="name"
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: "#182938", fontSize: 10, fontWeight: 500 }}
-          height={20}
-        />
-        <YAxis
-          stroke="#182938"
-          axisLine
-          tickLine={false}
-          tick={{ fill: "#182938", fontSize: 12 }}
-        />
-        <Tooltip content={<CustomTooltip />} cursor={false} />
-        <Bar
-          dataKey="uv"
-          fill="#182938"
-          barSize={25}
-          radius={[5, 5, 5, 5]}
-          isAnimationActive={true}
-          animationBegin={animateBars ? 300 : 0}
-          animationDuration={700}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
-</div>
+                                        <div
+                                            className="flex-1 mt-2"
+                                            tabIndex={-1} // prevents focus border
+                                            onFocus={(e) => e.target.blur()} // ensures no focus stays
+                                            style={{
+                                                outline: "none",
+                                                userSelect: "none",
+                                                WebkitTapHighlightColor: "transparent",
+                                            }}
+                                        >
+                                            <ResponsiveContainer height={130}>
+                                                <BarChart data={barData}>
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{ fill: "#182938", fontSize: 10, fontWeight: 500 }}
+                                                        height={20}
+                                                    />
+                                                    <YAxis
+                                                        stroke="#182938"
+                                                        axisLine
+                                                        tickLine={false}
+                                                        tick={{ fill: "#182938", fontSize: 12 }}
+                                                    />
+                                                    <Tooltip content={<CustomTooltip />} cursor={false} />
+                                                    <Bar
+                                                        dataKey="uv"
+                                                        fill="#182938"
+                                                        barSize={25}
+                                                        radius={[5, 5, 5, 5]}
+                                                        isAnimationActive={true}
+                                                        animationBegin={animateBars ? 300 : 0}
+                                                        animationDuration={700}
+                                                    />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
 
 
                                     {/* Line Chart */}
