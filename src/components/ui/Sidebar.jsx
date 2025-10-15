@@ -77,7 +77,7 @@ export default function Sidebar() {
                 return `group flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActuallyActive
                   ? "bg-[#182938] text-[#FEFEFE] active-link"
                   : "text-[#182938] hover:bg-[#182938]/15 hover:text-[#182938]"
-                  } ${collapsed ? "h-10 w-10 justify-center" : "w-full h-10"}`;
+                  } ${collapsed ? "h-10 w-10 justify-center" : "w-full h-10 pl-2"}`;
               }}
             >
               {({ isActive }) => (
