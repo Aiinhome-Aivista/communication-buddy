@@ -131,6 +131,6 @@ export const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/comm_buddy_v2.0",   // ✅ Correct placement
+    basename: "/comm_buddy_v2.5",   // ✅ Correct placement
   }
 );
