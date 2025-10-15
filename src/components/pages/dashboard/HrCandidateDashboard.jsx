@@ -149,7 +149,7 @@ const HrCandidateDashboard = () => {
             }));
         } else {
             return list.map((score, idx) => ({
-                name: `T${idx + 1}`,
+                name: `${idx + 1}`,
                 uv: Number(score) || 0,
             }));
         }
@@ -538,19 +538,19 @@ const HrCandidateDashboard = () => {
                                             isAnimationActive={true}
                                             animationBegin={animateBars ? 300 : 0}
                                             animationDuration={700}
-                                            onClick={() => {}}
-                                            onMouseEnter={() => {}}
-                                            onMouseLeave={() => {}}
+                                            onClick={() => { }}
+                                            onMouseEnter={() => { }}
+                                            onMouseLeave={() => { }}
                                             cursor="default"
                                             style={{ outline: "none" }}
                                         >
                                             {pieData.map((_, i) => (
-                                                <Cell 
-                                                    key={i} 
+                                                <Cell
+                                                    key={i}
                                                     fill={COLORS[i]}
-                                                    onClick={() => {}}
-                                                    onMouseEnter={() => {}}
-                                                    onMouseLeave={() => {}}
+                                                    onClick={() => { }}
+                                                    onMouseEnter={() => { }}
+                                                    onMouseLeave={() => { }}
                                                     cursor="default"
                                                     style={{ outline: "none" }}
                                                 />
@@ -928,7 +928,17 @@ const HrCandidateDashboard = () => {
                                         <div className="flex-1 mt-2">
                                             <ResponsiveContainer height={130} >
                                                 <BarChart data={barData}>
-                                                    <XAxis dataKey="name" hide />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{
+                                                            fill: "#182938",
+                                                            fontSize: 10,
+                                                            fontWeight: 500
+                                                        }}
+                                                        height={20}
+                                                    />
                                                     <YAxis
                                                         stroke="#182938"
                                                         axisLine
