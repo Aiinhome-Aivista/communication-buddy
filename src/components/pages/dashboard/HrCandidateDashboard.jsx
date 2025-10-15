@@ -743,26 +743,51 @@ const HrCandidateDashboard = () => {
                             {/* Bottom Stats */}
                             <div className="flex flex-wrap justify-between items-center mt-4 gap-4 text-sm font-medium text-slate-900">
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
-                                    <div className="font-bold text-[20px] text-[#8F96A9]">
-                                        {avgSessionDuration}
+                                    <div className="text-[#8F96A9]" style={{ fontSize: "20px", lineHeight: "100%" }}>
+                                        {/* Integer part - Bold */}
+                                        <span
+                                            style={{
+                                                fontFamily: "Inter, sans-serif",
+                                                fontWeight: 700,
+                                            }}
+                                        >
+                                            {String(avgSessionDuration).split(".")[0]}
+                                        </span>
+
+                                        {/* Decimal part - Light */}
+                                        <span
+                                            style={{
+                                                fontFamily: "Inter, sans-serif",
+                                                fontWeight: 300,
+                                            }}
+                                        >
+                                            .{String(avgSessionDuration).split(".")[1] || "00"}
+                                        </span>
                                     </div>
+
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         Average Session Duration
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
-                                    <div className="font-bold text-[20px] text-[#8F96A9]">
-                                        {isHR
-                                            ? Number.isFinite(Number(sessionCreated))
-                                                ? Number(sessionCreated)
-                                                : 0
-                                            : Number.isFinite(
-                                                Number(sessionReport?.assigned_test || 0)
-                                            )
-                                                ? Number(sessionReport?.assigned_test || 0)
-                                                : 0}
+                                    <div className="text-[#8F96A9]" style={{ fontSize: "20px", lineHeight: "100%" }}>
+                                        <span
+                                            style={{
+                                                fontFamily: "Inter, sans-serif",
+                                                fontWeight: 700, // Bold
+                                            }}
+                                        >
+                                            {isHR
+                                                ? Number.isFinite(Number(sessionCreated))
+                                                    ? Number(sessionCreated)
+                                                    : 0
+                                                : Number.isFinite(Number(sessionReport?.assigned_test || 0))
+                                                    ? Number(sessionReport?.assigned_test || 0)
+                                                    : 0}
+                                        </span>
                                     </div>
+
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         {isHR ? "Session Created" : "Assigned Test"}
                                     </div>
@@ -770,21 +795,49 @@ const HrCandidateDashboard = () => {
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
                                     <div className="flex items-center gap-1 font-bold text-[#8F96A9]">
-                                        <div className="font-bold text-[20px]">
-                                            {isHR
-                                                ? Math.round(
-                                                    Number.isFinite(Number(userTraffic))
-                                                        ? Number(userTraffic)
-                                                        : 0
-                                                )
-                                                : Number.isFinite(
-                                                    Number(sessionReport?.highest_score || averageScore)
-                                                )
-                                                    ? Number(
-                                                        sessionReport?.highest_score || averageScore
-                                                    ).toFixed(1)
-                                                    : "0.0"}
+                                        <div className="text-[20px]" style={{ lineHeight: "100%" }}>
+                                            {(() => {
+                                                // Determine the display value
+                                                const value = isHR
+                                                    ? Math.round(
+                                                        Number.isFinite(Number(userTraffic)) ? Number(userTraffic) : 0
+                                                    ).toString()
+                                                    : Number.isFinite(Number(sessionReport?.highest_score || averageScore))
+                                                        ? Number(sessionReport?.highest_score || averageScore).toFixed(1)
+                                                        : "0.0";
+
+                                                const [intPart, decimalPart] = value.split(".");
+
+                                                return (
+                                                    <>
+                                                        {/* Integer part - Bold */}
+                                                        <span
+                                                            style={{
+                                                                fontFamily: "Inter, sans-serif",
+                                                                fontWeight: 700, // Bold
+                                                                color: "#8F96A9"
+                                                            }}
+                                                        >
+                                                            {intPart}
+                                                        </span>
+
+                                                        {/* Decimal part - Light */}
+                                                        {decimalPart && (
+                                                            <span
+                                                                style={{
+                                                                    fontFamily: "Inter, sans-serif",
+                                                                    fontWeight: 300, // Light
+                                                                    color: "#8F96A9"
+                                                                }}
+                                                            >
+                                                                .{decimalPart}
+                                                            </span>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
+
                                         {sessionReport?.progress_indicator === "up" ? (
                                             <img src={trending_up} alt="Up" className="w-5 h-5" />
                                         ) : sessionReport?.progress_indicator === "down" ? (
@@ -799,11 +852,37 @@ const HrCandidateDashboard = () => {
                                 </div>
 
                                 <div className="flex flex-col items-center flex-1 min-w-[120px]">
-                                    <div className="font-bold text-[20px] text-[#8F96A9]">
-                                        {Number.isFinite(Number(averageScore))
-                                            ? Number(averageScore).toFixed(1)
-                                            : "0.0"}
+                                    <div className="flex flex-col items-end">
+                                        <span
+                                            className="text-[20px] leading-[100%] text-right"
+                                            style={{
+                                                fontFamily: "Inter, sans-serif",
+                                                color: "#8F96A9",
+                                            }}
+                                        >
+                                            {(() => {
+                                                // Format value safely
+                                                const formattedValue = Number.isFinite(Number(averageScore))
+                                                    ? Number(averageScore).toFixed(1)
+                                                    : "0.0";
+
+                                                const [intPart, decimalPart] = formattedValue.split(".");
+
+                                                return (
+                                                    <>
+                                                        {/* Integer part - Bold */}
+                                                        <span style={{ fontWeight: 700 }}>{intPart}</span>
+
+                                                        {/* Decimal part - Light */}
+                                                        <span style={{ fontWeight: 300 }}>
+                                                            .{decimalPart || "0"}
+                                                        </span>
+                                                    </>
+                                                );
+                                            })()}
+                                        </span>
                                     </div>
+
                                     <div className="text-[12px] text-[#8F96A9] font-normal">
                                         Average Score
                                     </div>
@@ -1020,14 +1099,34 @@ const HrCandidateDashboard = () => {
                                                         {/* Right side */}
                                                         <div className="flex flex-col items-end">
                                                             <span
-                                                                className="font-bold text-[20px] leading-[100%] text-right"
+                                                                className="text-[20px] leading-[100%] text-right"
                                                                 style={{
-                                                                    fontFamily: "Inter",
+                                                                    fontFamily: "Inter, sans-serif",
                                                                     color: "#8F96A9",
                                                                 }}
                                                             >
-                                                                {item.score}
+                                                                {(() => {
+                                                                    // Format score safely
+                                                                    const formattedValue = Number.isFinite(Number(item.score))
+                                                                        ? Number(item.score).toFixed(1)
+                                                                        : "0.0";
+
+                                                                    const [intPart, decimalPart] = formattedValue.split(".");
+
+                                                                    return (
+                                                                        <>
+                                                                            {/* Integer part - Bold */}
+                                                                            <span style={{ fontWeight: 700 }}>{intPart}</span>
+
+                                                                            {/* Decimal part - Light */}
+                                                                            <span style={{ fontWeight: 300 }}>
+                                                                                .{decimalPart || "0"}
+                                                                            </span>
+                                                                        </>
+                                                                    );
+                                                                })()}
                                                             </span>
+
                                                             <span
                                                                 className="font-normal text-[12px] leading-[100%] text-right"
                                                                 style={{
