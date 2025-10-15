@@ -588,7 +588,7 @@ const HrCandidateDashboard = () => {
                         </div>
 
                         {/* Technology Icons */}
-                        <div className="bg-white rounded-[10px] shadow-sm p-3 w-full flex-grow">
+                        <div className="bg-white rounded-2xl shadow-sm p-3 w-full flex-grow">
                             <h2
                                 style={{
                                     fontFamily: "Inter",
@@ -621,13 +621,16 @@ const HrCandidateDashboard = () => {
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded relative group cursor-pointer"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-lg"
                                                 title={tech}
                                             >
+                                                {/* Background overlay for opacity effect */}
+                                                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
+
                                                 <img
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
-                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain"
+                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
                                                     onError={(e) => {
                                                         e.target.src =
                                                             "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
@@ -635,7 +638,7 @@ const HrCandidateDashboard = () => {
                                                 />
                                                 {/* Hover tooltip */}
                                                 <div
-                                                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none shadow-md"
+                                                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out whitespace-nowrap z-20 pointer-events-none shadow-md"
                                                     style={{
                                                         backgroundColor: "#FFF8E1",
                                                         color: "#DFB916",
@@ -819,7 +822,7 @@ const HrCandidateDashboard = () => {
                                     <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col ">
                                         <h2 className="font-normal mb-3 text-[#3D5B81]">
                                             {isHR
-                                                ? "Annually Hiring Process"
+                                                ? "Monthly Session Created"
                                                 : "Last 12 Session Scores"}
                                         </h2>
 
