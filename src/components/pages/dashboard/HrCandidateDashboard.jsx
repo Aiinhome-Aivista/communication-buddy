@@ -393,7 +393,7 @@ const HrCandidateDashboard = () => {
     const showLoader = useMinLoaderTime(loading, 3000);
     if (showLoader)
         return (
-            <div className="w-full bg-[#ECEFF2] p-3 overflow-visible">
+            <div className="w-full bg-[#ECEFF2] p-4 overflow-visible">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -480,7 +480,7 @@ const HrCandidateDashboard = () => {
                     {/* LEFT COLUMN */}
                     <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start">
                         {/* Session Completion */}
-                        <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full  ">
+                        <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
                                 Session Completion
                             </h2>
@@ -1132,7 +1132,7 @@ const HrCandidateDashboard = () => {
                                                 topScores.map((item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm mx-2"
+                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
                                                     >
                                                         {/* Left content */}
                                                         <div className="flex items-start gap-3">
