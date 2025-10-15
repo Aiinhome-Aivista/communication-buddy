@@ -24,6 +24,7 @@ import candidateIcon from "/public/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -40,6 +41,13 @@ const HrCandidateDashboard = () => {
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
     const isHR = userRole === 'HR';
+    const [modalState, setModalState] = useState({
+            date: "",
+            sessionTopic: "",
+            candidateName: "",
+            sessionCategory: "",
+            candidateSearch: "",
+        });
 
     useEffect(() => {
         const load = async () => {
@@ -1207,12 +1215,26 @@ const HrCandidateDashboard = () => {
             {isHR && (
                 <SessionModal
                     open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    sessionDuration={sessionDuration}
-                    setSessionDuration={setSessionDuration}
-                    userData={userData}
-                    topics={topics}
-                    onSave={() => setModalOpen(false)}
+                onClose={() => setModalOpen(false)}
+                sessionDuration={sessionDuration}
+                setSessionDuration={setSessionDuration}
+                modalState={modalState}
+                setModalState={setModalState}
+                userData={userData}
+                topics={topics}
+                onSave={() => {
+                    setModalOpen(false);
+                    setSuccessOpen(true);
+                    fetchSessionData(); // Refresh the data in the table
+                    // Reset modal state after successful save
+                    setModalState({
+                        date: "",
+                        sessionTopic: "",
+                        candidateName: "",
+                        sessionCategory: "",
+                        candidateSearch: "",
+                    });
+                }}
                 />
             )}
         </div>
