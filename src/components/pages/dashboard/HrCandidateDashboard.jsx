@@ -1110,11 +1110,11 @@ const HrCandidateDashboard = () => {
                                                                     Assigned by
                                                                 </span>
 
-                                                                <span className="font-medium text-[13px] text-[#2C2E42] leading-tight mt-2">
+                                                                <span className="font-medium text-[13px] text-[#2C2E42] leading-tight ">
                                                                     {item.name}
                                                                 </span>
 
-                                                                <span className="text-[11px] text-gray-400 font-bold truncate max-w-[140px] mt-[4px] text-left w-full">
+                                                                <span className="text-[11px] text-gray-400 font-bold truncate max-w-[140px] mt-[11px] text-left w-full">
                                                                     {item.topic}
                                                                 </span>
                                                             </div>
