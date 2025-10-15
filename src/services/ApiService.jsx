@@ -84,48 +84,49 @@ export const sendChatMessage = async (sessionId, topic, time, userInput, languag
   });
 };
 
+const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      // If response is not ok, but it's a client error (4xx), don't retry.
+      if (!response.ok && response.status >= 400 && response.status < 500) {
+        return await response.json();
+      }
+      // If it's a server error (5xx) or other network issue, it will be caught below.
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn(`Attempt ${i + 1} failed for ${url}: ${error.message}`);
+      if (i < retries - 1) {
+        await new Promise(res => setTimeout(res, delay));
+      } else {
+        // If this was the last attempt, re-throw the error.
+        throw new Error(`Error fetching data after ${retries} attempts: ${error.message}`);
+      }
+    }
+  }
+};
 
 export const fatchedGetRequest = async (url) => {
-  //   const jwtToken = sessionStorage.getItem('Token')
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        // 'Authorization': jwtToken,
-      },
-    })
-    if (!response.ok) {
-      return await response.json();
-      // throw new Error(`Network response was not ok`);
-    }
-    return await response.json()
-  }
-  catch (e) {
-    throw new Error(`Error fetchin data: ${e.message}`);
-  }
-}
+  const options = {
+    method: 'GET',
+    headers: {
+      // 'Authorization': jwtToken,
+    },
+  };
+  return fetchWithRetry(url, options);
+};
 
 export const fatchedPostRequest = async (url, body) => {
-  //   const jwtToken = sessionStorage.getItem('Token')
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': jwtToken,
-      },
-      body: JSON.stringify(body),
-    });
-
-    // console.log(response);
-
-    if (!response.ok) {
-      return await response.json();
-      // throw new Error('Network response was not ok');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(`Error fetching data: ${error.message}`);
-  }
-}
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Authorization': jwtToken,
+    },
+    body: JSON.stringify(body),
+  };
+  return fetchWithRetry(url, options);
+};
