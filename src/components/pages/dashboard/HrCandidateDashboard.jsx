@@ -1040,13 +1040,13 @@ const HrCandidateDashboard = () => {
                                                             >
                                                                 Score
                                                             </span>
-                                                            <KeyboardArrowDown
+                                                            {/* <KeyboardArrowDown
                                                                 style={{
                                                                     fontSize: "16px",
                                                                     color: "#B0B3B8",
                                                                     marginTop: "2px",
                                                                 }}
-                                                            />
+                                                            /> */}
                                                         </div>
                                                     </div>
                                                 ))
