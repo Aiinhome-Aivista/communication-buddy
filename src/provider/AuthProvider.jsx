@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("userRole", response.role);
         sessionStorage.setItem("success", "true");
         sessionStorage.setItem("user_id", response.user_id);
-        setIsAuthenticated(true); // ✅ Set it
+        setTimeout(() => {
+          setIsAuthenticated(true); // ✅ Set it after a delay
+        }, 3000);
         setIsLoading(false);
         return { success: true, userName: response.name };
       } else {

@@ -23,3 +23,29 @@
     position: absolute;
     right: 0;
 }
+
+/* Custom Toast Animations */
+@keyframes toast-enter {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-exit {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.animate-toast-enter { animation: toast-enter 0.8s ease-out forwards; }
+.animate-toast-exit { animation: toast-exit 0.8s ease-in forwards; }

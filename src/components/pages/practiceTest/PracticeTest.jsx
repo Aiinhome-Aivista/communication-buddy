@@ -14,10 +14,10 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
-const tabOptions = ["Upcoming", "Ongoing", "Expired"];
+const tabOptions = ["All", "Upcoming", "Ongoing", "Expired"];
 
 export default function PracticeTest() {
-  const [activeTab, setActiveTab] = useState("Upcoming");
+  const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -85,9 +85,9 @@ export default function PracticeTest() {
   // Filter logic
   const filteredData = allTopics
     .filter((topic) => {
-      const status = topic.topic_attend_status?.toLowerCase();
       const tab = activeTab.toLowerCase();
-      if (tab === "upcoming") return status === "upcoming";
+      if (tab === "all") return true;
+      const status = topic.topic_attend_status?.toLowerCase();
       return status === tab;
     })
     .filter((topic) =>

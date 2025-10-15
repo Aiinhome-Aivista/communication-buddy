@@ -9,7 +9,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import "../../style/login.css";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
-import LoginInfoToast from "../../modal/LoginInfoToast";
+import Toaster from "../../modal/Toaster";
 
 function Login() {
   const { login } = useAuth();
@@ -21,17 +21,19 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [loginResponse, setLoginResponse] = useState([])
+  const [loginResponse, setLoginResponse] = useState(null);
 
   useEffect(() => {
-    if (showInfoModal) {
-      const timer = setTimeout(() => {
+    if (loginResponse) {
+      console.log("loginResponse:", loginResponse);
+      setShowInfoModal(true);
+      const closeTimer = setTimeout(() => {
         setShowInfoModal(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
+      }, 3000); // 0.8s appear + 2.2s stay
+      // If not successful, just return the cleanup for the close timer
+      return () => clearTimeout(closeTimer);
     }
-  }, [showInfoModal]);
+  }, [loginResponse, navigate]);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -48,19 +50,8 @@ function Login() {
     try {
       setLoading(true);
       const result = await login(userInfo);
-      setLoginResponse(result)
-      if (result?.success) {
-        setShowInfoModal(true);
-        setLoading(false);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 3000);
-      } else {
-        setLoading(false);
-        if (result?.message) {
-          setShowInfoModal(true);
-        }
-      }
+      setLoginResponse(result); // This will trigger the useEffect
+      setLoading(false);
     } catch (err) {
       //console.error(err);
       setLoading(false);
@@ -77,7 +68,13 @@ function Login() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <LoginInfoToast show={showInfoModal} onClose={() => setShowInfoModal(false)} message={loginResponse?.message} success={loginResponse?.success} />
+      {loginResponse && (
+        <Toaster
+          show={showInfoModal}
+          onClose={() => setShowInfoModal(false)}
+          message={loginResponse.success ? `Welcome back, ${loginResponse.userName}!` : loginResponse.message}
+          success={loginResponse.success} />
+      )}
       <p
         className="w-full flex text-base md:text-lg cursor-pointer">
         A<span className="text-[#DFB916]">ii</span>nhome
