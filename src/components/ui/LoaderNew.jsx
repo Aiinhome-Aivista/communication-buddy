@@ -2,8 +2,8 @@ import React from 'react';
 import '../style/loader.css';
 
 export default function LoaderNew() {
-    return (
-        <div className="flex items-center justify-center min-h-[50vh] rounded-lg mt-8">
+    return ( // Changed to a fixed, full-screen overlay
+        <div className="fixed inset-0 flex items-center justify-center bg-[#ECEFF2] z-50">
             <div className="flex flex-col items-center text-[#BCC7D2] dark:text-gray-300">
                 {/* Animated dots on top */}
                 <div className="flex space-x-2 mb-3">
