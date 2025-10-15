@@ -12,10 +12,10 @@ const datePickerTheme = createTheme({
       styleOverrides: {
         root: {
           "&.Mui-selected": {
-            backgroundColor: "#BCC7D2", // selected date background
-            color: "#000000",           // selected date text
+            backgroundColor: "#BCC7D2 !important",
+            color: "#000000",
             "&:hover": {
-              backgroundColor: "#BCC7D2",
+              backgroundColor: "#BCC7D2 !important",
             },
           },
         },
@@ -23,18 +23,32 @@ const datePickerTheme = createTheme({
     },
     MuiClockPointer: {
       styleOverrides: {
-        root: {
-          backgroundColor: "#BCC7D2", // clock pointer
-        },
-        thumb: {
-          border: "14px solid #BCC7D2", // center circle
-        },
+        root: { backgroundColor: "#BCC7D2" },
+        thumb: { border: "14px solid #BCC7D2" },
       },
     },
     MuiClockNumber: {
       styleOverrides: {
-        selected: {
-          color: "#000000", // selected clock number
+        root: {
+          "&.Mui-selected": {
+            backgroundColor: "#BCC7D2 !important",
+            color: "#000000",
+            "&:hover": {
+              backgroundColor: "#BCC7D2 !important",
+            },
+          },
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: { width: "360px" }, // small modal
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          display: "none", // hide Cancel/OK buttons
         },
       },
     },
@@ -52,7 +66,7 @@ export default function CustomDateTimePicker({ date, setDate, errors, clearError
             setDate(newValue ? newValue.toISOString() : "");
             if (newValue) clearError("date");
           }}
-          defaultValue={dayjs()} // ensures current date/time selected first
+          defaultValue={dayjs()}
           timeSteps={{ minutes: 1 }}
           slotProps={{
             textField: {
@@ -61,24 +75,16 @@ export default function CustomDateTimePicker({ date, setDate, errors, clearError
               error: !!errors.date,
               sx: {
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
                   height: "48px",
                   backgroundColor: "white",
-                  "& fieldset": {
-                    borderColor: errors.date
-                      ? "#FF4D01"
-                      : date
-                      ? "#DFB916"
-                      : "#BCC7D2",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderRadius: "12px",
+                    borderColor: errors.date ? "#FF4D01" : date ? "#DFB916" : "#BCC7D2",
                   },
-                  "&:hover fieldset": {
-                    borderColor: errors.date
-                      ? "#FF4D01"
-                      : date
-                      ? "#DFB916"
-                      : "#BCC7D2",
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: errors.date ? "#FF4D01" : date ? "#DFB916" : "#BCC7D2",
                   },
-                  "&.Mui-focused fieldset": {
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: errors.date ? "#FF4D01" : "#E5B800",
                   },
                 },
@@ -99,13 +105,9 @@ export default function CustomDateTimePicker({ date, setDate, errors, clearError
               },
             },
           }}
-          slots={{
-            openPickerIcon: CalendarMonthIcon,
-          }}
+          slots={{ openPickerIcon: CalendarMonthIcon }}
           onOpen={() => {
-            if (!date) {
-              setDate(dayjs().toISOString()); // sets current date & time when modal opens
-            }
+            if (!date) setDate(dayjs().toISOString());
           }}
         />
       </LocalizationProvider>

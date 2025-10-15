@@ -313,11 +313,6 @@ body,
   color: #BCC7D2;
 }
 
-.textarea-error::placeholder {
-  color: #FF4D017D;
-  opacity: 1;
-}
-
 /* Style for the datetime-local input placeholder text */
 .date-error {
   color: #FF4D017D;

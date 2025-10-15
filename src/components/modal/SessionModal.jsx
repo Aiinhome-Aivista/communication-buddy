@@ -5,12 +5,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckIcon from "@mui/icons-material/Check";
 import "../style/SessionModal.css";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import dayjs from "dayjs";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-
+import CustomDateTimePicker from "./DateTimePicker";
 
 
 export default function SessionModal({
@@ -340,88 +335,12 @@ export default function SessionModal({
                   <span className="text-[#FF4D01] mr-1"> *</span>
                 </label>
                 <div className="relative">
-                  {/* <input
-                    ref={dateInputRef}
-                    type="datetime-local"
-                    id="session-datetime-picker"
-                    value={toDatetimeLocalInput(date)}
-                    onChange={(e) => {
-                      const newDate = e.target.value ? new Date(e.target.value).toISOString() : "";
-                      setDate(newDate);
-                      if (newDate) clearError("date");
-                    }}
-                    className={`w-full border rounded-xl px-4 text-sm bg-white h-[48px] focus:outline-none focus:ring-2 focus:ring-[#E5B800] ${date ? 'text-[#182938]' : 'text-transparent'} ${errors.date ? "border-[#FF4D01] date-error" : date ? "border-[#DFB916]" : "border-[#BCC7D2]"}`}
-                  /> */}
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      label="DD/MM/YYYY  MM:HH"
-                      value={date ? dayjs(date) : null}
-                      onChange={(newValue) => {
-                        setDate(newValue ? newValue.toISOString() : "");
-                        if (newValue) clearError("date");
-                      }}
-                      // ⏰ Always show current date & time first in picker modal
-                      defaultValue={dayjs()}
-                      timeSteps={{ minutes: 1 }}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          size: "small",
-                          error: !!errors.date,
-                          sx: {
-                            "& .MuiOutlinedInput-root": {
-                              borderRadius: "12px",
-                              height: "48px",
-                              backgroundColor: "white",
-                              "& fieldset": {
-                                borderColor: errors.date
-                                  ? "#FF4D01"
-                                  : date
-                                    ? "#DFB916"
-                                    : "#BCC7D2",
-                              },
-                              "&:hover fieldset": {
-                                borderColor: errors.date
-                                  ? "#FF4D01"
-                                  : date
-                                    ? "#DFB916"
-                                    : "#BCC7D2",
-                              },
-                              "&.Mui-focused fieldset": {
-                                borderColor: errors.date ? "#FF4D01" : "#E5B800",
-                              },
-                            },
-                            "& .MuiInputLabel-root": {
-                              fontSize: "0.85rem",
-                              color: errors.date ? "#FF4D017D" : "#BCC7D2",
-                            },
-                            "& .MuiInputBase-input": {
-                              color: errors.date ? "#FF4D017D" : "#182938",
-                            },
-                          },
-                        },
-                        openPickerButton: {
-                          disableRipple: true,
-                          sx: {
-                            color: errors.date ? "#FF4D017D" : "#7E8489",
-                            transition: "color 0.2s ease",
-                          },
-                        },
-                      }}
-                      slots={{
-                        openPickerIcon: CalendarMonthIcon,
-                      }}
-                      // 🟢 Fix for always showing current time on picker open
-                      onOpen={() => {
-                        if (!date) {
-                          setDate(dayjs().toISOString());
-                        }
-                      }}
-                    />
-                  </LocalizationProvider>
-
-
-
+                  <CustomDateTimePicker
+                    date={date}
+                    setDate={setDate}
+                    errors={errors}
+                    clearError={clearError}
+                  />
                   {errors.date && (
                     <p className="text-[#FF4D01] text-xs mt-1">{errors.date}</p>
                   )}
