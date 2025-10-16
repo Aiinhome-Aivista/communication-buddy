@@ -3,8 +3,10 @@ import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import '../style/login.css'
 
-function Toaster({ show, onClose, status, message }) {
+function LoginInfoToast({ show, onClose, message, success }) {
   const [isRendered, setIsRendered] = useState(false);
+
+  
 
   useEffect(() => {
     if (show) {
@@ -24,36 +26,25 @@ function Toaster({ show, onClose, status, message }) {
 
   const animationClass = show ? 'animate-toast-enter' : 'animate-toast-exit';
 
-  // normalize status string (status will come in as a string)
-  const statusKey = (status || "error").toString().trim().toLowerCase();
-
-  // switch-based configuration
-  const toastConfig = (() => {
-    switch (statusKey) {
-      case "success":
-        return {
-          Icon: CheckCircleRoundedIcon,
-          iconColor: "green",
-          borderColor: "border-green-300",
-          textColor: "text-green-700",
-          title: "Success!",
-          defaultMessage: "Login successful. Redirecting...",
-          buttonBorderColor: "border-green-300",
-        };
-      case "error":
-      default:
-        return {
-          Icon: ErrorRoundedIcon,
-          iconColor: "#FF4D01CC",
-          borderColor: "border-[#FF4D014F]",
-          textColor: "text-[#FF4D01CC]",
-          title: "Failed!",
-          defaultMessage:
-            "Password or username is incorrect, please try again with correct credentials.",
-          buttonBorderColor: "border-[#FF4D017D]",
-        };
+  const toastConfig = success
+    ? {
+      Icon: CheckCircleRoundedIcon,
+      iconColor: 'green',
+      borderColor: 'border-green-300',
+      textColor: 'text-green-700',
+      title: 'Success!',
+      defaultMessage: 'Login successful. Redirecting...',
+      buttonBorderColor: 'border-green-300',
     }
-  })();
+    : {
+      Icon: ErrorRoundedIcon,
+      iconColor: '#FF4D01CC',
+      borderColor: 'border-[#FF4D014F]',
+      textColor: 'text-[#FF4D01CC]',
+      title: 'Failed!',
+      defaultMessage: 'Password or username is incorrect, please try again with correct credentials.',
+      buttonBorderColor: 'border-[#FF4D017D]',
+    };
 
   const { Icon, iconColor, borderColor, textColor, title, defaultMessage, buttonBorderColor } = toastConfig;
 
@@ -73,4 +64,4 @@ function Toaster({ show, onClose, status, message }) {
   );
 }
 
-export default Toaster;
+export default LoginInfoToast;
