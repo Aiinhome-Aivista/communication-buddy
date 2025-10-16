@@ -476,9 +476,9 @@ const HrCandidateDashboard = () => {
             )}
 
             {!error && (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-4 overflow-visible">
                     {/* LEFT COLUMN */}
-                    <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start">
+                    <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start overflow-visible">
                         {/* Session Completion */}
                         <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
@@ -642,15 +642,15 @@ const HrCandidateDashboard = () => {
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-lg"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-90 hover:shadow-lg hover:scale-102"
                                             >
                                                 {/* Background overlay for opacity effect */}
-                                                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
+                                                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-1 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
 
                                                 <img
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
-                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
+                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out relative z-10"
                                                     onError={(e) => {
                                                         e.target.src =
                                                             "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
@@ -683,7 +683,7 @@ const HrCandidateDashboard = () => {
                     </div>
 
                     {/* RIGHT SECTION */}
-                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4">
+                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4 overflow-visible">
                         {/* Session Report */}
                         <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <div className="flex justify-between items-start mb-6">
@@ -914,54 +914,54 @@ const HrCandidateDashboard = () => {
                         </div>
 
                         {/* Bottom Row */}
-                        <div className="grid grid-cols-3 gap-4 h-full">
-                            <div className="col-span-2 h-full ">
+                        <div className="grid grid-cols-3 gap-4 h-full overflow-visible">
+                            <div className="col-span-2 h-full overflow-visible">
                                 <div className="flex flex-col gap-4 w-full h-full">
                                     {/* Chart Section */}
-<div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
-  <h2 className="font-normal mb-3 text-[#3D5B81]">
-    {isHR ? "Monthly Session Created" : "Last 12 Session Scores"}
-  </h2>
+                                    <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
+                                        <h2 className="font-normal mb-3 text-[#3D5B81]">
+                                            {isHR ? "Monthly Session Created" : "Last 12 Session Scores"}
+                                        </h2>
 
-  <div
-    className="flex-1 mt-2"
-    tabIndex={-1} // prevents focus border
-    onFocus={(e) => e.target.blur()} // ensures no focus stays
-    style={{
-      outline: "none",
-      userSelect: "none",
-      WebkitTapHighlightColor: "transparent",
-    }}
-  >
-    <ResponsiveContainer height={130}>
-      <BarChart data={barData}>
-        <XAxis
-          dataKey="name"
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: "#182938", fontSize: 10, fontWeight: 500 }}
-          height={20}
-        />
-        <YAxis
-          stroke="#182938"
-          axisLine
-          tickLine={false}
-          tick={{ fill: "#182938", fontSize: 12 }}
-        />
-        <Tooltip content={<CustomTooltip />} cursor={false} />
-        <Bar
-          dataKey="uv"
-          fill="#182938"
-          barSize={25}
-          radius={[5, 5, 5, 5]}
-          isAnimationActive={true}
-          animationBegin={animateBars ? 300 : 0}
-          animationDuration={700}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
-</div>
+                                        <div
+                                            className="flex-1 mt-2"
+                                            tabIndex={-1} // prevents focus border
+                                            onFocus={(e) => e.target.blur()} // ensures no focus stays
+                                            style={{
+                                                outline: "none",
+                                                userSelect: "none",
+                                                WebkitTapHighlightColor: "transparent",
+                                            }}
+                                        >
+                                            <ResponsiveContainer height={130}>
+                                                <BarChart data={barData}>
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{ fill: "#182938", fontSize: 10, fontWeight: 500 }}
+                                                        height={20}
+                                                    />
+                                                    <YAxis
+                                                        stroke="#182938"
+                                                        axisLine
+                                                        tickLine={false}
+                                                        tick={{ fill: "#182938", fontSize: 12 }}
+                                                    />
+                                                    <Tooltip content={<CustomTooltip />} cursor={false} />
+                                                    <Bar
+                                                        dataKey="uv"
+                                                        fill="#182938"
+                                                        barSize={25}
+                                                        radius={[5, 5, 5, 5]}
+                                                        isAnimationActive={true}
+                                                        animationBegin={animateBars ? 300 : 0}
+                                                        animationDuration={700}
+                                                    />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
 
 
                                     {/* Line Chart */}
@@ -1108,7 +1108,7 @@ const HrCandidateDashboard = () => {
                                         `}</style>
                                     <div
                                         style={{ overflowY: "auto" }}
-                                        className="scrollbar-hide w-full 
+                                        className="scrollbar-hide w-full overflow-visible
                     "
                                     >
                                         <h2
@@ -1127,17 +1127,17 @@ const HrCandidateDashboard = () => {
                                         >
                                             Top 5 Session Score
                                         </h2>
-                                        <div className="space-y-3 h-92 overflow-y-auto scrollbar-hide">
+                                        <div className="space-y-3 h-92 scrollbar-hide overflow-visible p-2">
                                             {topScores.length > 0 ? (
                                                 topScores.map((item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
+                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-102 hover:shadow-lg cursor-pointer"
                                                     >
                                                         {/* Left content */}
                                                         <div className="flex items-start gap-3">
                                                             <div className="flex flex-col gap-2" >
-                                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
+                                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold transition-transform duration-300 ease-in-out">
 
                                                                     <img
                                                                         src={Subtract}
