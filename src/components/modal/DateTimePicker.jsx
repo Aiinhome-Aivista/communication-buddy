@@ -45,13 +45,7 @@ const datePickerTheme = createTheme({
         paper: { width: "360px" }, // small modal
       },
     },
-    MuiDialogActions: {
-      styleOverrides: {
-        root: {
-          display: "none", // hide Cancel/OK buttons
-        },
-      },
-    },
+ 
   },
 });
 
