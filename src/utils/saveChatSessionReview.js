@@ -5,7 +5,7 @@ export const saveChatSession = async ({
   fullConversation,
 }) => {
   try {
-    await fetch("http://122.163.121.176:3004/chat-session-review", {
+    await fetch("https://aiinhome.com/commbuddy/chat-session-review", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -25,7 +25,7 @@ export const saveChatSession = async ({
 
 export const greettingMessage = async ({ username, topic, userinput }) => {
   try {
-    const response = await fetch("http://122.163.121.176:3004/start_session", {
+    const response = await fetch("https://aiinhome.com/commbuddy/start_session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

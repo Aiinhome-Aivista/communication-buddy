@@ -38,10 +38,33 @@ export default function PracticeTest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTestTitle, setSelectedTestTitle] = useState("");
 
+  // Function to get current timezone
+  const getCurrentTimezone = () => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch (error) {
+      console.error("Error getting timezone:", error);
+      return "UTC"; // fallback timezone
+    }
+  };
+
   const fetchAllTopics = async () => {
     setLoading(true);
     try {
-      const payload = { user_id: userId };
+      const currentTimezone = getCurrentTimezone();
+      const now = new Date();
+      const formattedDateTime = now.getFullYear() + '-' + 
+        String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+        String(now.getDate()).padStart(2, '0') + ' ' + 
+        String(now.getHours()).padStart(2, '0') + ':' + 
+        String(now.getMinutes()).padStart(2, '0') + ':' + 
+        String(now.getSeconds()).padStart(2, '0');
+      
+      const payload = { 
+        user_id: userId,
+        // timezone: currentTimezone
+        now: formattedDateTime
+      };
       const response = await fatchedPostRequest(postURL.getAllTopics, payload);
       if (response && response.topics) {
         setAllTopics(response.topics);
