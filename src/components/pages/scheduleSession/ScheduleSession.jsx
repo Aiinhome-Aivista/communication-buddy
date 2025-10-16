@@ -77,8 +77,13 @@ export default function ScheduleSession() {
             const response = await fatchedPostRequest(postURL.getScheduleDataHrWise, JsonBody);
             if (response.message === "Success" || response.Success === true) {
                 const processed = (response.data || []).map((session) => ({
-                    ...session,
-                    session_date: getDate(session.session_time),
+                    ...session, // The issue is likely in getDate. Let's parse it as UTC here.
+                    session_date: new Date(session.session_time).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        timeZone: 'UTC'
+                    }),
                     session_time: getTime(session.session_time),
                 }));
                 setSessionData(processed);
