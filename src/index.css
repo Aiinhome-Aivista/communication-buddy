@@ -2,17 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* Custom style for DateTimePicker border-radius */
-.session-datetime-picker .MuiOutlinedInput-root {
-  border-radius: 0.75rem; /* rounded-xl */
-}
 
-
-/* Default placeholder color for the session topic textarea */
-.session-topic-textarea::placeholder {
-  color: #bcc7d2;
-  opacity: 1;
-}
 
 
 
@@ -315,8 +305,21 @@ body,
   color: #182938 !important;           /* Dark text for contrast */
 }
 
+.input-error.candidate-search-input::placeholder {
+  color: #FF4D017D !important;
+}
+
 .candidate-search-input::placeholder {
-  color: #BCC7D2 !important;
+  color: #BCC7D2;
+}
+
+/* Style for the datetime-local input placeholder text */
+.date-error {
+  color: #FF4D017D;
+}
+
+.date-error::-webkit-calendar-picker-indicator {
+  filter: invert(55%) sepia(98%) saturate(3419%) hue-rotate(349deg) brightness(100%) contrast(101%) opacity(50%);
 }
 
 /* Custom scrollbar for candidate dropdown */
