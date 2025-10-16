@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useNavigate } from "react-router-dom";
 import CancelIcon from '@mui/icons-material/Cancel';
 import WarningIcon from '@mui/icons-material/WarningRounded';
+
 export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
   const [countdown, setCountdown] = useState("");
+  const [isReady, setIsReady] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!selectedTestItem) return;
+    if (!isOpen || !selectedTestItem) {
+      setIsReady(false); // Reset when modal is closed or item changes
+      return;
+    }
 
     const updateCountdown = () => {
       const now = new Date();
@@ -14,7 +20,8 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
       const diff = sessionTime - now;
 
       if (diff <= 0) {
-        setCountdown("Started");
+        setIsReady(true);
+        setCountdown("Session is ready to start!");
         return;
       }
 
@@ -29,7 +36,7 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
     const timer = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(timer);
-  }, [selectedTestItem]);
+  }, [selectedTestItem, isOpen]);
 
   if (!isOpen || !selectedTestItem) return null;
 
@@ -38,7 +45,7 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
       className="fixed inset-0 flex items-center justify-center z-[50] bg-black/30 backdrop-blur-sm"
       onClick={onClose}
     >
-  <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-auto text-center relative"
+  <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px] min-h-[220px] max-w-[420px] max-h-auto text-center relative"
       
     
         onClick={(e) => e.stopPropagation()}
@@ -58,15 +65,27 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
             <span className="font-bold">CB</span>
        
       </h3>
-      <h2 className="text-lg font-semibold text-[#2C2E42]">
+      <h2 className="text-lg font-semibold text-[#545564]">
           Upcoming Session
         </h2>
-        <h2 className="text-lg font-semibold text-[#2C2E42] mt-2">
-          {selectedTestItem.topic_name}
+        <h2 className="text-lg font-semibold text-[#2C2E42] mt-2 mb-2">
+          "{selectedTestItem.topic_name}"
         </h2>
-        <p className="text-sm text-gray-600 mt-2">
-          Starts in: {countdown}
-        </p>
+        {isReady ? (
+          <div className="mt-4">
+            <p className="text-[#2C2E42] font-bold mb-4">{countdown}</p>
+            <button
+              className="h-10 w-40 border border-[#DFB916] bg-[#DFB916] text-white font-bold text-sm px-5 rounded-lg hover:bg-[#d6a600] transition"
+              onClick={() => navigate("/test/chat", { state: selectedTestItem })}
+            >
+              Start Chat
+            </button>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-600 mt-2">
+            Starts in: <span className="font-bold text-lg text-[#DFB916]">{countdown}</span>
+          </p>
+        )}
       </div>
     </div>
   );
