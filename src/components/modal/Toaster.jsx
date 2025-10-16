@@ -3,7 +3,7 @@ import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import '../style/login.css'
 
-function Toaster({ show, onClose, message, success }) {
+function Toaster({ show, onClose, status, message }) {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -24,32 +24,50 @@ function Toaster({ show, onClose, message, success }) {
 
   const animationClass = show ? 'animate-toast-enter' : 'animate-toast-exit';
 
-  return success ? (
-    // Success Toast
-    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 ${animationClass}`}>
-      <div className="flex items-center justify-between bg-[#FEFEFE] border-1 border-green-300 shadow-md sm:w-4/5 md:w-3/4 lg:w-1/2 px-2 py-1 rounded-2xl">
+  // normalize status string (status will come in as a string)
+  const statusKey = (status || "error").toString().trim().toLowerCase();
+
+  // switch-based configuration
+  const toastConfig = (() => {
+    switch (statusKey) {
+      case "success":
+        return {
+          Icon: CheckCircleRoundedIcon,
+          iconColor: "green",
+          borderColor: "border-green-300",
+          textColor: "text-green-700",
+          title: "Success!",
+          defaultMessage: "Login successful. Redirecting...",
+          buttonBorderColor: "border-green-300",
+        };
+      case "error":
+      default:
+        return {
+          Icon: ErrorRoundedIcon,
+          iconColor: "#FF4D01CC",
+          borderColor: "border-[#FF4D014F]",
+          textColor: "text-[#FF4D01CC]",
+          title: "Failed!",
+          defaultMessage:
+            "Password or username is incorrect, please try again with correct credentials.",
+          buttonBorderColor: "border-[#FF4D017D]",
+        };
+    }
+  })();
+
+  const { Icon, iconColor, borderColor, textColor, title, defaultMessage, buttonBorderColor } = toastConfig;
+
+  return (
+    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 ${animationClass}`} role="alert">
+      <div className={`flex items-center justify-between bg-[#FEFEFE] border-1 ${borderColor} shadow-md sm:w-4/5 md:w-3/4 lg:w-1/2 px-2 py-1 rounded-2xl`}>
         <div className="flex items-center gap-3">
-          <CheckCircleRoundedIcon sx={{ color: 'green' }} />
-          <div className="flex flex-col text-green-700">
-            <p className="text-sm font-semibold p-0">Success!</p>
-            <p className="text-sm p-0">{message || "Login successful. Redirecting..."}</p>
+          <Icon sx={{ color: iconColor }} />
+          <div className={`flex flex-col ${textColor}`}>
+            <p className="text-sm font-semibold p-0">{title}</p>
+            <p className="text-sm p-0">{message || defaultMessage}</p>
           </div>
         </div>
-        <button onClick={() => onClose()} className="text-center text-xs px-4 py-2 bg-transparent text-green-700 border-1 border-green-300 rounded-lg cursor-pointer">Close</button>
-      </div>
-    </div>
-  ) : (
-    // Failure Toast
-    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 ${animationClass}`}>
-      <div className="flex items-center justify-between bg-[#FEFEFE] border-1 border-[#FF4D014F] shadow-md sm:w-4/5 md:w-3/4 lg:w-1/2 px-2 py-1 rounded-2xl">
-        <div className="flex items-center gap-3">
-          <ErrorRoundedIcon sx={{ color: '#FF4D01CC' }} />
-          <div className="flex flex-col text-[#FF4D01CC]">
-            <p className="text-sm font-semibold p-0">Failed !</p>
-            <p className="text-sm p-0">{message || "Password or username is incorrect, please try again with correct credentials."}</p>
-          </div>
-        </div>
-        <button onClick={() => onClose()} className="text-center text-xs px-4 py-2 bg-[#3D5B8100] text-[#FF4D01CC] border-1 border-[#FF4D017D] rounded-lg cursor-pointer">Close</button>
+        <button onClick={() => onClose()} className={`text-center text-xs px-4 py-2 bg-transparent ${textColor} border-1 ${buttonBorderColor} rounded-lg cursor-pointer`}>Close</button>
       </div>
     </div>
   );

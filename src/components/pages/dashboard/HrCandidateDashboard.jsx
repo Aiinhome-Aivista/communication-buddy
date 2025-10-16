@@ -24,6 +24,7 @@ import candidateIcon from "/public/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -35,11 +36,19 @@ const HrCandidateDashboard = () => {
     const [animateBars, setAnimateBars] = useState(false);
     const [userData, setUserData] = useState([]);
     const [topics, setTopics] = useState([]);
+   
 
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
     const isHR = userRole === 'HR';
+    const [modalState, setModalState] = useState({
+            date: "",
+            sessionTopic: "",
+            candidateName: "",
+            sessionCategory: "",
+            candidateSearch: "",
+        });
 
     useEffect(() => {
         const load = async () => {
@@ -400,22 +409,10 @@ const HrCandidateDashboard = () => {
                     <div className="flex items-center gap-3">
                         {isHR ? (
                             <button
-                                className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
+                                className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
                                 onClick={() => setModalOpen(true)}
                             >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M12 4v16m8-8H4"
-                                    />
-                                </svg>
+                                <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
                                 Create Session
                             </button>
                         ) : (
@@ -439,22 +436,10 @@ const HrCandidateDashboard = () => {
                 <div className="flex items-center gap-3">
                     {isHR ? (
                         <button
-                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
+                            className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4v16m8-8H4"
-                                />
-                            </svg>
+                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
                             Create Session
                         </button>
                     ) : (
@@ -1229,15 +1214,29 @@ const HrCandidateDashboard = () => {
 
             {/* Session Modal (HR only) */}
             {isHR && (
-                <SessionModal
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    sessionDuration={sessionDuration}
-                    setSessionDuration={setSessionDuration}
-                    userData={userData}
-                    topics={topics}
-                    onSave={() => setModalOpen(false)}
-                />
+                  <SessionModal
+                             open={modalOpen}
+                             onClose={() => setModalOpen(false)}
+                             sessionDuration={sessionDuration}
+                             setSessionDuration={setSessionDuration}
+                             modalState={modalState}
+                             setModalState={setModalState}
+                             userData={userData}
+                             topics={topics}
+                             onSave={() => {
+                                 setModalOpen(false);
+                                 setSuccessOpen(true);
+                                 fetchSessionData(); // Refresh the data in the table
+                                 // Reset modal state after successful save
+                                 setModalState({
+                                     date: "",
+                                     sessionTopic: "",
+                                     candidateName: "",
+                                     sessionCategory: "",
+                                     candidateSearch: "",
+                                 });
+                             }}
+                         />
             )}
         </div>
     );
