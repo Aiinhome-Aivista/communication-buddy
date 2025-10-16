@@ -144,7 +144,7 @@ export default function SessionModal({
       );
       if (
         response &&
-        (response.message === "request updated" ||
+        (response.message === "Topic assigned successfully and emails sent" ||
           response.success === true ||
           response.status === 200)
       ) {
