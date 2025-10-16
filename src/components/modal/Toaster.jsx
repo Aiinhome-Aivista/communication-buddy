@@ -3,7 +3,7 @@ import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import '../style/login.css'
 
-function LoginInfoToast({ show, onClose, message, success }) {
+function Toaster({ show, onClose, message, success }) {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ function LoginInfoToast({ show, onClose, message, success }) {
       // Wait for exit animation to finish before un-rendering
       const timer = setTimeout(() => {
         setIsRendered(false);
-      }, 1000); // This should match the animation duration
+      }, 800); // This should match the animation duration
       return () => clearTimeout(timer);
     }
   }, [show]);
@@ -22,9 +22,11 @@ function LoginInfoToast({ show, onClose, message, success }) {
     return null;
   }
 
+  const animationClass = show ? 'animate-toast-enter' : 'animate-toast-exit';
+
   return success ? (
     // Success Toast
-    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 transition-all duration-1000 ease-in-out ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
+    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 ${animationClass}`}>
       <div className="flex items-center justify-between bg-[#FEFEFE] border-1 border-green-300 shadow-md sm:w-4/5 md:w-3/4 lg:w-1/2 px-2 py-1 rounded-2xl">
         <div className="flex items-center gap-3">
           <CheckCircleRoundedIcon sx={{ color: 'green' }} />
@@ -38,7 +40,7 @@ function LoginInfoToast({ show, onClose, message, success }) {
     </div>
   ) : (
     // Failure Toast
-    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 transition-all duration-1000 ease-in-out ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
+    <div className={`fixed inset-x-0 top-0 z-50 flex justify-center items-start p-8 ${animationClass}`}>
       <div className="flex items-center justify-between bg-[#FEFEFE] border-1 border-[#FF4D014F] shadow-md sm:w-4/5 md:w-3/4 lg:w-1/2 px-2 py-1 rounded-2xl">
         <div className="flex items-center gap-3">
           <ErrorRoundedIcon sx={{ color: '#FF4D01CC' }} />
@@ -53,4 +55,4 @@ function LoginInfoToast({ show, onClose, message, success }) {
   );
 }
 
-export default LoginInfoToast;
+export default Toaster;
