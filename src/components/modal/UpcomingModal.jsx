@@ -38,7 +38,7 @@ export default function UpcomingModal({ isOpen, onClose, selectedTestItem }) {
       className="fixed inset-0 flex items-center justify-center z-[50] bg-black/30 backdrop-blur-sm"
       onClick={onClose}
     >
-  <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-[420px]  max-h-[220px] text-center relative"
+  <div className="bg-white rounded-xl shadow-lg p-8 min-w-[420px]  min-h-[220px] max-w-auto max-h-auto text-center relative"
       
     
         onClick={(e) => e.stopPropagation()}

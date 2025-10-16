@@ -35,6 +35,13 @@ const HrCandidateDashboard = () => {
     const [animateBars, setAnimateBars] = useState(false);
     const [userData, setUserData] = useState([]);
     const [topics, setTopics] = useState([]);
+     const [modalState, setModalState] = useState({
+            date: "",
+            sessionTopic: "",
+            candidateName: "",
+            sessionCategory: "",
+            candidateSearch: "",
+        });
 
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
@@ -1229,15 +1236,29 @@ const HrCandidateDashboard = () => {
 
             {/* Session Modal (HR only) */}
             {isHR && (
-                <SessionModal
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    sessionDuration={sessionDuration}
-                    setSessionDuration={setSessionDuration}
-                    userData={userData}
-                    topics={topics}
-                    onSave={() => setModalOpen(false)}
-                />
+                  <SessionModal
+                             open={modalOpen}
+                             onClose={() => setModalOpen(false)}
+                             sessionDuration={sessionDuration}
+                             setSessionDuration={setSessionDuration}
+                             modalState={modalState}
+                             setModalState={setModalState}
+                             userData={userData}
+                             topics={topics}
+                             onSave={() => {
+                                 setModalOpen(false);
+                                 setSuccessOpen(true);
+                                 fetchSessionData(); // Refresh the data in the table
+                                 // Reset modal state after successful save
+                                 setModalState({
+                                     date: "",
+                                     sessionTopic: "",
+                                     candidateName: "",
+                                     sessionCategory: "",
+                                     candidateSearch: "",
+                                 });
+                             }}
+                         />
             )}
         </div>
     );
