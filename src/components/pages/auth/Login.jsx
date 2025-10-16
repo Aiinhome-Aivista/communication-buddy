@@ -9,7 +9,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import "../../style/login.css";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
-import Toaster from "../../modal/Toaster";
+import LoginInfoToast from "../../modal/LoginInfoToast";
 
 function Login() {
   const { login } = useAuth();
@@ -69,7 +69,7 @@ function Login() {
       }}
     >
       {loginResponse && (
-        <Toaster
+        <LoginInfoToast
           show={showInfoModal}
           onClose={() => setShowInfoModal(false)}
           message={loginResponse.success ? `Welcome back, ${loginResponse.userName}!` : loginResponse.message}

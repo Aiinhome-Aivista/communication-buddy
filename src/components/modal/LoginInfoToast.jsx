@@ -3,7 +3,7 @@ import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import '../style/login.css'
 
-function Toaster({ show, onClose, message, success }) {
+function LoginInfoToast({ show, onClose, message, success }) {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -55,4 +55,4 @@ function Toaster({ show, onClose, message, success }) {
   );
 }
 
-export default Toaster;
+export default LoginInfoToast;
