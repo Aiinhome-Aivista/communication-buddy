@@ -44,21 +44,7 @@ export default function PracticeTest() {
     totalTimeFromState = sessionData.total_time;
 
   // Debug logging
-  console.log("Component data initialization:", {
-    getTopicDataLength: getTopicData?.length || 0,
-    userId,
-    matchedRecord,
-    hrIdFromState: sessionData?.hr_id,
-    hrIdFromRecord: matchedRecord?.hr_id,
-    finalHrId: hrId,
-    topicName,
-    topicFromState: sessionData.topic,
-    topicNameFromState: sessionData.topic_name,
-    topicFromRecord: matchedRecord?.topic,
-    topicNameFromRecord: matchedRecord?.topic_name,
-    sessionData,
-    totalTimeFromState,
-  });
+
 
   const [isAILoading, setIsAILoading] = useState(false);
   const [fullConversation, setFullConversation] = useState([]);

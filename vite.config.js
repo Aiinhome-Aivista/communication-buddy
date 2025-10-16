@@ -4,5 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/comm_buddy_v2.5/", // ✅ required for subfolder hosting
+  base: "/comm_buddy_v2.5/", 
+
 });
