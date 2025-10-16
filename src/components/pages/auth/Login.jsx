@@ -188,16 +188,19 @@ function Login() {
 
           {/* Login Button */}
           <button
-            className="
-              w-full 
-              text-[#D9D9D9] 
-              bg-[#182938] 
-              rounded-lg 
-              border border-[#182938] 
-              py-2 mt-5 
-              cursor-pointer 
+            className={`
+              w-full
+              rounded-lg
+              border
+              py-2 mt-5
+              cursor-pointer
               text-sm md:text-base
-              disabled:bg-[#182938C2] disabled:text-[#D9D9D9] disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:text-[#D9D9D9] hover:bg-[#182938] hover:border-[#182938]"
+              flex items-center justify-center gap-2
+              transition-colors duration-200
+              ${loading
+                ? 'bg-[#182938] text-[#D9D9D9] border-[#182938] cursor-wait'
+                : 'bg-[#182938] text-[#D9D9D9] border-[#182938] disabled:bg-[#182938C2] disabled:text-[#D9D9D9] disabled:cursor-not-allowed'
+              }`}
             onClick={() => handleOnLogin()}
             type="button"
             id="login-button"
