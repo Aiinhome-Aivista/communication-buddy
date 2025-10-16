@@ -24,7 +24,6 @@ import candidateIcon from "/public/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -36,19 +35,11 @@ const HrCandidateDashboard = () => {
     const [animateBars, setAnimateBars] = useState(false);
     const [userData, setUserData] = useState([]);
     const [topics, setTopics] = useState([]);
-   
 
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
     const isHR = userRole === 'HR';
-    const [modalState, setModalState] = useState({
-            date: "",
-            sessionTopic: "",
-            candidateName: "",
-            sessionCategory: "",
-            candidateSearch: "",
-        });
 
     useEffect(() => {
         const load = async () => {
@@ -409,10 +400,22 @@ const HrCandidateDashboard = () => {
                     <div className="flex items-center gap-3">
                         {isHR ? (
                             <button
-                                className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                                className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                                 onClick={() => setModalOpen(true)}
                             >
-                                <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
                                 Create Session
                             </button>
                         ) : (
@@ -436,10 +439,22 @@ const HrCandidateDashboard = () => {
                 <div className="flex items-center gap-3">
                     {isHR ? (
                         <button
-                            className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
-                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 4v16m8-8H4"
+                                />
+                            </svg>
                             Create Session
                         </button>
                     ) : (
@@ -461,9 +476,9 @@ const HrCandidateDashboard = () => {
             )}
 
             {!error && (
-                <div className="grid grid-cols-4 gap-4 overflow-visible">
+                <div className="grid grid-cols-4 gap-4">
                     {/* LEFT COLUMN */}
-                    <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start overflow-visible">
+                    <div className="col-span-12 sm:col-span-6 md:col-span-1 lg:col-span-1 flex flex-col space-y-4 items-start">
                         {/* Session Completion */}
                         <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <h2 className="text-[#8F96A9] mb-4 text-[15px] font-inter font-sm">
@@ -627,15 +642,15 @@ const HrCandidateDashboard = () => {
                                         return (
                                             <div
                                                 key={`${tech}-${idx}`}
-                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-90 hover:shadow-lg hover:scale-102"
+                                                className="w-[55px] h-[55px] sm:w-[60px] sm:h-[60px] md:w-[65px] md:h-[65px] flex items-center justify-center bg-gray-100 rounded-2xl relative group cursor-pointer transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-lg"
                                             >
                                                 {/* Background overlay for opacity effect */}
-                                                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-1 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
+                                                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
 
                                                 <img
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
-                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out relative z-10"
+                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
                                                     onError={(e) => {
                                                         e.target.src =
                                                             "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
@@ -668,7 +683,7 @@ const HrCandidateDashboard = () => {
                     </div>
 
                     {/* RIGHT SECTION */}
-                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4 overflow-visible">
+                    <div className="col-span-12 sm:col-span-12 md:col-span-8 lg:col-span-3 flex flex-col space-y-4">
                         {/* Session Report */}
                         <div className="bg-white rounded-2xl shadow-sm p-3 px-4 w-full ">
                             <div className="flex justify-between items-start mb-6">
@@ -899,8 +914,8 @@ const HrCandidateDashboard = () => {
                         </div>
 
                         {/* Bottom Row */}
-                        <div className="grid grid-cols-3 gap-4 h-full overflow-visible">
-                            <div className="col-span-2 h-full overflow-visible">
+                        <div className="grid grid-cols-3 gap-4 h-full">
+                            <div className="col-span-2 h-full ">
                                 <div className="flex flex-col gap-4 w-full h-full">
                                     {/* Chart Section */}
                                     <div className="bg-[#DFB916] rounded-2xl shadow-sm p-4 h-full flex flex-col">
@@ -1093,7 +1108,7 @@ const HrCandidateDashboard = () => {
                                         `}</style>
                                     <div
                                         style={{ overflowY: "auto" }}
-                                        className="scrollbar-hide w-full overflow-visible
+                                        className="scrollbar-hide w-full 
                     "
                                     >
                                         <h2
@@ -1112,17 +1127,17 @@ const HrCandidateDashboard = () => {
                                         >
                                             Top 5 Session Score
                                         </h2>
-                                        <div className="space-y-3 h-92 scrollbar-hide overflow-visible p-2">
+                                        <div className="space-y-3 h-92 overflow-y-auto scrollbar-hide">
                                             {topScores.length > 0 ? (
                                                 topScores.map((item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-102 hover:shadow-lg cursor-pointer"
+                                                        className="flex justify-between items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm"
                                                     >
                                                         {/* Left content */}
                                                         <div className="flex items-start gap-3">
                                                             <div className="flex flex-col gap-2" >
-                                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold transition-transform duration-300 ease-in-out">
+                                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
 
                                                                     <img
                                                                         src={Subtract}
@@ -1214,29 +1229,15 @@ const HrCandidateDashboard = () => {
 
             {/* Session Modal (HR only) */}
             {isHR && (
-                  <SessionModal
-                             open={modalOpen}
-                             onClose={() => setModalOpen(false)}
-                             sessionDuration={sessionDuration}
-                             setSessionDuration={setSessionDuration}
-                             modalState={modalState}
-                             setModalState={setModalState}
-                             userData={userData}
-                             topics={topics}
-                             onSave={() => {
-                                 setModalOpen(false);
-                                 setSuccessOpen(true);
-                                 fetchSessionData(); // Refresh the data in the table
-                                 // Reset modal state after successful save
-                                 setModalState({
-                                     date: "",
-                                     sessionTopic: "",
-                                     candidateName: "",
-                                     sessionCategory: "",
-                                     candidateSearch: "",
-                                 });
-                             }}
-                         />
+                <SessionModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    sessionDuration={sessionDuration}
+                    setSessionDuration={setSessionDuration}
+                    userData={userData}
+                    topics={topics}
+                    onSave={() => setModalOpen(false)}
+                />
             )}
         </div>
     );

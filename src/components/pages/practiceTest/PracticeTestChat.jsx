@@ -37,10 +37,10 @@ export default function PracticeTest() {
   );
   const hrId = sessionData.hr_id || matchedRecord?.hr_id || null;
   const topicName =
-      sessionData.topic ||
-      sessionData.topic_name ||
-      matchedRecord?.topic ||
-      matchedRecord?.topic_name,
+    sessionData.topic ||
+    sessionData.topic_name ||
+    matchedRecord?.topic ||
+    matchedRecord?.topic_name,
     totalTimeFromState = sessionData.total_time;
 
   // Debug logging
@@ -72,16 +72,13 @@ export default function PracticeTest() {
   // Speech recognition hook
   // Speech-to-text language, defaults to English (India); will sync with selectedLanguage
   const [sttLanguage, setSttLanguage] = useState("en-IN");
-  const speechRecognition = useCustomSpeechRecognition({ language: sttLanguage });
   const {
     startRecording,
     stopRecording,
     isRecording,
     transcript,
     resetTranscript,
-    error: speechError,
-    permissionGranted
-  } = speechRecognition || {};
+  } = useCustomSpeechRecognition({ language: sttLanguage }) || {};
   const speechTimerRef = useRef(null);
   // Guards to prevent double submission from mic
   const micSendLockRef = useRef(false);
@@ -100,7 +97,7 @@ export default function PracticeTest() {
         "fullConversation",
         JSON.stringify(fullConversation || [])
       );
-    } catch {}
+    } catch { }
   }, [fullConversation]);
 
   // Enhanced speech synthesis function with female voice (from textReader)
@@ -712,7 +709,7 @@ export default function PracticeTest() {
     try {
       const code = getLangCode(selectedLanguage);
       setSttLanguage(code);
-    } catch {}
+    } catch { }
   }, [selectedLanguage]);
 
   const getReadableLanguage = (text) => {
@@ -866,7 +863,7 @@ export default function PracticeTest() {
         // Stop speech and disable input per requirement
         try {
           window.speechSynthesis.cancel();
-        } catch {}
+        } catch { }
         setIsSpeaking(false);
         setSessionExpired(true);
         setUserStatus("expired"); // Switch to the expired view
@@ -1149,7 +1146,7 @@ export default function PracticeTest() {
         top: chatContainerRef.current.scrollHeight,
         behavior: "smooth",
       });
-    } catch {}
+    } catch { }
   }, [messages, isAILoading, showTimeUpPopup]);
 
   const handleKeyDown = (e) => {
@@ -1182,10 +1179,6 @@ export default function PracticeTest() {
 
   // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
-    if (!speechRecognition || speechError || !permissionGranted) {
-      return; // Don't process transcript if speech recognition has errors
-    }
-
     if (!isRecording && transcript && transcript.trim() && sessionStarted) {
       // send transcript as message
       const text = transcript.trim();
@@ -1229,15 +1222,12 @@ export default function PracticeTest() {
     sessionStarted,
     waitingForLanguage,
     languageSelected,
-    speechError,
-    permissionGranted,
-    speechRecognition
   ]);
 
   // Auto-send functionality with 5-second delay (like textReader)
   useEffect(() => {
-    // Only debounce while actively listening and if speech recognition is working
-    if (!isRecording || speechError || !permissionGranted || !speechRecognition) return;
+    // Only debounce while actively listening
+    if (!isRecording) return;
 
     const text = transcript.trim();
     if (!text) return;
@@ -1249,7 +1239,7 @@ export default function PracticeTest() {
 
     // Wait for 5 seconds of silence before finalizing the transcript
     speechTimerRef.current = setTimeout(() => {
-      if (isRecording && transcript.trim() && sessionStarted && !speechError && permissionGranted) {
+      if (isRecording && transcript.trim() && sessionStarted) {
         stopRecording?.();
         // The transcript will be processed by the previous useEffect
       }
@@ -1261,7 +1251,7 @@ export default function PracticeTest() {
         speechTimerRef.current = null;
       }
     };
-  }, [transcript, isRecording, sessionStarted, speechError, permissionGranted, speechRecognition]);
+  }, [transcript, isRecording, sessionStarted]);
 
   // Main chat API call using ApiService
   const callChatAPI = async (userInput) => {
@@ -1356,7 +1346,7 @@ export default function PracticeTest() {
                 onClick={() => {
                   try {
                     window.speechSynthesis.cancel();
-                  } catch {}
+                  } catch { }
                   setUserStatus(null); // <-- Add this to hide the expired popup
                   setShowTimeUpPopup(false);
                   setSessionExpired(false);
@@ -1382,7 +1372,7 @@ export default function PracticeTest() {
               </p>
               <button
                 className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-                // onClick={() => navigate("/test")}
+                onClick={() => navigate("/test")}
               >
                 Back to Tests
               </button>
@@ -1454,16 +1444,16 @@ export default function PracticeTest() {
                       {userStatus === "upcoming"
                         ? countdownTime
                         : sessionStarted
-                        ? timeLeft || "--:--"
-                        : sessionStatus?.total_time
-                        ? `${String(sessionStatus.total_time).padStart(
-                            2,
-                            "0"
-                          )}:00`
-                        : `${String(matchedRecord?.total_time || 10).padStart(
-                            2,
-                            "0"
-                          )}:00`}
+                          ? timeLeft || "--:--"
+                          : sessionStatus?.total_time
+                            ? `${String(sessionStatus.total_time).padStart(
+                              2,
+                              "0"
+                            )}:00`
+                            : `${String(matchedRecord?.total_time || 10).padStart(
+                              2,
+                              "0"
+                            )}:00`}
                     </h3>
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming"
@@ -1492,9 +1482,9 @@ export default function PracticeTest() {
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
                         totalTimeFromState ??
-                          sessionStatus?.total_time ??
-                          matchedRecord?.total_time ??
-                          10
+                        sessionStatus?.total_time ??
+                        matchedRecord?.total_time ??
+                        10
                       );
                       startSessionTimer(total, Date.now());
                       await startSessionInitial();
@@ -1546,53 +1536,25 @@ export default function PracticeTest() {
 
             {/* Footer */}
             <div
-              className={`border-t border-gray-200 px-8 py-4 bg-white ${
-                sessionExpired ? "blur-sm pointer-events-none" : ""
-              }`}
-            >
-              {/* Microphone error message */}
-              {(speechError || !permissionGranted) && (
-                <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-                  <div className="flex items-center gap-2">
-                    <ErrorIcon style={{ fontSize: 16, color: "#dc2626" }} />
-                    <span className="font-medium">Microphone Issue:</span>
-                  </div>
-                  <div className="mt-1 text-xs">
-                    {speechError || "Microphone permission required"}.
-                    {window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && (
-                      <span className="block mt-1">This site requires HTTPS for microphone access.</span>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  placeholder={
-                    waitingForLanguage
-                      ? "Type a information..."
-                      : "Type a information..."
-                  }
-                  className="flex-1 border-none bg-[#F8F9FB] px-4 py-3 rounded-xl text-sm text-[#2C2E42] placeholder:text-[#B7BDC2] focus:outline-none focus:ring-1 focus:ring-[#F4E48A]"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={!sessionStarted || sessionExpired}
-                />
-              <button
-                className={`p-3 rounded-xl border transition h-11.5 relative group ${
-                  speechError || !permissionGranted 
-                    ? 'border-red-400 hover:bg-red-50' 
-                    : 'border-[#DFB916] hover:bg-[#F4E48A]'
+              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? "blur-sm pointer-events-none" : ""
                 }`}
-                onClick={async () => {
-                  // Check for speech recognition errors
-                  if (speechError || !permissionGranted) {
-                    alert(`Microphone Error: ${speechError || 'Permission not granted'}. Please ensure you're on HTTPS and allow microphone access.`);
-                    return;
-                  }
-
+            >
+              <input
+                type="text"
+                placeholder={
+                  waitingForLanguage
+                    ? "Type a information..."
+                    : "Type a information..."
+                }
+                className="flex-1 border-none bg-[#F8F9FB] px-4 py-3 rounded-xl text-sm text-[#2C2E42] placeholder:text-[#B7BDC2] focus:outline-none focus:ring-1 focus:ring-[#F4E48A]"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={!sessionStarted || sessionExpired}
+              />
+              <button
+                className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
+                onClick={() => {
                   if (isRecording) {
                     // Manual stop should clear pending timer and release lock soon
                     try {
@@ -1600,8 +1562,8 @@ export default function PracticeTest() {
                         clearTimeout(speechTimerRef.current);
                         speechTimerRef.current = null;
                       }
-                    } catch {}
-                    stopRecording?.();
+                    } catch { }
+                    stopRecording();
                     setTimeout(() => {
                       micSendLockRef.current = false;
                     }, 200);
@@ -1609,35 +1571,22 @@ export default function PracticeTest() {
                     // New recording: clear previous transcript guard and locks
                     lastTranscriptRef.current = "";
                     micSendLockRef.current = false;
-                    await startRecording?.();
+                    startRecording();
                   }
                 }}
                 disabled={!sessionStarted || sessionExpired}
-                title={
-                  speechError || !permissionGranted 
-                    ? `Microphone Error: ${speechError || 'Permission required'}` 
-                    : isRecording 
-                      ? 'Stop Recording' 
-                      : 'Start Recording'
-                }
               >
                 <MicIcon
                   style={{
-                    color: speechError || !permissionGranted
-                      ? "#E53E3E"
-                      : isRecording
+                    color: isRecording
                       ? "#E53E3E"
                       : sessionStarted
-                      ? "#DFB916"
-                      : "#B7BDC2",
+                        ? "#DFB916"
+                        : "#B7BDC2",
                     height: "1.7rem",
                     width: "1.7rem",
                   }}
                 />
-                {/* Error indicator */}
-                {(speechError || !permissionGranted) && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>
-                )}
               </button>
               <button
                 className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#f1be08] transition h-11.5 flex items-center disabled:bg-"
@@ -1652,7 +1601,6 @@ export default function PracticeTest() {
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
               </button>
-              </div>
             </div>
           </>
         )}
