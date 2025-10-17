@@ -24,6 +24,8 @@ import candidateIcon from "/public/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
+import SuccessModal from "../scheduleSession/SuccessModal";
+
 
 const HrCandidateDashboard = () => {
     const COLORS = ["#0f172a", "#DFB916"];
@@ -35,6 +37,16 @@ const HrCandidateDashboard = () => {
     const [animateBars, setAnimateBars] = useState(false);
     const [userData, setUserData] = useState([]);
     const [topics, setTopics] = useState([]);
+      const [modalState, setModalState] = useState({
+            date: "",
+            sessionTopic: "",
+            candidateName: "",
+            sessionCategory: "",
+            candidateSearch: "",
+        });
+        
+  
+        const [successOpen, setSuccessOpen] = useState(false);
 
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
@@ -651,10 +663,10 @@ const HrCandidateDashboard = () => {
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
                                                     className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
-                                                    onError={(e) => {
-                                                        e.target.src =
-                                                            "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
-                                                    }}
+                                                    // onError={(e) => {
+                                                    //     e.target.src =
+                                                    //         "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                                                    // }}
                                                 />
                                                 {/* Hover tooltip */}
                                                 <div
@@ -1234,11 +1246,30 @@ const HrCandidateDashboard = () => {
                     onClose={() => setModalOpen(false)}
                     sessionDuration={sessionDuration}
                     setSessionDuration={setSessionDuration}
+                    modalState={modalState}
+                    setModalState={setModalState}
                     userData={userData}
                     topics={topics}
-                    onSave={() => setModalOpen(false)}
+                    onSave={() => {
+                        setModalOpen(false);
+                        setSuccessOpen(true);
+                        fetchSessionData(); // Refresh the data in the table
+                        // Reset modal state after successful save
+                        setModalState({
+                            date: "",
+                            sessionTopic: "",
+                            candidateName: "",
+                            sessionCategory: "",
+                            candidateSearch: "",
+                        });
+                    }}
                 />
             )}
+                <SuccessModal
+                            open={successOpen}
+                            onClose={() => setSuccessOpen(false)}
+                        // candidateName={candidateName}
+                        />
         </div>
     );
 };
