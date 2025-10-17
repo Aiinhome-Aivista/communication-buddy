@@ -62,6 +62,7 @@ export default function PracticeTest() {
   const [timeLeft, setTimeLeft] = useState("");
   const [userStatus, setUserStatus] = useState(null); // upcoming, ongoing, expired
   const [countdownTime, setCountdownTime] = useState("");
+  const [isTerminated, setIsTerminated] = useState(false); // For blurring input when session ends
 
   // Timer refs
   const sessionTimerRef = useRef(null);
@@ -774,6 +775,7 @@ export default function PracticeTest() {
       } else if (data.status === "expired") {
         setUserStatus("expired");
         setSessionExpired(true);
+        setIsTerminated(true);
         setShowTimeUpPopup(true);
         return;
       } else {
@@ -866,6 +868,7 @@ export default function PracticeTest() {
         } catch { }
         setIsSpeaking(false);
         setSessionExpired(true);
+        setIsTerminated(true);
         setUserStatus("expired"); // Switch to the expired view
         setShowTimeUpPopup(true);
         // Note: Removed auto-save on time up per requirement
@@ -1119,7 +1122,7 @@ export default function PracticeTest() {
 
   const handleSend = () => {
     const text = inputValue.trim();
-    if (!text || !sessionStarted) return;
+    if (!text || !sessionStarted || isTerminated) return;
 
     const userEntry = { id: Date.now(), text, sender: "user" };
     setMessages((prev) => [...prev, userEntry]);
@@ -1179,7 +1182,7 @@ export default function PracticeTest() {
 
   // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
-    if (!isRecording && transcript && transcript.trim() && sessionStarted) {
+    if (!isRecording && transcript && transcript.trim() && sessionStarted && !isTerminated) {
       // send transcript as message
       const text = transcript.trim();
       // Prevent double submission: if the same text was just sent, or lock is active, skip
@@ -1222,12 +1225,13 @@ export default function PracticeTest() {
     sessionStarted,
     waitingForLanguage,
     languageSelected,
+    isTerminated,
   ]);
 
   // Auto-send functionality with 5-second delay (like textReader)
   useEffect(() => {
     // Only debounce while actively listening
-    if (!isRecording) return;
+    if (!isRecording || isTerminated) return;
 
     const text = transcript.trim();
     if (!text) return;
@@ -1251,11 +1255,11 @@ export default function PracticeTest() {
         speechTimerRef.current = null;
       }
     };
-  }, [transcript, isRecording, sessionStarted]);
+  }, [transcript, isRecording, sessionStarted, isTerminated]);
 
   // Main chat API call using ApiService
   const callChatAPI = async (userInput) => {
-    if (!userInput || !languageSelected) return;
+    if (!userInput || !languageSelected || isTerminated) return;
     setIsAILoading(true);
 
     try {
@@ -1284,8 +1288,10 @@ export default function PracticeTest() {
 
       // Stop typing indicator immediately after receiving response
       setIsAILoading(false);
-      // Speak the AI response
-      await speakMessage(aiMessage, getLangCode(selectedLanguage));
+      // Speak the AI response only if not terminated
+      if (!isTerminated) {
+        await speakMessage(aiMessage, getLangCode(selectedLanguage));
+      }
 
       // Note: Removed auto-save on session end keywords per requirement; still show the popup if needed
       const lower = aiMessage.toLowerCase();
@@ -1293,6 +1299,7 @@ export default function PracticeTest() {
         lower.includes("time is up") ||
         lower.includes("thank you for the discussion")
       ) {
+        setIsTerminated(true);
         setShowTimeUpPopup(true);
       }
     } catch (error) {
@@ -1370,12 +1377,29 @@ export default function PracticeTest() {
               <p className="mb-6 text-[#2C2E42] font-extrabold">
                 Your session time has expired.
               </p>
-              <button
-                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-                onClick={() => navigate("/test")}
-              >
-                Back to Tests
-              </button>
+              <div className="flex justify-center gap-4">
+                <button
+                  className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                  onClick={() => navigate("/test")}
+                >
+                  Back to Tests
+                </button>
+                <button
+                  className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                  onClick={() => {
+                    try {
+                      window.speechSynthesis.cancel();
+                      stopSpeaking();
+                    } catch { }
+                    setIsTerminated(true);
+                    setUserStatus("ongoing"); // Show chat page with blurred input
+                    setSessionExpired(false);
+                    setShowTimeUpPopup(false);
+                  }}
+                >
+                  OK
+                </button>
+              </div>
             </div>
           </div>
         ) : userStatus === "no_session" ? (
@@ -1536,7 +1560,7 @@ export default function PracticeTest() {
 
             {/* Footer */}
             <div
-              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? "blur-sm pointer-events-none" : ""
+              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired || isTerminated ? "blur-sm pointer-events-none" : ""
                 }`}
             >
               <input
@@ -1550,7 +1574,7 @@ export default function PracticeTest() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={!sessionStarted || sessionExpired}
+                disabled={!sessionStarted || sessionExpired || isTerminated}
               />
               <button
                 className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
@@ -1574,7 +1598,7 @@ export default function PracticeTest() {
                     startRecording();
                   }
                 }}
-                disabled={!sessionStarted || sessionExpired}
+                disabled={!sessionStarted || sessionExpired || isTerminated}
               >
                 <MicIcon
                   style={{
@@ -1596,7 +1620,8 @@ export default function PracticeTest() {
                   !sessionStarted ||
                   !inputValue.trim() ||
                   sessionExpired ||
-                  isAILoading
+                  isAILoading ||
+                  isTerminated
                 }
               >
                 <ArrowForwardIcon style={{ color: "white" }} />
