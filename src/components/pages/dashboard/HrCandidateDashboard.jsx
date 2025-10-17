@@ -667,6 +667,10 @@ const HrCandidateDashboard = () => {
                                                     //     e.target.src =
                                                     //         "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
                                                     // }}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null; 
+                                                        e.target.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+                                                    }}
                                                 />
                                                 {/* Hover tooltip */}
                                                 <div
@@ -957,7 +961,7 @@ const HrCandidateDashboard = () => {
                                                     <YAxis
                                                         stroke="#182938"
                                                         axisLine
-                                                        tickLine={false}
+                                                        tickLine={true}
                                                         tick={{ fill: "#182938", fontSize: 12 }}
                                                     />
                                                     <Tooltip content={<CustomTooltip />} cursor={false} />
