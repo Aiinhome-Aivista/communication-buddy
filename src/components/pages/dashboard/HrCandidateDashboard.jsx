@@ -20,7 +20,7 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import assignmentIcon from "/assets/icons/assignment.png";
 import Subtract from "../../../assets/logo/Subtract.svg";
-import candidateIcon from "/public/assets/images/AT.png";
+import candidateIcon from "/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
