@@ -11,7 +11,7 @@ import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
 import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const fullName = sessionStorage.getItem("userName") || "";
   const location = useLocation();
   // Determine role - AuthProvider sets sessionStorage.userRole
@@ -36,8 +36,7 @@ export default function Sidebar() {
   const menuItems = role === 'hr' ? hrMenu : candidateMenu;
   return (
     <aside
-      className={`${collapsed ? "w-18" : "w-60"
-        } bg-white h-screen border-t border-t-[#FFFFFF] border-[#BCC7D2] border-r border-b flex flex-col transition-all duration-200 overflow-hidden`}
+      className={`${collapsed ? "w-18" : "w-60"} bg-white h-screen border-t border-t-[#FFFFFF] border-[#BCC7D2] border-r border-b flex flex-col transition-all duration-200`}
     >
       <div className={`flex items-center border-b border-[#BCC7D2] h-[calc(9%)] ${collapsed ? "justify-between px-2" : "justify-between"}`}>
         <div className="w-[calc(17%)]"></div>
@@ -74,7 +73,7 @@ export default function Sidebar() {
                   isActuallyActive = location.pathname.startsWith("/test") && !location.pathname.startsWith("/test/result");
                 }
 
-                return `group flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActuallyActive
+                return `group relative flex items-center gap-1 rounded-lg my-1 text-sm font-medium transition-colors ${isActuallyActive
                   ? "bg-[#182938] text-[#FEFEFE] active-link"
                   : "text-[#182938] hover:bg-[#182938]/15 hover:text-[#182938]"
                   } ${collapsed ? "h-10 w-10 justify-center" : "w-full h-10 pl-2"}`;
@@ -86,6 +85,11 @@ export default function Sidebar() {
                     {item.icon(isActive && (item.path !== "/test" || (location.pathname.startsWith("/test") && !location.pathname.startsWith("/test/result"))) ? '#FEFEFE' : '#182938')}
                   </div>
                   {!collapsed && item.name}
+                  {collapsed && (
+                    <div className="absolute left-full rounded-md px-2 py-1 ml-4 bg-gray-900 text-white text-xs invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50">
+                      {item.name}
+                    </div>
+                  )}
                 </>
               )}
             </NavLink>
