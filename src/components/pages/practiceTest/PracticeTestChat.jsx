@@ -1351,7 +1351,7 @@ export default function PracticeTest() {
                   setShowTimeUpPopup(false);
                   setSessionExpired(false);
                 }}
-                className="absolute top-1 right-1 text-[#DFB916] transition"
+                className="absolute top-1 right-1 text-[#DFB916] transition cursor-pointer"
               >
                 <CancelIcon className="w-10 h-10" />
               </button>
@@ -1371,7 +1371,7 @@ export default function PracticeTest() {
                 Your session time has expired.
               </p>
               <button
-                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
                 onClick={() => navigate("/test")}
               >
                 Back to Tests
@@ -1411,14 +1411,14 @@ export default function PracticeTest() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div className="flex items-center flex-1 gap-6">
-                <button
+                {/*                 <button
                   className="p-2 rounded-xl transition"
                   onClick={showBackPopup}
                 >
                   <div className="cursor-pointer text-[#BCC7D2] hover:text-[#E5B800] transition-colors duration-200">
                     <ArrowBackIosNewRoundedIcon />
                   </div>
-                </button>
+                </button> */}
                 <div className="flex justify-between flex-1">
                   <div className="leading-tight">
                     <h2 className="text-sm font-semibold text-[#8F96A9]">
@@ -1462,7 +1462,7 @@ export default function PracticeTest() {
                     </p>
                   </div>
                   <button
-                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
                     onClick={showEndPopup}
                   >
                     End
@@ -1553,7 +1553,14 @@ export default function PracticeTest() {
                 disabled={!sessionStarted || sessionExpired}
               />
               <button
-                className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
+                /* className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5" */
+                className={`p-3 rounded-xl transition h-11.5 border cursor-pointer
+                 ${isRecording
+                    ? "border-[#E53E3E] hover:bg-[#E53E3E]/20"
+                    : sessionStarted
+                      ? "border-[#DFB916] hover:bg-[#DFB916]/20"
+                      : "border-[#B7BDC2]"
+                  }`}
                 onClick={() => {
                   if (isRecording) {
                     // Manual stop should clear pending timer and release lock soon
@@ -1589,7 +1596,7 @@ export default function PracticeTest() {
                 />
               </button>
               <button
-                className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#f1be08] transition h-11.5 flex items-center disabled:bg-"
+                className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#f1be08] transition h-11.5 flex items-center cursor-pointer"
                 onClick={handleSend}
                 type="button"
                 disabled={
