@@ -223,9 +223,18 @@ body,
   font-weight: 600;
   font-size: 14px;
   text-align: left;         /* Align with data cells */
+  text-transform: uppercase;
   padding: 12px 13px; 
   border: none !important;
 }
+.p-sortable-column .p-sortable-column-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-left: 0.4rem;
+  margin-top: 0; /* Adjust spacing if needed */
+  padding-bottom: 0.2rem;
+}
+
 .p-datatable-tbody > tr > td {
   padding: 10px 13px;
   color:rgba(41, 50, 65, 0.45);

@@ -252,7 +252,6 @@ export default function TestResult() {
                   <Column
                     field="topic"
                     header="Topic"
-                    sortable
                   ></Column>
                   <Column
                     field="original_session_time" // Sort using the original date
@@ -281,7 +280,6 @@ export default function TestResult() {
                   <Column
                     field="qualitative_score"
                     header="Qualitative Score"
-                    sortable
                     body={(rowData) => `${rowData.qualitative_score || 'N/A'}`}
                   ></Column>
                 </DataTable>
