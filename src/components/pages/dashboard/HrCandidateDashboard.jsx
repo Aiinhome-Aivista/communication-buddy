@@ -668,11 +668,12 @@ const HrCandidateDashboard = () => {
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
                                                     className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
-                                                // onError={(e) => {
-                                                //     e.target.src =
-                                                //         "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
-                                                // }}
+                                                   onError={(e) => {
+                                                        e.target.onerror = null; 
+                                                        e.target.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+                                                    }}
                                                 />
+                                                
                                                 {/* Hover tooltip */}
                                                 <div
                                                     className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out whitespace-nowrap z-20 pointer-events-none shadow-md"
@@ -962,7 +963,7 @@ const HrCandidateDashboard = () => {
                                                     <YAxis
                                                         stroke="#182938"
                                                         axisLine
-                                                        tickLine={false}
+                                                        tickLine={true}
                                                         tick={{ fill: "#182938", fontSize: 12 }}
                                                     />
                                                     <Tooltip content={<CustomTooltip />} cursor={false} />
