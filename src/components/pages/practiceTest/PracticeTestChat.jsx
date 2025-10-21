@@ -73,6 +73,7 @@ export default function PracticeTest() {
   // Timer refs
   const sessionTimerRef = useRef(null);
   const sessionStartRef = useRef(null);
+  const sessionExpiredRef = useRef(sessionExpired);
   const countdownTimerRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -101,6 +102,11 @@ export default function PracticeTest() {
   // Guards to prevent double submission from mic
   const micSendLockRef = useRef(false);
   const lastTranscriptRef = useRef("");
+
+  // Keep a ref in sync with the sessionExpired state
+  useEffect(() => {
+    sessionExpiredRef.current = sessionExpired;
+  }, [sessionExpired]);
 
   // Persist chat meta for logout-based review save
   useEffect(() => {
@@ -1331,6 +1337,9 @@ export default function PracticeTest() {
       // Stop typing indicator immediately after receiving response
       setIsAILoading(false);
       // Speak the AI response only if language is selected
+      if (sessionExpiredRef.current) {
+        return;
+      }
       if (selectedLanguage) {
         await speakMessage(aiMessage, getLangCode(selectedLanguage));
       }
