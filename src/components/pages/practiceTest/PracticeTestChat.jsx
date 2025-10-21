@@ -49,6 +49,7 @@ export default function PracticeTest() {
   const [isAILoading, setIsAILoading] = useState(false);
   const [fullConversation, setFullConversation] = useState([]);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const [isStartingSession, setIsStartingSession] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const [sessionStatus, setSessionStatus] = useState(null);
   const [languageSelected, setLanguageSelected] = useState(false);
@@ -1372,7 +1373,7 @@ export default function PracticeTest() {
               </p>
               <button
                 className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
-                onClick={() => navigate("/test")}
+                onClick={() => confirmAction}
               >
                 Back to Tests
               </button>
@@ -1395,13 +1396,15 @@ export default function PracticeTest() {
                 </p>
               </div>
               <button
-                className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
+                className={`px-6 py-3 bg-[#DFB916] text-white rounded-lg transition hover:bg-[#d6a600]`}
                 onClick={async () => {
+                  setIsStartingSession(true);
                   setUserStatus("ongoing");
                   await startSessionInitial();
                 }}
+                disabled={isStartingSession}
               >
-                Start Session
+                {isStartingSession ? "Starting Session..." : "Start Session"}
               </button>
             </div>
           </div>

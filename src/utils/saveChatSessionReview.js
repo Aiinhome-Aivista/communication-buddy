@@ -1,3 +1,5 @@
+import { fatchedPostRequest, postURL } from "../services/ApiService";
+
 export const saveChatSession = async ({
   userId,
   hrId,
@@ -5,38 +7,33 @@ export const saveChatSession = async ({
   fullConversation,
 }) => {
   try {
-    await fetch("https://aiinhome.com/commbuddy/chat-session-review", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: userId,
-        hr_id: hrId,
-        topic: topic,
-        chat_history: fullConversation,
-        total_time: 10,
-        use_lstm: false,
-      }),
+    await fatchedPostRequest(postURL.chatSessionReview, {
+      user_id: userId,
+      hr_id: hrId,
+      topic: topic,
+      chat_history: fullConversation,
+      total_time: 10,
+      use_lstm: false,
     });
     console.log("✅ Final conversation saved");
   } catch (error) {
     console.error("❌ Error saving conversation:", error);
   }
 };
-
-export const greettingMessage = async ({ username, topic, userinput }) => {
+ 
+export const greettingMessage = async ({ username, topic, userinput }) => { // Renamed from greettingMessage to greetingMessage
   try {
-    const response = await fetch("https://aiinhome.com/commbuddy/start_session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: username,
-        topic_name: topic,
-        user_input: userinput,
-      }),
+    const response = await fatchedPostRequest(postURL.startSession, {
+      name: username,
+      topic_name: topic,
+      user_input: userinput,
     });
-    console.log("✅ Final conversation saved");
+    // The original function had a console.log here, but the response was returned.
+    // fatchedPostRequest already handles JSON parsing.
     return response;
   } catch (error) {
-    console.error("❌ Error saving conversation:", error);
+    console.error("❌ Error starting session:", error);
+    // Re-throwing or returning a specific error structure might be useful here.
+    throw error;
   }
 };

@@ -31,10 +31,11 @@ export const postURL = {
   // candidate dashboard endpoint
   dashboard: `${BASE_URL}/candidate_dashboard`,
   // Chat-related endpoints
-  getSessionStatus: `${BASE_URL}get_session_status`,
-  startSession: `${BASE_URL}start_session`,
-  chat: `${BASE_URL}chat`,
-  hrSessions: `${BASE_URL}hr-sessions`,
+  getSessionStatus: `${BASE_URL}/get_session_status`,
+  startSession: `${BASE_URL}/start_session`,
+  chat: `${BASE_URL}/chat`,
+  hrSessions: `${BASE_URL}/hr-sessions`,
+  chatSessionReview: `${BASE_URL}/chat-session-review`,
 };
 
 // Convenience helper: fetch HR dashboard with { hr_id }
