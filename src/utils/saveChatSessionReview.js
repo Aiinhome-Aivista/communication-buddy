@@ -1,7 +1,6 @@
 import { fatchedPostRequest, postURL } from "../services/ApiService";
 import {UserContext} from "../context/Context";
 import { useContext } from "react";
-const {totalSessionTime} = useContext(UserContext);
 
 export const saveChatSession = async ({
   userId,
@@ -10,6 +9,7 @@ export const saveChatSession = async ({
   fullConversation,
 }) => {
   try {
+    const {totalSessionTime} = useContext(UserContext);
     await fatchedPostRequest(postURL.chatSessionReview, {
       user_id: userId,
       hr_id: hrId,
