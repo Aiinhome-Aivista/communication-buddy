@@ -8,6 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fatchedPostRequest, postURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
+import { useToaster } from "../../../context/Context";
 import ExpiredModal from "../../../components/modal/ExpiredModal";
 import UpcomingModal from "../../../components/modal/UpcomingModal";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
@@ -17,6 +18,7 @@ import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 const tabOptions = ["All", "Upcoming", "Ongoing", "Expired"];
 
 export default function PracticeTest() {
+  const { showToaster } = useToaster();
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
@@ -53,14 +55,14 @@ export default function PracticeTest() {
     try {
       const currentTimezone = getCurrentTimezone();
       const now = new Date();
-      const formattedDateTime = now.getFullYear() + '-' + 
-        String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-        String(now.getDate()).padStart(2, '0') + ' ' + 
-        String(now.getHours()).padStart(2, '0') + ':' + 
-        String(now.getMinutes()).padStart(2, '0') + ':' + 
+      const formattedDateTime = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + ' ' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
         String(now.getSeconds()).padStart(2, '0');
-      
-      const payload = { 
+
+      const payload = {
         user_id: userId,
         // timezone: currentTimezone
         now: formattedDateTime
@@ -74,9 +76,11 @@ export default function PracticeTest() {
         ];
         setTestTypeOptions(categories);
         if (categories.length > 0) setTestType(categories[0]);
+        showToaster("Test data loaded successfully.", "success");
       }
     } catch (error) {
       console.error("Error fetching all topics:", error);
+      showToaster("Failed to fetch test data.", "error");
     } finally {
       setLoading(false);
     }

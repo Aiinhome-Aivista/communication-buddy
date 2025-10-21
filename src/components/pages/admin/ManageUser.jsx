@@ -10,6 +10,7 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedGetRequest, getURL } from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "../../../utils/Timer";
+import { useToaster } from "../../../context/Context";
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
@@ -17,6 +18,7 @@ import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 const tabOptions = ["Upcoming", "Ongoing", "Expired"];
 
 export default function ManageUser() {
+  const { showToaster } = useToaster();
   const [activeTab, setActiveTab] = useState("Upcoming");
   const [search, setSearch] = useState("");
   const [testType, setTestType] = useState("Test Type");
@@ -45,9 +47,11 @@ export default function ManageUser() {
         const userTypes = ["All", ...new Set(processedData.map(user => user.userType).filter(Boolean))];
         setTestTypeOptions(userTypes);
         if (userTypes.length > 0) setTestType(userTypes[0]);
+        showToaster("User data loaded successfully.", "success");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+      showToaster("Failed to fetch user data.", "error");
     } finally {
       setLoading(false);
     }

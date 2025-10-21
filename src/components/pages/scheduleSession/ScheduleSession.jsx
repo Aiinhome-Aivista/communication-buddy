@@ -9,6 +9,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
+import { useToaster } from "../../../context/Context";
 import { useContext } from "react";
 import SessionModal from "../../modal/SessionModal";
 import SuccessModal from "./SuccessModal";
@@ -19,6 +20,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 const tabOptions = ["All", "Upcoming", "Ongoing", "Expired"];
 
 export default function ScheduleSession() {
+    const { showToaster } = useToaster();
     const [topics, setTopics] = useState([]);
     const [categories, setCategories] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -77,8 +79,13 @@ export default function ScheduleSession() {
             const response = await fatchedPostRequest(postURL.getScheduleDataHrWise, JsonBody);
             if (response.message === "Success" || response.Success === true) {
                 const processed = (response.data || []).map((session) => ({
-                    ...session,
-                    session_date: getDate(session.session_time),
+                    ...session, // The issue is likely in getDate. Let's parse it as UTC here.
+                    session_date: new Date(session.session_time).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        timeZone: 'UTC'
+                    }),
                     session_time: getTime(session.session_time),
                 }));
                 setSessionData(processed);
@@ -86,10 +93,12 @@ export default function ScheduleSession() {
                 // Extract unique topic categories from the new session data
                 const categories = ["All", ...new Set(processed.map((session) => session.topic_category).filter(Boolean))];
                 setTestTypeOptions(categories);
+                showToaster("Session data loaded successfully.", "success");
 
             }
         } catch (error) {
             console.error('Error fetching Data', error.message);
+            showToaster("Failed to fetch session data.", "error");
         }
     };
 

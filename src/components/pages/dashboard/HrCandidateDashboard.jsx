@@ -20,13 +20,16 @@ import groupLogo from "../../../assets/logo/group.svg";
 import trending_up from "../../../assets/logo/trending_up.svg";
 import assignmentIcon from "/assets/icons/assignment.png";
 import Subtract from "../../../assets/logo/Subtract.svg";
-import candidateIcon from "/public/assets/images/AT.png";
+import candidateIcon from "/assets/images/AT.png";
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { useToaster } from "../../../context/Context";
+import SuccessModal from "../scheduleSession/SuccessModal";
+
 
 const HrCandidateDashboard = () => {
+    const { showToaster } = useToaster();
     const COLORS = ["#0f172a", "#DFB916"];
     const [modalOpen, setModalOpen] = useState(false);
     const [sessionDuration, setSessionDuration] = useState(15);
@@ -36,19 +39,21 @@ const HrCandidateDashboard = () => {
     const [animateBars, setAnimateBars] = useState(false);
     const [userData, setUserData] = useState([]);
     const [topics, setTopics] = useState([]);
-   
+    const [modalState, setModalState] = useState({
+        date: "",
+        sessionTopic: "",
+        candidateName: "",
+        sessionCategory: "",
+        candidateSearch: "",
+    });
+
+
+    const [successOpen, setSuccessOpen] = useState(false);
 
     // Get user role and ID
     const userRole = typeof window !== "undefined" ? sessionStorage.getItem("userRole") : null;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("user_id") : null;
     const isHR = userRole === 'HR';
-    const [modalState, setModalState] = useState({
-            date: "",
-            sessionTopic: "",
-            candidateName: "",
-            sessionCategory: "",
-            candidateSearch: "",
-        });
 
     useEffect(() => {
         const load = async () => {
@@ -83,17 +88,20 @@ const HrCandidateDashboard = () => {
 
                 if (!success) {
                     setError("Error fetching data: Failed to fetch");
+                    showToaster("Failed to fetch dashboard data.", "error");
                     setData(null);
                 } else {
                     const payload = isHR
                         ? (res && typeof res === "object" && "data" in res ? res.data : res)
                         : res.data;
                     console.log("Setting data:", payload);
+                    showToaster("Dashboard data loaded successfully.", "success");
                     setData(payload || {});
                 }
             } catch (err) {
                 console.error("API call error:", err);
                 setError("Error fetching data: Failed to fetch");
+                showToaster("Failed to fetch dashboard data.", "error");
                 setData({});
             } finally {
                 setLoading(false);
@@ -409,10 +417,22 @@ const HrCandidateDashboard = () => {
                     <div className="flex items-center gap-3">
                         {isHR ? (
                             <button
-                                className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                                className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                                 onClick={() => setModalOpen(true)}
                             >
-                                <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
                                 Create Session
                             </button>
                         ) : (
@@ -436,10 +456,22 @@ const HrCandidateDashboard = () => {
                 <div className="flex items-center gap-3">
                     {isHR ? (
                         <button
-                            className="flex items-center justify-center gap-2 h-10 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-extrabold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition-colors cursor-pointer"
+                            className="flex items-center gap-2 bg-[#E5B800] hover:bg-yellow-500 text-xs text-[#272727] font-semibold px-4 py-2 rounded-xl shadow-none cursor-pointer"
                             onClick={() => setModalOpen(true)}
                         >
-                            <AddRoundedIcon sx={{ fontSize: "1.5rem", fontWeight: "extrabold" }} />
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 4v16m8-8H4"
+                                />
+                            </svg>
                             Create Session
                         </button>
                     ) : (
@@ -636,11 +668,12 @@ const HrCandidateDashboard = () => {
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
                                                     className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
-                                                    onError={(e) => {
-                                                        e.target.src =
-                                                            "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                                                   onError={(e) => {
+                                                        e.target.onerror = null; 
+                                                        e.target.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
                                                     }}
                                                 />
+                                                
                                                 {/* Hover tooltip */}
                                                 <div
                                                     className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out whitespace-nowrap z-20 pointer-events-none shadow-md"
@@ -930,7 +963,7 @@ const HrCandidateDashboard = () => {
                                                     <YAxis
                                                         stroke="#182938"
                                                         axisLine
-                                                        tickLine={false}
+                                                        tickLine={true}
                                                         tick={{ fill: "#182938", fontSize: 12 }}
                                                     />
                                                     <Tooltip content={<CustomTooltip />} cursor={false} />
@@ -1214,30 +1247,35 @@ const HrCandidateDashboard = () => {
 
             {/* Session Modal (HR only) */}
             {isHR && (
-                  <SessionModal
-                             open={modalOpen}
-                             onClose={() => setModalOpen(false)}
-                             sessionDuration={sessionDuration}
-                             setSessionDuration={setSessionDuration}
-                             modalState={modalState}
-                             setModalState={setModalState}
-                             userData={userData}
-                             topics={topics}
-                             onSave={() => {
-                                 setModalOpen(false);
-                                 setSuccessOpen(true);
-                                 fetchSessionData(); // Refresh the data in the table
-                                 // Reset modal state after successful save
-                                 setModalState({
-                                     date: "",
-                                     sessionTopic: "",
-                                     candidateName: "",
-                                     sessionCategory: "",
-                                     candidateSearch: "",
-                                 });
-                             }}
-                         />
+                <SessionModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    sessionDuration={sessionDuration}
+                    setSessionDuration={setSessionDuration}
+                    modalState={modalState}
+                    setModalState={setModalState}
+                    userData={userData}
+                    topics={topics}
+                    onSave={() => {
+                        setModalOpen(false);
+                        setSuccessOpen(true);
+                        fetchSessionData(); // Refresh the data in the table
+                        // Reset modal state after successful save
+                        setModalState({
+                            date: "",
+                            sessionTopic: "",
+                            candidateName: "",
+                            sessionCategory: "",
+                            candidateSearch: "",
+                        });
+                    }}
+                />
             )}
+            <SuccessModal
+                open={successOpen}
+                onClose={() => setSuccessOpen(false)}
+            // candidateName={candidateName}
+            />
         </div>
     );
 };

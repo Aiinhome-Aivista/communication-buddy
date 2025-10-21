@@ -10,10 +10,12 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { fatchedPostRequest, postURL } from '../../../services/ApiService';
 import { getDate, getTime } from '../../../utils/Timer';
 import { useContext } from "react";
+import { useToaster } from "../../../context/Context";
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 
 export default function TestResult() {
+  const { showToaster } = useToaster();
   const [topics, setTopics] = useState([]);
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -61,9 +63,11 @@ export default function TestResult() {
         const statuses = ["All", ...new Set(processedData.map(session => session.status).filter(Boolean))];
         setTestTypeOptions(statuses);
         if (statuses.length > 0) setTestType(statuses[0]);
+        showToaster("Test results loaded successfully.", "success");
       }
     } catch (error) {
       console.error("Error fetching test results:", error);
+      showToaster("Failed to fetch test results.", "error");
     } finally {
       setLoading(false);
     }
@@ -252,7 +256,6 @@ export default function TestResult() {
                   <Column
                     field="topic"
                     header="Topic"
-                    sortable
                   ></Column>
                   <Column
                     field="original_session_time" // Sort using the original date
@@ -281,7 +284,6 @@ export default function TestResult() {
                   <Column
                     field="qualitative_score"
                     header="Qualitative Score"
-                    sortable
                     body={(rowData) => `${rowData.qualitative_score || 'N/A'}`}
                   ></Column>
                 </DataTable>

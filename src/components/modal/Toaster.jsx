@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import '../style/login.css'
+import '../style/login.css';
+import { useToaster } from "../../context/Context";
 
-function Toaster({ show, onClose, status, message }) {
+function Toaster() {
+  const { show, status, message, hideToaster } = useToaster();
   const [isRendered, setIsRendered] = useState(false);
+  const onClose = hideToaster;
 
   useEffect(() => {
+    let showTimer;
     if (show) {
       setIsRendered(true);
+      // Automatically hide the toaster after it has been visible.
+      // 3000ms (3s) stay time + 800ms for the exit animation to complete.
+      showTimer = setTimeout(() => {
+        hideToaster();
+      }, 3800);
     } else {
       // Wait for exit animation to finish before un-rendering
       const timer = setTimeout(() => {
@@ -16,7 +25,8 @@ function Toaster({ show, onClose, status, message }) {
       }, 800); // This should match the animation duration
       return () => clearTimeout(timer);
     }
-  }, [show]);
+    return () => clearTimeout(showTimer);
+  }, [show, hideToaster]);
 
   if (!isRendered) {
     return null;
@@ -37,7 +47,7 @@ function Toaster({ show, onClose, status, message }) {
           borderColor: "border-green-300",
           textColor: "text-green-700",
           title: "Success!",
-          defaultMessage: "Login successful. Redirecting...",
+          defaultMessage: "Data loaded successfully...",
           buttonBorderColor: "border-green-300",
         };
       case "error":
@@ -49,7 +59,7 @@ function Toaster({ show, onClose, status, message }) {
           textColor: "text-[#FF4D01CC]",
           title: "Failed!",
           defaultMessage:
-            "Password or username is incorrect, please try again with correct credentials.",
+            "Failed to load data, please try again.",
           buttonBorderColor: "border-[#FF4D017D]",
         };
     }

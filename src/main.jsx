@@ -8,14 +8,16 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import './utils/ColorTemplate.css';
-import { UserProvider } from "./context/Context.jsx";
+import { UserProvider, ToasterProvider } from "./context/Context.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <UserProvider>
-  <AuthProvider>
-    <TopicProvider>
-      <App />
-    </TopicProvider>
-  </AuthProvider>
-  </UserProvider>
+  <ToasterProvider>
+    <UserProvider>
+      <AuthProvider>
+        <TopicProvider>
+          <App />
+        </TopicProvider>
+      </AuthProvider>
+    </UserProvider>
+  </ToasterProvider>
 );

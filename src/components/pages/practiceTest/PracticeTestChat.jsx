@@ -37,28 +37,14 @@ export default function PracticeTest() {
   );
   const hrId = sessionData.hr_id || matchedRecord?.hr_id || null;
   const topicName =
-      sessionData.topic ||
-      sessionData.topic_name ||
-      matchedRecord?.topic ||
-      matchedRecord?.topic_name,
+    sessionData.topic ||
+    sessionData.topic_name ||
+    matchedRecord?.topic ||
+    matchedRecord?.topic_name,
     totalTimeFromState = sessionData.total_time;
 
   // Debug logging
-  console.log("Component data initialization:", {
-    getTopicDataLength: getTopicData?.length || 0,
-    userId,
-    matchedRecord,
-    hrIdFromState: sessionData?.hr_id,
-    hrIdFromRecord: matchedRecord?.hr_id,
-    finalHrId: hrId,
-    topicName,
-    topicFromState: sessionData.topic,
-    topicNameFromState: sessionData.topic_name,
-    topicFromRecord: matchedRecord?.topic,
-    topicNameFromRecord: matchedRecord?.topic_name,
-    sessionData,
-    totalTimeFromState,
-  });
+
 
   const [isAILoading, setIsAILoading] = useState(false);
   const [fullConversation, setFullConversation] = useState([]);
@@ -111,7 +97,7 @@ export default function PracticeTest() {
         "fullConversation",
         JSON.stringify(fullConversation || [])
       );
-    } catch {}
+    } catch { }
   }, [fullConversation]);
 
   // Enhanced speech synthesis function with female voice (from textReader)
@@ -723,7 +709,7 @@ export default function PracticeTest() {
     try {
       const code = getLangCode(selectedLanguage);
       setSttLanguage(code);
-    } catch {}
+    } catch { }
   }, [selectedLanguage]);
 
   const getReadableLanguage = (text) => {
@@ -877,7 +863,7 @@ export default function PracticeTest() {
         // Stop speech and disable input per requirement
         try {
           window.speechSynthesis.cancel();
-        } catch {}
+        } catch { }
         setIsSpeaking(false);
         setSessionExpired(true);
         setUserStatus("expired"); // Switch to the expired view
@@ -1160,7 +1146,7 @@ export default function PracticeTest() {
         top: chatContainerRef.current.scrollHeight,
         behavior: "smooth",
       });
-    } catch {}
+    } catch { }
   }, [messages, isAILoading, showTimeUpPopup]);
 
   const handleKeyDown = (e) => {
@@ -1360,12 +1346,12 @@ export default function PracticeTest() {
                 onClick={() => {
                   try {
                     window.speechSynthesis.cancel();
-                  } catch {}
+                  } catch { }
                   setUserStatus(null); // <-- Add this to hide the expired popup
                   setShowTimeUpPopup(false);
                   setSessionExpired(false);
                 }}
-                className="absolute top-1 right-1 text-[#DFB916] transition"
+                className="absolute top-1 right-1 text-[#DFB916] transition cursor-pointer"
               >
                 <CancelIcon className="w-10 h-10" />
               </button>
@@ -1385,7 +1371,7 @@ export default function PracticeTest() {
                 Your session time has expired.
               </p>
               <button
-                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
                 onClick={() => navigate("/test")}
               >
                 Back to Tests
@@ -1425,14 +1411,14 @@ export default function PracticeTest() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div className="flex items-center flex-1 gap-6">
-                <button
+                {/*                 <button
                   className="p-2 rounded-xl transition"
                   onClick={showBackPopup}
                 >
                   <div className="cursor-pointer text-[#BCC7D2] hover:text-[#E5B800] transition-colors duration-200">
                     <ArrowBackIosNewRoundedIcon />
                   </div>
-                </button>
+                </button> */}
                 <div className="flex justify-between flex-1">
                   <div className="leading-tight">
                     <h2 className="text-sm font-semibold text-[#8F96A9]">
@@ -1458,16 +1444,16 @@ export default function PracticeTest() {
                       {userStatus === "upcoming"
                         ? countdownTime
                         : sessionStarted
-                        ? timeLeft || "--:--"
-                        : sessionStatus?.total_time
-                        ? `${String(sessionStatus.total_time).padStart(
-                            2,
-                            "0"
-                          )}:00`
-                        : `${String(matchedRecord?.total_time || 10).padStart(
-                            2,
-                            "0"
-                          )}:00`}
+                          ? timeLeft || "--:--"
+                          : sessionStatus?.total_time
+                            ? `${String(sessionStatus.total_time).padStart(
+                              2,
+                              "0"
+                            )}:00`
+                            : `${String(matchedRecord?.total_time || 10).padStart(
+                              2,
+                              "0"
+                            )}:00`}
                     </h3>
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming"
@@ -1476,7 +1462,7 @@ export default function PracticeTest() {
                     </p>
                   </div>
                   <button
-                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                    className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
                     onClick={showEndPopup}
                   >
                     End
@@ -1496,9 +1482,9 @@ export default function PracticeTest() {
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
                         totalTimeFromState ??
-                          sessionStatus?.total_time ??
-                          matchedRecord?.total_time ??
-                          10
+                        sessionStatus?.total_time ??
+                        matchedRecord?.total_time ??
+                        10
                       );
                       startSessionTimer(total, Date.now());
                       await startSessionInitial();
@@ -1550,9 +1536,8 @@ export default function PracticeTest() {
 
             {/* Footer */}
             <div
-              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${
-                sessionExpired ? "blur-sm pointer-events-none" : ""
-              }`}
+              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? "blur-sm pointer-events-none" : ""
+                }`}
             >
               <input
                 type="text"
@@ -1568,7 +1553,14 @@ export default function PracticeTest() {
                 disabled={!sessionStarted || sessionExpired}
               />
               <button
-                className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5"
+                /* className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5" */
+                className={`p-3 rounded-xl transition h-11.5 border cursor-pointer
+                 ${isRecording
+                    ? "border-[#E53E3E] hover:bg-[#E53E3E]/20"
+                    : sessionStarted
+                      ? "border-[#DFB916] hover:bg-[#DFB916]/20"
+                      : "border-[#B7BDC2]"
+                  }`}
                 onClick={() => {
                   if (isRecording) {
                     // Manual stop should clear pending timer and release lock soon
@@ -1577,7 +1569,7 @@ export default function PracticeTest() {
                         clearTimeout(speechTimerRef.current);
                         speechTimerRef.current = null;
                       }
-                    } catch {}
+                    } catch { }
                     stopRecording();
                     setTimeout(() => {
                       micSendLockRef.current = false;
@@ -1596,15 +1588,15 @@ export default function PracticeTest() {
                     color: isRecording
                       ? "#E53E3E"
                       : sessionStarted
-                      ? "#DFB916"
-                      : "#B7BDC2",
+                        ? "#DFB916"
+                        : "#B7BDC2",
                     height: "1.7rem",
                     width: "1.7rem",
                   }}
                 />
               </button>
               <button
-                className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#f1be08] transition h-11.5 flex items-center disabled:bg-"
+                className="p-3 rounded-xl bg-[#E5B800] hover:bg-[#f1be08] transition h-11.5 flex items-center cursor-pointer"
                 onClick={handleSend}
                 type="button"
                 disabled={

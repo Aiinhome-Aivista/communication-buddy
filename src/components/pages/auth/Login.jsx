@@ -72,7 +72,7 @@ function Login() {
         <LoginInfoToast
           show={showInfoModal}
           onClose={() => setShowInfoModal(false)}
-          message={loginResponse.success ? `Welcome back, ${loginResponse.userName}!` : loginResponse.message}
+          message={loginResponse.success ? `Welcome, ${loginResponse.userName}!` : loginResponse.message}
           success={loginResponse.success} />
       )}
       <p

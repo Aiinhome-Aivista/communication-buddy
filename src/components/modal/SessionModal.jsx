@@ -144,7 +144,7 @@ export default function SessionModal({
       );
       if (
         response &&
-        (response.message === "request updated" ||
+        (
           response.success === true ||
           response.status === 200)
       ) {
@@ -154,8 +154,10 @@ export default function SessionModal({
       }
     } catch (error) {
       console.error("Error inserting schedule:", error);
-      alert("An error occurred while creating the schedule.");
+      // alert("An error occurred while creating the schedule.");
     } finally {
+      
+      handleReset();
       setIsSaving(false);
     }
   };
