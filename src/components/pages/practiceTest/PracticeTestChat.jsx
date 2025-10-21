@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import MicIcon from "@mui/icons-material/Mic";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
-import useCustomSpeechRecognition from "../../../hooks/useSpeechRecognition";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { useTopic } from "../../../provider/TopicProvider";
 import {
   saveChatSession,
@@ -54,7 +54,7 @@ export default function PracticeTest() {
   const [sessionStatus, setSessionStatus] = useState(null);
   const [languageSelected, setLanguageSelected] = useState(false);
   const [waitingForLanguage, setWaitingForLanguage] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [selectedLanguage, setSelectedLanguage] = useState(""); // Start with no language selected
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceGender, setVoiceGender] = useState("female");
   const [showTimeUpPopup, setShowTimeUpPopup] = useState(false);
@@ -63,6 +63,8 @@ export default function PracticeTest() {
   const [timeLeft, setTimeLeft] = useState("");
   const [userStatus, setUserStatus] = useState(null); // upcoming, ongoing, expired
   const [countdownTime, setCountdownTime] = useState("");
+  const [isTerminated, setIsTerminated] = useState(false); // For blurring input when session ends
+  const [showChatReadOnly, setShowChatReadOnly] = useState(false); // For showing chat in read-only mode after dismissing expired popup
 
   // Timer refs
   const sessionTimerRef = useRef(null);
@@ -70,16 +72,27 @@ export default function PracticeTest() {
   const countdownTimerRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  // Speech recognition hook
+  // Speech recognition hook (use same approach as textReader)
   // Speech-to-text language, defaults to English (India); will sync with selectedLanguage
   const [sttLanguage, setSttLanguage] = useState("en-IN");
   const {
-    startRecording,
-    stopRecording,
-    isRecording,
     transcript,
+    listening,
     resetTranscript,
-  } = useCustomSpeechRecognition({ language: sttLanguage }) || {};
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+  // Local aliases to minimize changes in the rest of the file
+  const isRecording = listening;
+  const startRecording = (opts = {}) => {
+    try {
+      // clear transcript before start for fresh capture
+      try { resetTranscript(); } catch (e) { }
+      SpeechRecognition.startListening({ continuous: true, interimResults: true, language: sttLanguage, ...opts });
+    } catch (err) { console.warn('startRecording error', err); }
+  };
+  const stopRecording = () => {
+    try { SpeechRecognition.stopListening(); } catch (e) { }
+  };
   const speechTimerRef = useRef(null);
   // Guards to prevent double submission from mic
   const micSendLockRef = useRef(false);
@@ -708,8 +721,11 @@ export default function PracticeTest() {
   // Keep STT language aligned with selected chat language so mic input is transcribed correctly (e.g., Hindi -> Devanagari)
   useEffect(() => {
     try {
-      const code = getLangCode(selectedLanguage);
-      setSttLanguage(code);
+      // Only update STT language if a language has been selected
+      if (selectedLanguage) {
+        const code = getLangCode(selectedLanguage);
+        setSttLanguage(code);
+      }
     } catch { }
   }, [selectedLanguage]);
 
@@ -773,8 +789,14 @@ export default function PracticeTest() {
         }
         return;
       } else if (data.status === "expired") {
+        // Stop any currently playing speech immediately when session is expired
+        try {
+          window.speechSynthesis.cancel();
+          stopSpeaking();
+        } catch { }
         setUserStatus("expired");
         setSessionExpired(true);
+        setIsTerminated(true);
         setShowTimeUpPopup(true);
         return;
       } else {
@@ -867,6 +889,7 @@ export default function PracticeTest() {
         } catch { }
         setIsSpeaking(false);
         setSessionExpired(true);
+        setIsTerminated(true);
         setUserStatus("expired"); // Switch to the expired view
         setShowTimeUpPopup(true);
         // Note: Removed auto-save on time up per requirement
@@ -909,8 +932,8 @@ export default function PracticeTest() {
         setSessionStarted(true);
         setWaitingForLanguage(true);
 
-        // Speak the welcome message
-        await speakMessage(data.message, getLangCode("English"));
+        // Speak the welcome message in English (neutral) to ask for language preference
+        await speakMessage(data.message, "en-IN");
 
         // Generate a 4-digit session ID; start timer only after language is chosen
         const sid = Math.floor(1000 + Math.random() * 9000);
@@ -930,6 +953,8 @@ export default function PracticeTest() {
       });
       return;
     }
+
+  
 
     try {
       const readableLang = getReadableLanguage(languageInput);
@@ -1120,7 +1145,7 @@ export default function PracticeTest() {
 
   const handleSend = () => {
     const text = inputValue.trim();
-    if (!text || !sessionStarted) return;
+    if (!text || !sessionStarted || isTerminated) return;
 
     const userEntry = { id: Date.now(), text, sender: "user" };
     setMessages((prev) => [...prev, userEntry]);
@@ -1149,6 +1174,16 @@ export default function PracticeTest() {
       });
     } catch { }
   }, [messages, isAILoading, showTimeUpPopup]);
+
+  // Stop speech when expired session modal is shown
+  useEffect(() => {
+    if (showTimeUpPopup || userStatus === "expired") {
+      try {
+        window.speechSynthesis.cancel();
+        stopSpeaking();
+      } catch { }
+    }
+  }, [showTimeUpPopup, userStatus]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -1180,7 +1215,7 @@ export default function PracticeTest() {
 
   // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
-    if (!isRecording && transcript && transcript.trim() && sessionStarted) {
+    if (!isRecording && transcript && transcript.trim() && sessionStarted && !showChatReadOnly) {
       // send transcript as message
       const text = transcript.trim();
       // Prevent double submission: if the same text was just sent, or lock is active, skip
@@ -1223,12 +1258,13 @@ export default function PracticeTest() {
     sessionStarted,
     waitingForLanguage,
     languageSelected,
+    showChatReadOnly,
   ]);
 
   // Auto-send functionality with 5-second delay (like textReader)
   useEffect(() => {
     // Only debounce while actively listening
-    if (!isRecording) return;
+    if (!isRecording || showChatReadOnly) return;
 
     const text = transcript.trim();
     if (!text) return;
@@ -1252,20 +1288,21 @@ export default function PracticeTest() {
         speechTimerRef.current = null;
       }
     };
-  }, [transcript, isRecording, sessionStarted]);
+  }, [transcript, isRecording, sessionStarted, showChatReadOnly]);
 
   // Main chat API call using ApiService
   const callChatAPI = async (userInput) => {
-    if (!userInput || !languageSelected) return;
+    // Strict check: only proceed if language is actually selected
+    if (!userInput || !languageSelected || !selectedLanguage || selectedLanguage === "") return;
     setIsAILoading(true);
 
     try {
       const data = await sendChatMessage(
         sessionId,
         topicName,
-        matchedRecord?.total_time || 10,
+        matchedRecord?.total_time,
         userInput,
-        selectedLanguage || "English",
+        selectedLanguage, // No fallback - only use selected language
         userId,
         hrId
       );
@@ -1285,8 +1322,10 @@ export default function PracticeTest() {
 
       // Stop typing indicator immediately after receiving response
       setIsAILoading(false);
-      // Speak the AI response
-      await speakMessage(aiMessage, getLangCode(selectedLanguage));
+      // Speak the AI response only if language is selected
+      if (selectedLanguage) {
+        await speakMessage(aiMessage, getLangCode(selectedLanguage));
+      }
 
       // Note: Removed auto-save on session end keywords per requirement; still show the popup if needed
       const lower = aiMessage.toLowerCase();
@@ -1294,6 +1333,12 @@ export default function PracticeTest() {
         lower.includes("time is up") ||
         lower.includes("thank you for the discussion")
       ) {
+        // Stop any currently playing speech immediately when session ends
+        try {
+          window.speechSynthesis.cancel();
+          stopSpeaking();
+        } catch { }
+        setIsTerminated(true);
         setShowTimeUpPopup(true);
       }
     } catch (error) {
@@ -1347,8 +1392,10 @@ export default function PracticeTest() {
                 onClick={() => {
                   try {
                     window.speechSynthesis.cancel();
+                    stopSpeaking();
                   } catch { }
-                  setUserStatus(null); // <-- Add this to hide the expired popup
+                  // Close goes back to previous state - don't change interaction capabilities
+                  setUserStatus(null); // Hide the expired popup
                   setShowTimeUpPopup(false);
                   setSessionExpired(false);
                 }}
@@ -1371,12 +1418,30 @@ export default function PracticeTest() {
               <p className="mb-6 text-[#2C2E42] font-extrabold">
                 Your session time has expired.
               </p>
-              <button
-                className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition cursor-pointer"
-                onClick={() => confirmAction}
-              >
-                Back to Tests
-              </button>
+              <div className="flex justify-center gap-4">
+                <button
+                  className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                  onClick={() => navigate("/test")}
+                >
+                  Back to Tests
+                </button>
+                <button
+                  className="h-8 w-15 border border-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
+                  onClick={() => {
+                    try {
+                      window.speechSynthesis.cancel();
+                      stopSpeaking();
+                    } catch { }
+                    // Don't set isTerminated to true - allow continued interaction
+                    setShowChatReadOnly(true); // Show chat in read-only mode with blurred input
+                    setUserStatus("ongoing"); // Show chat page
+                    setSessionExpired(false);
+                    setShowTimeUpPopup(false);
+                  }}
+                >
+                  OK
+                </button>
+              </div>
             </div>
           </div>
         ) : userStatus === "no_session" ? (
@@ -1539,21 +1604,21 @@ export default function PracticeTest() {
 
             {/* Footer */}
             <div
-              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${sessionExpired ? "blur-sm pointer-events-none" : ""
+              className={`border-t border-gray-200 px-8 py-4 flex items-center gap-3 bg-white ${showChatReadOnly ? "blur-sm pointer-events-none" : ""
                 }`}
             >
               <input
                 type="text"
                 placeholder={
                   waitingForLanguage
-                    ? "Type a information..."
-                    : "Type a information..."
+                    ? "Type a message..."
+                    : "Type a message..."
                 }
                 className="flex-1 border-none bg-[#F8F9FB] px-4 py-3 rounded-xl text-sm text-[#2C2E42] placeholder:text-[#B7BDC2] focus:outline-none focus:ring-1 focus:ring-[#F4E48A]"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={!sessionStarted || sessionExpired}
+                disabled={!sessionStarted || showChatReadOnly}
               />
               <button
                 /* className="p-3 rounded-xl border border-[#DFB916] hover:bg-[#F4E48A] transition h-11.5" */
@@ -1584,7 +1649,7 @@ export default function PracticeTest() {
                     startRecording();
                   }
                 }}
-                disabled={!sessionStarted || sessionExpired}
+                disabled={!sessionStarted || showChatReadOnly}
               >
                 <MicIcon
                   style={{
@@ -1605,7 +1670,7 @@ export default function PracticeTest() {
                 disabled={
                   !sessionStarted ||
                   !inputValue.trim() ||
-                  sessionExpired ||
+                  showChatReadOnly ||
                   isAILoading
                 }
               >
