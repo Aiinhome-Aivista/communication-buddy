@@ -17,8 +17,8 @@ import {
 import ErrorIcon from "@mui/icons-material/Error";
 import CancelIcon from "@mui/icons-material/Cancel";
 import WarningIcon from "@mui/icons-material/WarningRounded";
-import { UserContext } from "../../../context/Context";
-import { useContext } from "react";
+import { useUser } from "../../../context/Context";
+
 export default function PracticeTest() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -26,7 +26,7 @@ export default function PracticeTest() {
   const navigate = useNavigate();
   const location = useLocation();
   const { getTopicData } = useTopic();
-  const { setTotalSessionTime } = useContext(UserContext);
+  const { totalSessionTime, setTotalSessionTime } = useUser();
 
 
 
@@ -1209,6 +1209,7 @@ export default function PracticeTest() {
           hrId,
           topic: topicName,
           fullConversation,
+          totalSessionTime: sessionTotalTime || totalSessionTime,
         });
       } catch (err) {
         console.warn("Error saving conversation", err);
@@ -1554,8 +1555,8 @@ export default function PracticeTest() {
                   {/* <p className="text-lg text-[#7E8489]">Click below to start your interview chat</p> */}
                   <button
                     className={`px-6 py-3 bg-[#DFB916] text-white rounded-lg transition ${isStartingSession
-                        ? "cursor-wait"
-                        : "hover:bg-[#d6a600]"
+                      ? "cursor-wait"
+                      : "hover:bg-[#d6a600]"
                       }`}
                     onClick={async () => {
                       setIsStartingSession(true);

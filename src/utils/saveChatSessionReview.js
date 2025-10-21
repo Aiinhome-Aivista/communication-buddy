@@ -1,21 +1,19 @@
 import { fatchedPostRequest, postURL } from "../services/ApiService";
-import {UserContext} from "../context/Context";
-import { useContext } from "react";
 
 export const saveChatSession = async ({
   userId,
   hrId,
   topic,
   fullConversation,
+  totalSessionTime,
 }) => {
   try {
-    const {totalSessionTime} = useContext(UserContext);
     await fatchedPostRequest(postURL.chatSessionReview, {
       user_id: userId,
       hr_id: hrId,
       topic: topic,
       chat_history: fullConversation,
-      total_time: totalSessionTime,
+      total_time: totalSessionTime || 10, // Fallback to 10 if not provided
       use_lstm: false,
     });
     console.log("✅ Final conversation saved");
