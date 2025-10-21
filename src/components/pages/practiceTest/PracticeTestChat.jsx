@@ -1173,8 +1173,10 @@ export default function PracticeTest() {
       } catch (err) {
         console.warn("Error saving conversation", err);
       }
-      closePopup();
-      navigate("/test");
+      finally {
+        navigate("/test");
+        closePopup();
+      }
     })();
   };
 
