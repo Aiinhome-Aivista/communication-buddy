@@ -659,14 +659,14 @@ const HrCandidateDashboard = () => {
                             {technologies.length > 0 ? (
                                 <div
                                     className="
-        grid 
-        grid-cols-2 
-        sm:grid-cols-3 
-        md:grid-cols-4 
-        gap-3 
-        mt-4 
-        place-items-center
-      "
+                                                grid 
+                                                grid-cols-2 
+                                                sm:grid-cols-3 
+                                                md:grid-cols-4 
+                                                gap-3 
+                                                mt-4 
+                                                place-items-center
+                                            "
                                 >
                                     {technologies.slice(0, 16).map((tech, idx) => {
                                         const iconSrc = getTechIcon(tech);
@@ -682,12 +682,12 @@ const HrCandidateDashboard = () => {
                                                     src={iconSrc}
                                                     alt={tech || "Technology"}
                                                     className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
-                                                   onError={(e) => {
-                                                        e.target.onerror = null; 
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
                                                         e.target.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
                                                     }}
                                                 />
-                                                
+
                                                 {/* Hover tooltip */}
                                                 <div
                                                     className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-4 py-1 rounded-sm text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out whitespace-nowrap z-20 pointer-events-none shadow-md"
@@ -816,7 +816,7 @@ const HrCandidateDashboard = () => {
                                                 fontWeight: 300,
                                             }}
                                         >
-                                            .{String(avgSessionDuration).split(".")[1] || "00"}
+                                            .{String(avgSessionDuration).split(".")[1]}
                                         </span>
                                     </div>
 
