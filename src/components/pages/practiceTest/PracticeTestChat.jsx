@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import MicIcon from "@mui/icons-material/Mic";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -17,14 +17,15 @@ import {
 import ErrorIcon from "@mui/icons-material/Error";
 import CancelIcon from "@mui/icons-material/Cancel";
 import WarningIcon from "@mui/icons-material/WarningRounded";
+import { useUser } from "../../../context/Context";
 export default function PracticeTest() {
   const [messages, setMessages] = useState([]);
-
   const [inputValue, setInputValue] = useState("");
   const [popupType, setPopupType] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const { getTopicData } = useTopic();
+  const { setTotalSessionTime } = useUser();
 
   // Get session data from navigation state or URL params
   const sessionData = location.state || {};
@@ -764,6 +765,7 @@ export default function PracticeTest() {
       console.log("Calling get_session_status API...");
       const data = await checkSessionStatus(userId, hrId, topicName);
       console.log("Session status response:", data);
+      setTotalSessionTime(data.total_time);
 
       // Check if the response contains an error
       if (data.error) {
@@ -954,7 +956,7 @@ export default function PracticeTest() {
       return;
     }
 
-  
+
 
     try {
       const readableLang = getReadableLanguage(languageInput);
@@ -1423,7 +1425,7 @@ export default function PracticeTest() {
               <div className="flex justify-center gap-4">
                 <button
                   className="h-8 w-40 border border-[#DFB916] bg-[#DFB916] text-[#2C2E42] font-bold text-xs px-5 rounded-lg hover:bg-[#DFB916] hover:text-white transition"
-                   onClick={confirmAction}
+                  onClick={confirmAction}
                 >
                   Back to Tests
                 </button>
@@ -1548,8 +1550,12 @@ export default function PracticeTest() {
                 <div className="text-center space-y-4">
                   {/* <p className="text-lg text-[#7E8489]">Click below to start your interview chat</p> */}
                   <button
-                    className="px-6 py-3 bg-[#DFB916] text-white rounded-lg hover:bg-[#d6a600] transition"
+                    className={`px-6 py-3 bg-[#DFB916] text-white rounded-lg transition ${isStartingSession
+                        ? "cursor-wait"
+                        : "hover:bg-[#d6a600]"
+                      }`}
                     onClick={async () => {
+                      setIsStartingSession(true);
                       // Set up timer countdown from allocated duration when starting
                       const total = Number(
                         totalTimeFromState ??
@@ -1559,9 +1565,12 @@ export default function PracticeTest() {
                       );
                       startSessionTimer(total, Date.now());
                       await startSessionInitial();
+                      // Assuming startSessionInitial will set sessionStarted, but good to turn off loader
+                      setIsStartingSession(false);
                     }}
+                    disabled={isStartingSession}
                   >
-                    Start Chat
+                    {isStartingSession ? "Starting..." : "Start Chat"}
                   </button>
                 </div>
               </div>

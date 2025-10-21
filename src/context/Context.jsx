@@ -4,12 +4,17 @@ export const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [userData, setUserData] = useState({});
+  const [totalSessionTime, setTotalSessionTime] = useState("");
+
   return (
-    <UserContext.Provider value={{ userData, setUserData }}>
+    <UserContext.Provider value={{ userData, setUserData, totalSessionTime, setTotalSessionTime }}>
       {children}
     </UserContext.Provider>
   );
 }
+
+// Custom hook to use the User context
+export const useUser = () => useContext(UserContext);
 
 // Toaster Context
 export const ToasterContext = createContext({

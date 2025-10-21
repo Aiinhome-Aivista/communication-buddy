@@ -1,4 +1,6 @@
 import { fatchedPostRequest, postURL } from "../services/ApiService";
+import { useUser } from "../context/Context";
+const {totalSessionTime} = useUser();
 
 export const saveChatSession = async ({
   userId,
@@ -12,7 +14,7 @@ export const saveChatSession = async ({
       hr_id: hrId,
       topic: topic,
       chat_history: fullConversation,
-      total_time: 10,
+      total_time: totalSessionTime,
       use_lstm: false,
     });
     console.log("✅ Final conversation saved");
