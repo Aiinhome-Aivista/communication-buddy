@@ -154,16 +154,30 @@ const HrCandidateDashboard = () => {
             ? Array.isArray(data?.anuallyHiringProcess) ? data.anuallyHiringProcess : []
             : Array.isArray(data?.last_twelve_test_scores) ? data.last_twelve_test_scores : [];
 
+        // Helper function to get ordinal suffix
+        const getOrdinalSuffix = (num) => {
+            if (num % 100 >= 11 && num % 100 <= 13) return 'th';
+            switch (num % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        };
+
         if (isHR) {
             return list.map((it, idx) => ({
                 name: String(it.month || it.name || idx + 1).slice(0, 3),
                 uv: Number(it.sessions ?? it.value ?? 0),
             }));
         } else {
-            return list.map((score, idx) => ({
-                name: `${idx + 1}`,
-                uv: Number(score) || 0,
-            }));
+            return list.map((score, idx) => {
+                const num = idx + 1;
+                return {
+                    name: `${num}${getOrdinalSuffix(num)}`,
+                    uv: Number(score) || 0,
+                };
+            });
         }
     }, [data, isHR]);
 
