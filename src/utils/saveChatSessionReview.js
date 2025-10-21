@@ -1,6 +1,7 @@
 import { fatchedPostRequest, postURL } from "../services/ApiService";
-import { useUser } from "../context/Context";
-const {totalSessionTime} = useUser();
+import {UserContext} from "../context/Context";
+import { useContext } from "react";
+const {totalSessionTime} = useContext(UserContext);
 
 export const saveChatSession = async ({
   userId,

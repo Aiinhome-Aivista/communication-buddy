@@ -17,7 +17,8 @@ import {
 import ErrorIcon from "@mui/icons-material/Error";
 import CancelIcon from "@mui/icons-material/Cancel";
 import WarningIcon from "@mui/icons-material/WarningRounded";
-import { useUser } from "../../../context/Context";
+import { UserContext } from "../../../context/Context";
+import { useContext } from "react";
 export default function PracticeTest() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -25,7 +26,9 @@ export default function PracticeTest() {
   const navigate = useNavigate();
   const location = useLocation();
   const { getTopicData } = useTopic();
-  const { setTotalSessionTime } = useUser();
+  const { setTotalSessionTime } = useContext(UserContext);
+
+
 
   // Get session data from navigation state or URL params
   const sessionData = location.state || {};
