@@ -3,6 +3,7 @@ import { fetchHrDashboard, fatchedPostRequest, postURL } from "../../../services
 import Loader from "../../ui/Loader";
 import SessionModal from "../../modal/SessionModal";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import DataObjectRoundedIcon from '@mui/icons-material/DataObjectRounded';
 import {
     BarChart,
     Bar,
@@ -332,7 +333,7 @@ const HrCandidateDashboard = () => {
                 return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg";
             case "oracle":
                 return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg";
-            case "aws":
+            case "Aws":
                 return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg";
             case "azure":
                 return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg";
@@ -387,7 +388,7 @@ const HrCandidateDashboard = () => {
             case "react native":
                 return "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg";
             default:
-                return "https://via.placeholder.com/40x40/f3f4f6/9ca3af?text=%3F";
+                return DataObjectRoundedIcon
         }
     };
 
@@ -678,15 +679,27 @@ const HrCandidateDashboard = () => {
                                                 {/* Background overlay for opacity effect */}
                                                 <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 ease-in-out rounded-2xl"></div>
 
-                                                <img
-                                                    src={iconSrc}
-                                                    alt={tech || "Technology"}
-                                                    className="w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10"
-                                                   onError={(e) => {
-                                                        e.target.onerror = null; 
-                                                        e.target.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+<img
+                                                    src={typeof iconSrc === 'string' ? iconSrc : ''}
+                                                    alt={tech || 'Technology'}
+                                                    className={`
+                                                        ${typeof iconSrc === 'string' ? 'block' : 'hidden'}
+                                                        w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] object-contain transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10
+                                                    `}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.style.display = 'none'; // Hide broken image
+                                                        const fallback = e.target.nextSibling;
+                                                        if (fallback) fallback.style.display = 'block';
                                                     }}
                                                 />
+                                                {typeof iconSrc !== 'string' && React.createElement(iconSrc, {
+                                                    className: "text-slate-600 transition-transform duration-300 ease-in-out group-hover:scale-125 relative z-10",
+                                                    style: {
+                                                        width: '35px',
+                                                        height: '35px'
+                                                    }
+                                                })}
                                                 
                                                 {/* Hover tooltip */}
                                                 <div
