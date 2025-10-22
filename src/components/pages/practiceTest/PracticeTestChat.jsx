@@ -1410,6 +1410,7 @@ export default function PracticeTest() {
                   try {
                     window.speechSynthesis.cancel();
                     stopSpeaking();
+                    setShowChatReadOnly(true); 
                   } catch { }
                   // Close goes back to previous state - don't change interaction capabilities
                   setUserStatus(null); // Hide the expired popup
