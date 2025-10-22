@@ -567,7 +567,7 @@ export default function PracticeTest() {
               v.name.toLowerCase().includes("premium")
           );
 
-          if (voiceGender === "male") {
+          if (voiceGender === "female") {
             selectedVoice =
               premiumSpanish.find(
                 (v) =>
@@ -716,7 +716,7 @@ export default function PracticeTest() {
       case "hindi":
       case "हिंदी":
         return "hi-IN";
-      case "spanish":
+      case "Spanish":
       case "español":
         return "es-ES";
       case "french":
@@ -867,7 +867,7 @@ export default function PracticeTest() {
   // Session timer functionality (uses API total_time and session_time when available)
   const startSessionTimer = (totalMinutesParam, sessionStartAt) => {
     const totalTime = Number(
-      totalTimeFromState ?? totalMinutesParam ?? matchedRecord?.total_time ?? 10
+      totalTimeFromState ?? totalMinutesParam ?? matchedRecord?.total_time
     ); // minutes
     setSessionTotalTime(totalTime);
     sessionStartRef.current = sessionStartAt
