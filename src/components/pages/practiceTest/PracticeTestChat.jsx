@@ -468,18 +468,23 @@ export default function PracticeTest() {
               hindiVoices[0] ||
               voices[0];
           } else {
-            selectedVoice =
-              // Premium Hindi female voices
-              premiumHindiVoices.find((v) => !isLikelyMaleVoice(v)) ||
-              // Standard Hindi female voices
-              hindiVoices.find((v) => !isLikelyMaleVoice(v)) ||
-              hindiVoices.find((v) =>
-                v.name.toLowerCase().includes("female")
-              ) ||
-              // Fallback to any Hindi voice
-              hindiVoices[0] ||
-              voices[0];
-          }
+    selectedVoice =
+        // Top Priority: Premium Hindi female voices, explicitly checking for female-sounding names
+        premiumHindiVoices.find((v) => {
+            const name = v.name.toLowerCase();
+            return !isLikelyMaleVoice(v) || name.includes("female") || name.includes("shruthi") || name.includes("swara");
+        }) ||
+        // Second Priority: Standard Hindi female voices (using the detection heuristic)
+      hindiVoices.find((v) => !isLikelyMaleVoice(v)) ||
+        // Third Priority: Voices with 'female' in the name (direct match, as the isLikelyMaleVoice might be too aggressive)
+      hindiVoices.find((v) =>
+            v.name.toLowerCase().includes("female")
+        ) ||
+        // Fourth Priority: Fallback to the first available Hindi voice (can be risky, but kept as an option)
+      hindiVoices[0] ||
+        // Last resort: Any system voice
+      voices[0];
+}
         } else if (lang === "bn-IN" || lang === "bn-BD") {
           // ✅ Enhanced Bengali voice support with natural tone priority
           const bengaliVoices = voices.filter((v) => {
