@@ -1232,6 +1232,27 @@ export default function PracticeTest() {
     })();
   };
 
+    const confirmActionOk = () => {
+    // Save conversation then navigate
+    (async () => {
+      try {
+        await saveChatSession({
+          userId,
+          hrId,
+          topic: topicName,
+          fullConversation,
+          totalSessionTime: sessionTotalTime || totalSessionTime,
+        });
+      } catch (err) {
+        console.warn("Error saving conversation", err);
+      }
+      finally {
+        closePopup();
+      }
+    })();
+  };
+  
+
   // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
     if (!isRecording && transcript && transcript.trim() && sessionStarted && !showChatReadOnly) {
@@ -1456,9 +1477,9 @@ export default function PracticeTest() {
                       stopSpeaking();
                     } catch { }
                     // Don't set isTerminated to true - allow continued interaction
+                    confirmActionOk();
                     setShowChatReadOnly(true); // Show chat in read-only mode with blurred input
                     setUserStatus("ongoing"); // Show chat page
-                    confirmAction;
                     setSessionExpired(false);
                     setShowTimeUpPopup(false);
                   }}

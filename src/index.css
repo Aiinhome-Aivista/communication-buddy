@@ -335,3 +335,82 @@ body,
 .candidate-dropdown-scrollbar::-webkit-scrollbar-track {
   background: #BCC7D2; /* Match dropdown background */
 }
+
+
+
+
+/* Ensure the custom date placeholder shows the error color when needed */
+.date-error-placeholder {
+  color: #FF4D017D !important;
+}
+
+.input-error.candidate-search-input::placeholder {
+  color: #FF4D017D !important;
+}
+
+.candidate-search-input::placeholder {
+  color: #BCC7D2;
+}
+
+/* Default placeholder color for the session topic textarea */
+.session-topic-textarea::placeholder {
+  color: #bcc7d2;
+  opacity: 1;
+}
+
+.session-topic-textarea.textarea-error::placeholder {
+  color: #FF4D017D;
+  opacity: 1;
+}
+
+/* Style for the datetime-local input placeholder text */
+.date-error {
+  color: #FF4D017D;
+}
+
+.date-error::-webkit-calendar-picker-indicator {
+  filter: invert(55%) sepia(98%) saturate(3419%) hue-rotate(349deg) brightness(100%) contrast(101%) opacity(50%);
+  cursor: pointer;
+}
+
+/* Custom scrollbar for candidate dropdown */
+.candidate-dropdown-scrollbar::-webkit-scrollbar-track {
+  background: #BCC7D2; /* Match dropdown background */
+}
+
+/* Custom style for DateTimePicker border-radius */
+.session-datetime-picker .MuiOutlinedInput-root {
+  border-radius: 0.75rem; /* rounded-xl */
+}
+
+/*create session datetime picker*/
+.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: text;
+    padding: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex
+;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 14px;
+    height: 48px;
+    border-radius: 0.75rem !important;
+}
+
