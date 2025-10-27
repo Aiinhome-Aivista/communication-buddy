@@ -13,6 +13,7 @@ import { useToaster } from "../../../context/Context";
 import { useContext } from "react";
 import SessionModal from "../../modal/SessionModal";
 import SuccessModal from "./SuccessModal";
+import DeleteModal from "../../modal/DeleteModal";
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -29,6 +30,8 @@ export default function ScheduleSession() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingSchedule, setEditingSchedule] = useState(null);
+    const [deletingSchedule, setDeletingSchedule] = useState(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [userData, setUserData] = useState([]);
     const [sessionData, setSessionData] = useState([])
     const userId = parseInt(sessionStorage.getItem("user_id"), 10);
@@ -177,23 +180,34 @@ export default function ScheduleSession() {
     };
 
     // Handler for delete
-    const handleDelete = async (row) => {
+    const handleDelete = (row) => {
+        setDeletingSchedule(row);
+        setDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
         try {
-            if (!confirm('Are you sure you want to delete this schedule?')) return;
             setLoadingTable(true);
-            const id = row.id || row.id;
-            if (!id) return alert('Missing id to delete');
+            const id = deletingSchedule?.id;
+            if (!id) {
+                showToaster('Missing ID to delete', 'error');
+                return;
+            }
             const payload = { id };
             const response = await fatchedPostRequest(postURL.deleteUserTopic, payload);
             if (response && (response.success === true || response.status === 200 || response.message === 'Deleted')) {
+                showToaster('Schedule deleted successfully', 'success');
                 await fetchSessionData();
             } else {
-                alert('Failed to delete schedule');
+                showToaster('Failed to delete schedule', 'error');
             }
         } catch (err) {
             console.error('Delete error', err.message);
+            showToaster('An error occurred while deleting.', 'error');
         } finally {
             setLoadingTable(false);
+            setDeleteModalOpen(false);
+            setDeletingSchedule(null);
         }
     };
 
@@ -524,6 +538,11 @@ export default function ScheduleSession() {
                 open={successOpen}
                 onClose={() => setSuccessOpen(false)}
             // candidateName={candidateName}
+            />
+            <DeleteModal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
             />
         </div>
     );
