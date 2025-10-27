@@ -16,6 +16,9 @@ import SuccessModal from "./SuccessModal";
 import LoaderNew from "../../ui/LoaderNew";
 import { useMinLoaderTime } from "../../../hooks/useMinLoaderTime";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+
 
 const tabOptions = ["All", "Upcoming", "Ongoing", "Expired"];
 
@@ -297,6 +300,30 @@ export default function ScheduleSession() {
         );
     };
 
+
+    
+    const actionTemplate = (rowData) => {
+        return (
+            <div className="flex space-x-3">
+                <button
+                    className="text-amber-500 hover:text-amber-400 transition-colors cursor-pointer"
+                    title="Edit"
+                    onClick={() => handleEdit(rowData)}
+                    
+                >
+                    <EditRoundedIcon />
+                </button>
+                <button
+                    className="text-red-500 hover:text-red-400 transition-colors cursor-pointer"
+                    title="Delete"
+                    onClick={() => handleDelete(rowData)}
+                >
+                    <DeleteRoundedIcon />
+                </button>
+            </div>
+        );
+    };
+
     // Custom template for the empty message
     const emptyMessageTemplate = (
         <div className="flex flex-col items-center justify-center p-5 text-center text-gray-500">
@@ -458,6 +485,12 @@ export default function ScheduleSession() {
                                         body={statusBodyTemplate}
                                         className="text-center"
                                     ></Column>
+                                    <Column
+                                        field="Action"
+                                        header="Action"
+                                        body={actionTemplate}
+                                    ></Column>
+                                   
                                 </DataTable>
                             </div>
                         </div>
