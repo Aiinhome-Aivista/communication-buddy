@@ -64,7 +64,7 @@ export default function Header() {
       <div className="items-center flex justify-between items-center w-full">
         <div className="flex">
           <p className="w-full flex text-xl md:text-xl text-[#2C2E42]">
-            A<span className="text-[#DFB916]">ii</span>nhome
+            A<span className="logo">ii</span>nhome
             <span className="px-1">|</span>
             <span className="font-bold">CB</span>
           </p>

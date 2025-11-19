@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-
-
-
+:root {
+  --logo-ii-color: #5b5b02;
+}
 
 html,
 body,
@@ -15,9 +15,6 @@ body,
   padding: 0;
   background-color: rgba(236, 239, 242, 1);
 }
-
-
-
 
  body {
   font-family: 'Poppins', sans-serif;  
@@ -51,7 +48,9 @@ body,
   background: #616669;
 }
 
-
+.logo {
+  color: var(--logo-ii-color);
+}
 
 /* Loader Css */
 
@@ -413,4 +412,3 @@ body,
     height: 48px;
     border-radius: 0.75rem !important;
 }
-

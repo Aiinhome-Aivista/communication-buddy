@@ -77,7 +77,7 @@ function Login() {
       )}
       <p
         className="w-full flex text-base md:text-lg cursor-pointer">
-        A<span className="text-[#84840f]">ii</span>nhome
+        A<span className="logo">ii</span>nhome
         <span className="px-1">|</span>
         <span className="font-bold">CB</span>
       </p>
@@ -103,7 +103,7 @@ function Login() {
         <div className="w-full md:w-1/2 h-full flex flex-col mb-6 md:mb-0">
           <div className="flex flex-col w-full h-auto pl-4 md:pl-6 pt-4 md:pt-6">
             <p className="w-full flex text-lg md:text-xl text-[#2C2E42]">
-              A<span className="text-[#DFB916]">ii</span>nhome
+              A<span className="logo">ii</span>nhome
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </p>

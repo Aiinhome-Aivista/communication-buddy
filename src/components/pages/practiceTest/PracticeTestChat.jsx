@@ -1455,7 +1455,7 @@ export default function PracticeTest() {
 
               {/* Aiihome | CB Title */}
               <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
-                A<span className="text-[#DFB916]">ii</span>nhome
+                A<span className="logo">ii</span>nhome
                 <span className="px-1">|</span>
                 <span className="font-bold">CB</span>
               </h3>
@@ -1746,7 +1746,7 @@ export default function PracticeTest() {
 
             <ErrorIcon sx={{ color: "#7E848945", fontSize: 48 }} />
             <h3 className="text-sm font-semibold text-[#2C2E42] mb-1">
-              A<span className="text-[#DFB916]">ii</span>nhome
+              A<span className="logo">ii</span>nhome
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </h3>
