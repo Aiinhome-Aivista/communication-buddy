@@ -219,7 +219,7 @@ function Login() {
 
       {/* Footer */}
       <p className="text-[#2C2E42] text-xs md:text-sm py-2 text-center">
-        @2020 Aiinhome Technologies Pvt. Ltd. All rights reserved
+        @2025 Aiinhome Technologies Pvt. Ltd. All rights reserved
       </p>
     </div>
   );
