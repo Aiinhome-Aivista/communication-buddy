@@ -77,7 +77,7 @@ function Login() {
       )}
       <p
         className="w-full flex text-base md:text-lg cursor-pointer">
-        A<span className="text-[#DFB916]">ii</span>nhome
+        A<span className="text-[#84840f]">ii</span>nhome
         <span className="px-1">|</span>
         <span className="font-bold">CB</span>
       </p>
@@ -107,7 +107,8 @@ function Login() {
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </p>
-            <p className="text-xs text-[#2C2E42]">Communication Buddy V2.5</p>
+            <p className="text-xs text-[#2C2E42]">CommBuddy v2.5</p>
+            <p className="text-xs text-[#2C2E42]/80 font-semibold mt-1">Soft Skill Development Platform</p>
           </div>
           <div className="w-full flex items-center justify-center px-6 pt-5">
             <img
