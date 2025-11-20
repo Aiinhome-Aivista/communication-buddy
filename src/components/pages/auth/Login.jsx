@@ -107,7 +107,7 @@ function Login() {
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </p>
-            <p className="text-xs text-[#2C2E42]">CommBuddy v2.5</p>
+            <p className="text-xs text-[#2C2E42]">Comm Buddy v2.5</p>
             <p className="text-xs text-[#2C2E42]/80 font-semibold mt-1">Soft Skill Development Platform</p>
           </div>
           <div className="w-full flex items-center justify-center px-6 pt-5">
