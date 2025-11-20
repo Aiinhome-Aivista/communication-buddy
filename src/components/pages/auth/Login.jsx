@@ -107,8 +107,7 @@ function Login() {
               <span className="px-1">|</span>
               <span className="font-bold">CB</span>
             </p>
-            <p className="text-xs text-[#2C2E42]">CommBuddy v2.5</p>
-            <p className="text-xs text-[#2C2E42]/80 font-semibold mt-1">Soft Skill Development Platform</p>
+            <p className="text-xs text-[#2C2E42]">Comm Buddy v2.5</p>
           </div>
           <div className="w-full flex items-center justify-center px-6 pt-5">
             <img
@@ -121,6 +120,7 @@ function Login() {
 
         {/* Right Side */}
         <div className="w-full md:w-1/2 flex flex-col items-center justify-between pl-0 md:pl-10 pr-0 md:pr-5 py-8 md:py-16">
+          <p className="text-md text-[#2C2E42]/80 font-semibold -mt-10">Soft Skill Development Platform</p>
           <p className="w-full text-[#2C2E42] text-center text-2xl md:text-3xl font-bold">
             Welcome
           </p>

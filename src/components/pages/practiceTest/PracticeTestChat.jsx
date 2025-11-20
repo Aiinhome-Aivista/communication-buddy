@@ -1301,6 +1301,12 @@ export default function PracticeTest() {
     showChatReadOnly,
   ]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      
+    })
+  })
+
   // Auto-send functionality with 5-second delay (like textReader)
   useEffect(() => {
     // Only debounce while actively listening
