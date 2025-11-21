@@ -468,23 +468,23 @@ export default function PracticeTest() {
               hindiVoices[0] ||
               voices[0];
           } else {
-    selectedVoice =
-        // Top Priority: Premium Hindi female voices, explicitly checking for female-sounding names
-        premiumHindiVoices.find((v) => {
-            const name = v.name.toLowerCase();
-            return !isLikelyMaleVoice(v) || name.includes("female") || name.includes("shruthi") || name.includes("swara");
-        }) ||
-        // Second Priority: Standard Hindi female voices (using the detection heuristic)
-      hindiVoices.find((v) => !isLikelyMaleVoice(v)) ||
-        // Third Priority: Voices with 'female' in the name (direct match, as the isLikelyMaleVoice might be too aggressive)
-      hindiVoices.find((v) =>
-            v.name.toLowerCase().includes("female")
-        ) ||
-        // Fourth Priority: Fallback to the first available Hindi voice (can be risky, but kept as an option)
-      hindiVoices[0] ||
-        // Last resort: Any system voice
-      voices[0];
-}
+            selectedVoice =
+              // Top Priority: Premium Hindi female voices, explicitly checking for female-sounding names
+              premiumHindiVoices.find((v) => {
+                const name = v.name.toLowerCase();
+                return !isLikelyMaleVoice(v) || name.includes("female") || name.includes("shruthi") || name.includes("swara");
+              }) ||
+              // Second Priority: Standard Hindi female voices (using the detection heuristic)
+              hindiVoices.find((v) => !isLikelyMaleVoice(v)) ||
+              // Third Priority: Voices with 'female' in the name (direct match, as the isLikelyMaleVoice might be too aggressive)
+              hindiVoices.find((v) =>
+                v.name.toLowerCase().includes("female")
+              ) ||
+              // Fourth Priority: Fallback to the first available Hindi voice (can be risky, but kept as an option)
+              hindiVoices[0] ||
+              // Last resort: Any system voice
+              voices[0];
+          }
         } else if (lang === "bn-IN" || lang === "bn-BD") {
           // ✅ Enhanced Bengali voice support with natural tone priority
           const bengaliVoices = voices.filter((v) => {
@@ -1232,7 +1232,7 @@ export default function PracticeTest() {
     })();
   };
 
-    const confirmActionOk = () => {
+  const confirmActionOk = () => {
     // Save conversation then navigate
     (async () => {
       try {
@@ -1251,7 +1251,7 @@ export default function PracticeTest() {
       }
     })();
   };
-  
+
 
   // when transcript changes and user stops recording, send it (with double-send guards)
   useEffect(() => {
@@ -1334,6 +1334,8 @@ export default function PracticeTest() {
   const callChatAPI = async (userInput) => {
     // Strict check: only proceed if language is actually selected
     if (!userInput || !languageSelected || !selectedLanguage || selectedLanguage === "") return;
+    if (sessionExpiredRef.current) return; // Prevent new calls once session is marked expired
+
     setIsAILoading(true);
 
     try {
@@ -1347,6 +1349,10 @@ export default function PracticeTest() {
         hrId
       );
 
+      if (sessionExpiredRef.current) {
+        return; // Timer expired while waiting for response—drop it silently
+      }
+
       const aiMessage = data?.message || "Invalid Message";
 
       const aiEntry = { id: Date.now() + 1, text: aiMessage, sender: "bot" };
@@ -1359,13 +1365,8 @@ export default function PracticeTest() {
           time: new Date().toLocaleTimeString(),
         },
       ]);
-
-      // Stop typing indicator immediately after receiving response
       setIsAILoading(false);
       // Speak the AI response only if language is selected
-      if (sessionExpiredRef.current) {
-        return;
-      }
       if (selectedLanguage) {
         await speakMessage(aiMessage, getLangCode(selectedLanguage));
       }
@@ -1386,6 +1387,9 @@ export default function PracticeTest() {
       }
     } catch (error) {
       console.error("API error:", error);
+      if (sessionExpiredRef.current) {
+        return; // Session ended—ignore fallback message
+      }
       // push fallback bot message
       const aiEntry = {
         id: Date.now() + 1,
@@ -1393,6 +1397,7 @@ export default function PracticeTest() {
         sender: "bot",
       };
       setMessages((prev) => [...prev, aiEntry]);
+    } finally {
       setIsAILoading(false);
     }
   };
@@ -1436,7 +1441,7 @@ export default function PracticeTest() {
                   try {
                     window.speechSynthesis.cancel();
                     stopSpeaking();
-                    setShowChatReadOnly(true); 
+                    setShowChatReadOnly(true);
                   } catch { }
                   // Close goes back to previous state - don't change interaction capabilities
                   setUserStatus(null); // Hide the expired popup
@@ -1563,10 +1568,10 @@ export default function PracticeTest() {
                               2,
                               "0"
                             )}:00`
-                            : `${String(matchedRecord?.total_time || 10).padStart(
+                            : `${String(matchedRecord?.total_time || "--:--").padStart(
                               2,
                               "0"
-                            )}:00`}
+                            )}`}
                     </h3>
                     <p className="text-xs text-[#7E8489]">
                       {userStatus === "upcoming"
